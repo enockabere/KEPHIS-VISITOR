@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block base %}
+<div class="container-fluid height-700 bg-img bg-overlay"
+    style="background-image: url(../../static/img/bg-img/meeting-1177454_1920.jpg);">
+    <div class="row">
+        <div class="col-md-12">
+
+        </div>
+    </div>
+</div>
+<section class="section-padding-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 card-wrapper">
+                <div class="single-listing-content">
+                    {% include 'alerts.html' %}
+                    <div class="listing-title">
+                        <h4>Accommodation Booking</h4>
+                        <h6><span class="text-success">Private </span>Client</h6>
+                    </div>
+                    <div class="single-listing-nav">
+                        <nav>
+                            <ul id="listingNav">
+                                <li class="active"><a href="#overview">Room X Overview</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="overview-content mt-50" id="overview">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nibh sed mi ullamcorper
+                            rhoncus. Curabitur pulvinar vel augue sit amet vestibulum. Proin tempus lacus porta lorem
+                            blandit aliquam eget quis ipsum. Vivamus accumsan consequat ligula non volutpat. Sed mollis
+                            orci non cursus vestibulum. Pellentesque vitae est a augue laoreet venenatis sed eu felis.
+                            Sed cursus magna nec turpis ullamcorper, eget rutrum felis egestas. Nunc odio ex, fermentum
+                            efficitur nunc vitae, efficitur hendrerit diam. Lorem ipsum dolor sit amet, consectetur
+                            adipiscing elit. Nam ac nibh sed mi ullamcorper rhoncus. Curabitur pulvinar vel augue sit
+                            amet vestibulum. Proin tempus lacus porta lorem blandit aliquam eget quis ipsum.</p>
+                        <div class="row">
+                            <h6 class="mt-3 text-success">Features & Amenities</h6>
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <i class="las la-angle-right"></i>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Mini-Bar</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <i class="las la-angle-right"></i>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Bike Parking</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <i class="las la-angle-right"></i>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Wireless Internet</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <i class="las la-angle-right"></i>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Reservations</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <i class="las la-angle-right"></i>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Private Parking</span>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <i class="las la-angle-right"></i>
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Smoking Area</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 card-wrapper">
+                <div class="opening-hours-widget mt-30">
+                    <h6>Payments</h6>
+                    <ul class="opening-hours">
+                        <li>
+                            <p>Room Charges</p>
+                            <p class="text-dark">KES 1,000.00</p>
+                        </li>
+                        <li>
+                            <p>Total Room Charges</p>
+                            <p class="text-dark">KES 2,000.00</p>
+                        </li>
+                        <li>
+                            <p>Service Charges</p>
+                            <p class="text-dark">KES 3,000.00</p>
+                        </li>
+                        <li>
+                            <p>Total Service Charges</p>
+                            <p class="text-dark">KES 4,000.00</p>
+                        </li>
+                        <li>
+                            <p>Total Amount</p>
+                            <p class="text-dark">KES 10,000.00</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="book-a-table-widget mt-0">
+                    <h6>Available Rooms</h6>
+                    <form action="#" method="get" class="mt-5">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <select class="form-select" name="clientType">
+                                    <option selected disabled value="0">--Room X--</option>
+                                    <option value="1">Room X</option>
+                                    <option value="2">Room Y</option>
+                                    <option value="2">Room Z Y</option>
+                                </select>
+                                <button type="button" class="button-87  w-100 my-3">Reserve
+                                    Room</button>
+                            </div>
+                    </form>
+
+                </div>
+            </div>
+            <button type="button" class="button-5  w-100 my-3" data-bs-toggle="modal" data-bs-target="#cancelModal">Back
+                Home <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></button>
+        </div>
+        <div class="col-md-12 my-3">
+            <div class="card card-body data-card">
+                <h1 class="heading display-5 pb-3">Booking Details</h1>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="example" class="ui celled table responsive nowrap unstackable" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Client Type</th>
+                                    <th>Contact Name</th>
+                                    <th>ID Number</th>
+                                    <th>Phone Number</th>
+                                    <th>Email</th>
+                                    <th>No. Of People</th>
+                                    <th>Type Of Service</th>
+                                    <th>Service Required</th>
+                                    <th>Room Type</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>No. Of Adults</th>
+                                    <th>No. Of Children</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+
+                                    <td>
+                                        {% if clientType == "1" %}
+                                        Private
+                                        {% else %}
+                                        Public
+                                        {% endif %}
+                                    </td>
+
+                                    <td>{{contactName}}</td>
+                                    <td>{{idNumber}}</td>
+                                    <td>{{phoneNumber}}</td>
+                                    <td>{{email}}</td>
+                                    <td> {{numberOfPeople}}</td>
+                                    <td>
+                                        {% if typeOfService == "1" %}
+                                        Meeting Room
+                                        {% elif typeOfService == "2" %}
+                                        Accommodation
+                                        {% else %}
+                                        Meeting Room and Accommodation
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if serviceRequired == "1" %}
+                                        Bed and Breakfast
+                                        {% else %}
+                                        Other
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if roomType == "1" %}
+                                        Single
+                                        {% elif roomType == "2" %}
+                                        Double
+                                        {% else %}
+                                        Triple
+                                        {% endif %}
+                                    </td>
+                                    <td> {{startDate}}</td>
+                                    <td> {{endDate}}</td>
+                                    <td> {{numberOfAdults}}</td>
+                                    <td> {{numberOfChildren}}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modals -->
+    <div class="modal fade" id="cancelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-white">Cancel Process <i
+                            class="las la-exclamation-circle text-danger"></i></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Do you want to cancel process? All your data will be <span class="text-danger">Deleted</span>!
+
+                    <button type="button" class="btn button-0 my-3" data-bs-dismiss="modal"
+                        style="display: inline-block">Discard <i class="las la-window-close mx-2"
+                            style="font-size:1.5rem"></i></button>
+                    <form action="{% url 'CancelReservation' %}" method="post" style="display: inline-block">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary my-3 button-5">Confirm <i
+                                class="las la-trash-alt mx-2" style="font-size:1.5rem"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'footer.html' %}
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.semanticui.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.semanticui.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+</script>
+{% endblock %}

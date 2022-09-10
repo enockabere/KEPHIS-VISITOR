@@ -1,5 +1,213 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block base %}
-<h1>Welcome</h1>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"
+    integrity="sha512-zYXldzJsDrNKV+odAwFYiDXV2Cy37cwizT+NkuiPGsa9X1dOz04eHvUWVuxaJ299GvcJT31ug2zO4itXBjFx4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    .my-handle {
+        cursor: move;
+        cursor: -webkit-grabbing;
+    }
+
+    #listWithHandle {
+        padding-top: 5rem;
+    }
+</style>
+
+<section class="dorne-welcome-area bg-img bg-overlay" style="background-image: url(../../static/img/bg-img/4.jpg);">
+    <div class="container h-100 mb-5" id="listWithHandle">
+        <div class="row">
+            <div class="col-12">
+                <div class="hero text-center">
+                    <h5>It's time to</h5>
+                    <h2>Discover</h2>
+                    <h6 class="my-3">Find and book a great experience.</h6>
+                </div>
+            </div>
+        </div>
+        <div class="row h-100">
+            <div class="col-md-12">
+                <div class="hero-search-form">
+                    <div class="nav nav-tabs my-handle" id="heroTab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-places-tab" data-toggle="tab" role="tab"
+                            aria-controls="nav-places" aria-selected="true"> <i class="las la-arrows-alt-v"></i> Drag
+                            me<i class="las la-hand-pointer"></i></a>
+                    </div>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-places" role="tabpanel"
+                            aria-labelledby="nav-places-tab">
+                            {% include 'alerts.html' %}
+                            <h6>Room Reservation</h6>
+                            <form action="{% url 'dashboard' %}" id="regForm" method="POST">
+                                {% csrf_token %}
+                                <div class="tab">General Information
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <select class="form-select" name="clientType">
+                                                <option selected disabled value="0">--Select Client Type--</option>
+                                                <option value="1">Private</option>
+                                                <option value="2">Public</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="contactName"
+                                                placeholder="Contact Name">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="idNumber"
+                                                placeholder="ID Number">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="phoneNumber"
+                                                placeholder="Phone Number">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <input type="email" class="form-control" name="email"
+                                                placeholder="Email Address">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="numberOfPeople"
+                                                placeholder="Number of People">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-12">
+                                            <select class="form-select" name="typeOfService"
+                                                aria-label="Default select example">
+                                                <option selected disabled value="0">--Select Type of Service--</option>
+                                                <option value="1">Meeting Room</option>
+                                                <option value="2">Accommodation</option>
+                                                <option value="3">Meeting Room and Accommodation</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab">Meeting Details
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <select class="form-select" name="serviceRequired">
+                                                <option selected disabled value="0">--Select Service Required--</option>
+                                                <option value="1">Bed and Breakfast</option>
+                                                <option value="2">Accommodation</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-select" name="roomType">
+                                                <option selected disabled value="0">--Select Type of Room--</option>
+                                                <option value="1">Single</option>
+                                                <option value="2">Double</option>
+                                                <option value="3">Triple</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row gx-3 my-2">
+                                        <div class="col-md-6">
+                                            <label for="" class="form-label">Start Date and Time</label>
+                                            <input type="datetime-local" class="form-control" name="startDate">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="" class="form-label">End Date and Time</label>
+                                            <input type="datetime-local" class="form-control" name="endDate">
+                                        </div>
+                                    </div>
+
+                                    <div class="row gx-2 my-3">
+                                        <div class="col-md-6">
+                                            <input type="number" class="form-control" name="numberOfAdults"
+                                                placeholder="No. of Adults">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="number" class="form-control" name="numberOfChildren"
+                                                placeholder="No. of Children">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="overflow:auto;">
+                                    <div style="float:right;">
+                                        <button type="button" id="prevBtn" class="button-0"
+                                            onclick="nextPrev(-1)">Previous</button>
+                                        <button type="button" id="nextBtn" class="button-5"
+                                            onclick="nextPrev(1)">Next</button>
+                                    </div>
+                                </div>
+                                <div style="text-align:center;margin-top:-2rem;">
+                                    <span class="step"></span>
+                                    <span class="step"></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</section>
+<script>
+    var currentTab = 0;
+    showTab(currentTab);
+
+    function showTab(n) {
+        var x = document.getElementsByClassName("tab");
+        x[n].style.display = "block";
+        if (n == 0) {
+            document.getElementById("prevBtn").style.display = "none";
+        } else {
+            document.getElementById("prevBtn").style.display = "inline";
+        }
+        if (n == (x.length - 1)) {
+            document.getElementById("nextBtn").innerHTML = "Submit";
+        } else {
+            document.getElementById("nextBtn").innerHTML = "Next";
+        }
+        fixStepIndicator(n)
+    }
+
+    function nextPrev(n) {
+        var x = document.getElementsByClassName("tab");
+        if (n == 1 && !validateForm()) return false;
+        x[currentTab].style.display = "none";
+        currentTab = currentTab + n;
+        if (currentTab >= x.length) {
+            document.getElementById("regForm").submit();
+            return false;
+        }
+        showTab(currentTab);
+    }
+
+    function validateForm() {
+        var x, y, i, valid = true;
+        x = document.getElementsByClassName("tab");
+        y = x[currentTab].getElementsByTagName("input");
+        // for (i = 0; i < y.length; i++) {
+        //     if (y[i].value == "") {
+        //         y[i].className += " invalid";
+        //         valid = false;
+        //     }
+        // }
+        if (valid) {
+            document.getElementsByClassName("step")[currentTab].className += " finish";
+        }
+        return valid;
+    }
+
+    function fixStepIndicator(n) {
+        var i, x = document.getElementsByClassName("step");
+        for (i = 0; i < x.length; i++) {
+            x[i].className = x[i].className.replace(" active", "");
+        }
+        x[n].className += " active";
+    }
+
+    Sortable.create(listWithHandle, {
+        handle: '.my-handle',
+        animation: 150
+    });
+</script>
+
 {% endblock %}

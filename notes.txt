@@ -1,0 +1,108 @@
+<div class="stepTab">
+                                    
+                                    
+                                    
+                                    
+                                </div>
+                                <div class="stepTab">
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option selected disabled value="0">--Select Client Type--</option>
+                                                <option value="1">Private</option>
+                                                <option value="2">Public</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Contact Name">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="ID Number">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Phone Number">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <input type="email" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Email Address">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Number of People">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-12">
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option selected disabled value="0">--Select Type of Service--</option>
+                                                <option value="1">Meeting Room</option>
+                                                <option value="2">Accommodation</option>
+                                                <option value="2">Meeting Room and Accommodation</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="stepTab">
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option selected disabled value="0">--Select Client Type--</option>
+                                                <option value="1">Private</option>
+                                                <option value="2">Public</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Contact Name">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="ID Number">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Phone Number">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-6">
+                                            <input type="email" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Email Address">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                placeholder="Number of People">
+                                        </div>
+                                    </div>
+                                    <div class="row gx-2 my-2">
+                                        <div class="col-md-12">
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option selected disabled value="0">--Select Type of Service--</option>
+                                                <option value="1">Meeting Room</option>
+                                                <option value="2">Accommodation</option>
+                                                <option value="2">Meeting Room and Accommodation</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="overflow:auto;">
+                                    <div style="float:right;">
+                                        <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+                                        <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+                                    </div>
+                                </div>
+                                <div style="text-align:center;margin-top:40px;">
+                                    <span class="step"></span>
+                                    <span class="step"></span>
+                                    <span class="step"></span>
+                                </div>
