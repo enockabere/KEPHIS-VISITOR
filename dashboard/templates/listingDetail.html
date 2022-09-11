@@ -112,16 +112,17 @@
                 </div>
                 <div class="book-a-table-widget mt-0">
                     <h6>Available Rooms</h6>
-                    <form action="#" method="get" class="mt-5">
+                    <form action="{% url 'ListingDetail' %}" method="POST" class="mt-5">
+                        {% csrf_token %}
                         <div class="row">
                             <div class="col-md-12">
-                                <select class="form-select" name="clientType">
+                                <select class="form-select" name="room">
                                     <option selected disabled value="0">--Room X--</option>
                                     <option value="1">Room X</option>
                                     <option value="2">Room Y</option>
                                     <option value="2">Room Z Y</option>
                                 </select>
-                                <button type="button" class="button-87  w-100 my-3">Reserve
+                                <button type="submit" class="button-87  w-100 my-3">Reserve
                                     Room</button>
                             </div>
                     </form>
@@ -225,7 +226,7 @@
                         style="display: inline-block">Discard <i class="las la-window-close mx-2"
                             style="font-size:1.5rem"></i></button>
                     <form action="{% url 'CancelReservation' %}" method="post" style="display: inline-block">
-                        {% csrf_token %}
+
                         <button type="submit" class="btn btn-primary my-3 button-5">Confirm <i
                                 class="las la-trash-alt mx-2" style="font-size:1.5rem"></i></button>
                     </form>

@@ -78,6 +78,23 @@ class ListingDetail(View):
             "numberOfChildren":numberOfChildren
             }
         return render(request,"listingDetail.html",ctx)
+    def post(self, request):
+        if request.method == "POST":
+            try:
+                room = request.POST.get('room')
+                try:
+                    request.session['room'] = room
+                    messages.success(request,"Please Sign in or Register to Continue.")
+                    return redirect('login')
+                except Exception as e:
+                    print (e)
+                    messages.error(request,e)
+                    return redirect("ListingDetail")
+            except Exception as e:
+                print (e)
+                messages.error(request,e)
+                return redirect("ListingDetail")
+
 
 class CancelReservation(View):
     def post(self,request):
