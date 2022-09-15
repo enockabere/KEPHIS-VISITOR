@@ -16,8 +16,8 @@
                 <div class="single-listing-content">
                     {% include 'alerts.html' %}
                     <div class="listing-title">
-                        <h4>Accommodation Reservation</h4>
-                        <h6><span class="text-success">Private </span>Client</h6>
+                        <h4>Booking 0000001</h4>
+                        <h6><span class="text-success">Status: </span>Reserved</h6>
                     </div>
                     <div class="single-listing-nav">
                         <nav>
@@ -111,26 +111,20 @@
                     </ul>
                 </div>
                 <div class="book-a-table-widget mt-0">
-                    <h6>Available Rooms</h6>
+                    <h6>Make Payment</h6>
                     <form action="{% url 'ListingDetail' %}" method="POST" class="mt-5">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-12">
-                                <select class="form-select" name="room">
-                                    <option selected disabled value="0">--Room X--</option>
-                                    <option value="1">Room X</option>
-                                    <option value="2">Room Y</option>
-                                    <option value="2">Room Z Y</option>
-                                </select>
-                                <button type="submit" class="button-87  w-100 my-3">Reserve
-                                    Room</button>
+                                <input type="text" class="form-control" placeholder="Enter Your Number">
+                                <button type="submit" class="button-87  w-100 my-3">Pay KES 10,000.00</button>
                             </div>
                     </form>
 
                 </div>
             </div>
-            <button type="button" class="button-5  w-100 my-3" data-bs-toggle="modal" data-bs-target="#cancelModal">Back
-                Home <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></button>
+            <a href="{% url 'reserve' %}" type="button" class="button-5  w-100 my-3">Go Back
+                <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></a>
         </div>
         <div class="col-md-12 my-3">
             <div class="card card-body data-card">

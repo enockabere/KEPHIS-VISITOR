@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block base %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"
+    integrity="sha512-zYXldzJsDrNKV+odAwFYiDXV2Cy37cwizT+NkuiPGsa9X1dOz04eHvUWVuxaJ299GvcJT31ug2zO4itXBjFx4w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    .my-handle {
+        cursor: move;
+        cursor: -webkit-grabbing;
+    }
+
+    #listWithHandle {
+        padding-top: 5rem;
+    }
+</style>
 <div class="container-fluid height-700 bg-img bg-overlay"
     style="background-image: url(../../static/img/bg-img/meeting-1177454_1920.jpg);">
     <div class="row">
@@ -16,8 +29,8 @@
                 <div class="single-listing-content">
                     {% include 'alerts.html' %}
                     <div class="listing-title">
-                        <h4>Accommodation Reservation</h4>
-                        <h6><span class="text-success">Private </span>Client</h6>
+                        <h4>Booking 000002</h4>
+                        <h6><span class="text-success">Status: </span>Booked</h6>
                     </div>
                     <div class="single-listing-nav">
                         <nav>
@@ -84,7 +97,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 card-wrapper">
+            <div class="col-md-4 card-wrapper" id="listWithHandle">
                 <div class="opening-hours-widget mt-30">
                     <h6>Payments</h6>
                     <ul class="opening-hours">
@@ -110,27 +123,20 @@
                         </li>
                     </ul>
                 </div>
-                <div class="book-a-table-widget mt-0">
-                    <h6>Available Rooms</h6>
-                    <form action="{% url 'ListingDetail' %}" method="POST" class="mt-5">
-                        {% csrf_token %}
+                <div class="book-a-table-widget mt-0 my-handle">
+                    <h6> Date and Time <span> (Drag
+                            me</span>)</h6>
+                    <form class="mt-2">
                         <div class="row">
                             <div class="col-md-12">
-                                <select class="form-select" name="room">
-                                    <option selected disabled value="0">--Room X--</option>
-                                    <option value="1">Room X</option>
-                                    <option value="2">Room Y</option>
-                                    <option value="2">Room Z Y</option>
-                                </select>
-                                <button type="submit" class="button-87  w-100 my-3">Reserve
-                                    Room</button>
+                                <input type="text" class="form-control" placeholder="2022-10-10 10:15 pm" disabled>
                             </div>
                     </form>
 
                 </div>
             </div>
-            <button type="button" class="button-5  w-100 my-3" data-bs-toggle="modal" data-bs-target="#cancelModal">Back
-                Home <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></button>
+            <a href="{% url 'reserve' %}" type="button" class="button-5  w-100 my-3">Go Back
+                <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></a>
         </div>
         <div class="col-md-12 my-3">
             <div class="card card-body data-card">
@@ -199,32 +205,7 @@
             </div>
         </div>
     </div>
-    <!-- Modals -->
-    <div class="modal fade" id="cancelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-white">Cancel Process <i
-                            class="las la-exclamation-circle text-danger"></i></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Do you want to cancel process? All your data will be <span class="text-danger">Deleted</span>!
 
-                    <button type="button" class="btn button-0 my-3" data-bs-dismiss="modal"
-                        style="display: inline-block">Discard <i class="las la-window-close mx-2"
-                            style="font-size:1.5rem"></i></button>
-                    <form action="{% url 'CancelReservation' %}" method="post" style="display: inline-block">
-
-                        <button type="submit" class="btn btn-primary my-3 button-5">Confirm <i
-                                class="las la-trash-alt mx-2" style="font-size:1.5rem"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </section>
 {% include 'footer.html' %}
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
@@ -234,6 +215,10 @@
 <script>
     $(document).ready(function () {
         $('#example').DataTable();
+    });
+    Sortable.create(listWithHandle, {
+        handle: '.my-handle',
+        animation: 150
     });
 </script>
 {% endblock %}

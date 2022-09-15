@@ -10,10 +10,6 @@ class Dashboard(View):
         if request.method == "POST":
             try:
                 clientType = request.POST.get('clientType')
-                contactName = request.POST.get('contactName')
-                idNumber = request.POST.get('idNumber')
-                phoneNumber = request.POST.get('phoneNumber')
-                email = request.POST.get('email')
                 numberOfPeople = request.POST.get('numberOfPeople')
                 typeOfService = request.POST.get('typeOfService')
                 serviceRequired = request.POST.get('serviceRequired')
@@ -24,14 +20,10 @@ class Dashboard(View):
                 numberOfChildren = request.POST.get('numberOfChildren')
                 
                 try:
-                    request.session['email'] = email
                     request.session['endDate'] = endDate
-                    request.session['idNumber'] = idNumber
                     request.session['roomType'] = roomType
                     request.session['startDate'] = startDate
                     request.session['clientType'] = clientType
-                    request.session['contactName'] = contactName
-                    request.session['phoneNumber'] = phoneNumber
                     request.session['typeOfService'] = typeOfService
                     request.session['numberOfPeople'] = numberOfPeople
                     request.session['numberOfAdults'] = numberOfAdults
@@ -50,14 +42,10 @@ class Dashboard(View):
 class ListingDetail(View):
     def get(self,request):
         try:
-            email =  request.session['email'] 
             endDate = request.session['endDate'] 
-            idNumber = request.session['idNumber']
             roomType = request.session['roomType'] 
             startDate = request.session['startDate']
             clientType = request.session['clientType']
-            contactName = request.session['contactName']
-            phoneNumber = request.session['phoneNumber']
             typeOfService = request.session['typeOfService']
             numberOfPeople = request.session['numberOfPeople']
             numberOfAdults = request.session['numberOfAdults']
@@ -69,10 +57,8 @@ class ListingDetail(View):
             return redirect('ListingDetail')
 
         ctx = {
-            "email":email,"endDate":endDate,
-            "idNumber":idNumber,"roomType":roomType,
+            "endDate":endDate,"roomType":roomType,
             "startDate":startDate,"clientType":clientType,
-            "contactName":contactName,"phoneNumber":phoneNumber,
             "typeOfService":typeOfService,"numberOfPeople":numberOfPeople,
             "numberOfAdults":numberOfAdults,"serviceRequired":serviceRequired,
             "numberOfChildren":numberOfChildren
@@ -84,7 +70,7 @@ class ListingDetail(View):
                 room = request.POST.get('room')
                 try:
                     request.session['room'] = room
-                    messages.success(request,"Please Sign in or Register to Continue.")
+                    messages.success(request,"Sign in or Register to Continue.")
                     return redirect('login')
                 except Exception as e:
                     print (e)
@@ -99,14 +85,10 @@ class ListingDetail(View):
 class CancelReservation(View):
     def post(self,request):
         try:
-            del request.session['email'] 
             del request.session['endDate'] 
-            del request.session['idNumber']
             del request.session['roomType'] 
             del request.session['startDate']
             del request.session['clientType']
-            del request.session['contactName']
-            del request.session['phoneNumber']
             del request.session['typeOfService']
             del request.session['numberOfPeople']
             del request.session['numberOfAdults']

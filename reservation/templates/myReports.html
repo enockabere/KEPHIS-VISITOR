@@ -1,0 +1,38 @@
+<div class="col-md-3">
+    <div class="file-man-box">
+        <div class="file-img-box"><img src="../../static/img/core-img/f1.png" alt="icon">
+        </div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="docID" value="{{data.No}}">
+            <input type="hidden" name="attachmentID" value="{{data.ID}}">
+            <input type="hidden" name="File_Name" value="{{data.File_Name}}">
+            <input type="hidden" name="tableID" value="{{data.Table_ID}}">
+            <input type="hidden" name="File_Extension" value="{{data.File_Extension}}">
+            <button class="file-download mx-1"><i class="fa fa-download text-success"></i></button>
+        </form>
+        <div class="file-man-title">
+            <h5 class="mb-0 text-overflow">
+                report.pdf</h5>
+        </div>
+    </div>
+</div>
+<div class="col-md-3">
+    <div class="file-man-box">
+        <div class="file-img-box"><img src="../../static/img/core-img/f1.png" alt="icon">
+        </div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="docID" value="{{data.No}}">
+            <input type="hidden" name="attachmentID" value="{{data.ID}}">
+            <input type="hidden" name="File_Name" value="{{data.File_Name}}">
+            <input type="hidden" name="tableID" value="{{data.Table_ID}}">
+            <input type="hidden" name="File_Extension" value="{{data.File_Extension}}">
+            <button class="file-download mx-1"><i class="fa fa-download text-success"></i></button>
+        </form>
+        <div class="file-man-title">
+            <h5 class="mb-0 text-overflow">
+                manual.pdf</h5>
+        </div>
+    </div>
+</div>
