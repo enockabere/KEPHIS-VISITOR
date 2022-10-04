@@ -1,14 +1,26 @@
 from django.shortcuts import render,redirect
 from django.views import View
 from django.contrib import messages
+import requests
+from django.conf import settings as config
+from django.http import JsonResponse
 
 # Create your views here.
+class UserObjectMixin(object):
+    model =None
+    session = requests.Session()
+    session.auth = config.AUTHS
+    def get_object(self,endpoint):
+        response = self.session.get(endpoint, timeout=10).json()
+        return response
+
 class Dashboard(View):
     def get(self,request):
         return render(request,"dashboard.html")
     def post(self,request):
         if request.method == "POST":
             try:
+                bookingType = request.POST.get('bookingType')
                 clientType = request.POST.get('clientType')
                 numberOfPeople = request.POST.get('numberOfPeople')
                 typeOfService = request.POST.get('typeOfService')
@@ -24,6 +36,7 @@ class Dashboard(View):
                     request.session['roomType'] = roomType
                     request.session['startDate'] = startDate
                     request.session['clientType'] = clientType
+                    request.session['bookingType'] = bookingType
                     request.session['typeOfService'] = typeOfService
                     request.session['numberOfPeople'] = numberOfPeople
                     request.session['numberOfAdults'] = numberOfAdults
@@ -81,6 +94,16 @@ class ListingDetail(View):
                 messages.error(request,e)
                 return redirect("ListingDetail")
 
+class serviceRequired(UserObjectMixin,View):
+    def get(self, request):
+        Service = config.O_DATA.format("QYServicerequired")
+        try:
+            serviceResponse = self.get_object(Service)
+            return JsonResponse(serviceResponse)
+
+        except  Exception as e:
+            print(e)
+            return redirect('dashboard')
 
 class CancelReservation(View):
     def post(self,request):
@@ -89,15 +112,16 @@ class CancelReservation(View):
             del request.session['roomType'] 
             del request.session['startDate']
             del request.session['clientType']
+            del request.session['bookingType']
             del request.session['typeOfService']
             del request.session['numberOfPeople']
             del request.session['numberOfAdults']
             del request.session['serviceRequired']
             del request.session['numberOfChildren']
-
             messages.info(request,"Reservation Cancelled successfully")
             return redirect('dashboard')
         except Exception as e:
             print (e)
             messages.error(request,e)
             return redirect('ListingDetail')
+

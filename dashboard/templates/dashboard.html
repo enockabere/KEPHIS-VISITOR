@@ -42,16 +42,26 @@
                             <form action="{% url 'dashboard' %}" id="regForm" method="POST">
                                 {% csrf_token %}
                                 <div class="tab">General Information
+                                    <div class="row gx-2">
+                                        <div class="col-md-12">
+                                            <select class="form-select" name="bookingType">
+                                                <option selected disabled value="0">--Select Type of Booking--</option>
+                                                <option value="1">Internal</option>
+                                                <option value="2">External</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="row gx-2 my-2">
                                         <div class="col-md-6">
                                             <select class="form-select" name="clientType">
                                                 <option selected disabled value="0">--Select Client Type--</option>
                                                 <option value="1">Private</option>
                                                 <option value="2">Public</option>
+                                                <option value="3">Not Resident</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
-                                            <select class="form-select" name="typeOfService"
+                                            <select class="form-select" name="typeOfService" id="typeOfService"
                                                 aria-label="Default select example">
                                                 <option selected disabled value="0">--Select Type of Service--</option>
                                                 <option value="1">Meeting Room</option>
@@ -63,9 +73,8 @@
                                     <div class="row gx-2 my-2">
                                         <div class="col-md-6">
                                             <select class="form-select" name="serviceRequired">
-                                                <option selected disabled value="0">--Select Service Required--</option>
-                                                <option value="1">Bed and Breakfast</option>
-                                                <option value="2">Accommodation</option>
+                                                <option class="after" value="0" disabled>--Select Service Required--
+                                                </option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
@@ -74,15 +83,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab">Meeting Details
+                                <div class="tab">
                                     <div class="row gx-3 my-2">
                                         <div class="col-md-6">
                                             <label for="" class="form-label">Start Date and Time</label>
-                                            <input type="datetime-local" class="form-control" name="startDate">
+                                            <input type="datetime-local" class="form-control" name="startDate" min=""
+                                                id="startDate">
                                         </div>
                                         <div class="col-md-6">
                                             <label for="" class="form-label">End Date and Time</label>
-                                            <input type="datetime-local" class="form-control" name="endDate">
+                                            <input type="datetime-local" class="form-control" name="endDate" min=""
+                                                id="endDate">
                                         </div>
                                     </div>
 
@@ -108,7 +119,7 @@
                                     </div>
                                 </div>
                                 <div style="overflow:auto;">
-                                    <div style="float:right;">
+                                    <div style="float:left;">
                                         <button type="button" id="prevBtn" class="button-0"
                                             onclick="nextPrev(-1)">Previous</button>
                                         <button type="button" id="nextBtn" class="button-5"
@@ -128,7 +139,43 @@
     </div>
     {% include 'footer.html' %}
 </section>
+
 <script>
+    $('#typeOfService').on('change', function (e) {
+        e.preventDefault();
+        var ItemCode = $("#typeOfService").val();
+        if (ItemCode != null) {
+            $("#regForm select[name='serviceRequired']").find('.after').nextAll().remove();
+            $.ajax({
+                type: 'get',
+                url: '{% url "serviceRequired" %}',
+                dataType: 'json',
+                data: {
+                    ItemCode: ItemCode
+                },
+                success: function (response) {
+                    let options = '';
+                    for (var i = 0; i < response.value.length; i++) {
+                        if (response.value[i].Service_Requred_Code == ItemCode) {
+                            options += '<option value=' + response.value[i]
+                                .Code + '>' + response.value[i].ServiceDescription +
+                                '</option>';
+
+                        }
+                    }
+                    $("#regForm select[name='serviceRequired']").find('.after')
+                        .after(
+                            options);
+
+                },
+                error: function (response) {
+                    console.log('Something went wrong');
+                }
+            });
+        } else {
+            $("#regForm select[name='serviceRequired']").find('.after').nextAll().remove();
+        }
+    });
     var currentTab = 0;
     showTab(currentTab);
 
@@ -188,6 +235,16 @@
         handle: '.my-handle',
         animation: 150
     });
+    $(document).ready(function () {
+        var utc = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
+        var x = document.getElementById("startDate").min = utc;
+        var text = document.getElementById("startDate").getAttribute("min");
+
+        var xy = document.getElementById("endDate").min = utc;
+        var texts = document.getElementById("endDate").getAttribute("min");
+        console.log(texts)
+
+    })
 </script>
 
 {% endblock %}

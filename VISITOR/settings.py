@@ -15,6 +15,12 @@ import os
 import django_heroku
 import dj_database_url
 from decouple import config,Csv
+import requests
+from requests import Session
+from requests_ntlm import HttpNtlmAuth
+from zeep import Client
+from zeep.transports import Transport
+from requests.auth import HTTPBasicAuth
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -157,4 +163,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-django_heroku.settings(locals())
+
+
+ENCRYPT_KEY = b'bzKNyzSwwsN0pwQKglGqPnMKPS6WTPElkRPoCOTYN0I='
+
+
+AUTHS = Session()
+
+WEB_SERVICE_PWD = 'W3C0d3@llD@y'
+
+O_DATA = "http://13.68.215.64:1548/KEPHIS/ODataV4/Company(%27CRONUS%20International%20Ltd.%27)/{}"
+BASE_URL = 'http://13.68.215.64:1547/KEPHIS/WS/CRONUS%20International%20Ltd./Codeunit/Webportal'
+AUTHS.auth = HTTPBasicAuth('ktl-admin', WEB_SERVICE_PWD)
+
+CLIENT = Client(BASE_URL, transport=Transport(session=AUTHS))
+AUTHS = HTTPBasicAuth('ktl-admin', WEB_SERVICE_PWD)

@@ -421,8 +421,7 @@ li {
 
 .dorne-welcome-area {
     width: 100%;
-    min-height: auto;
-    z-index: 1;
+    min-height: 100vh;
 }
 .hero{
     padding-top: 5rem;
@@ -514,7 +513,6 @@ li {
     margin-top: 1rem;
     position: relative;
     width: 100%;
-    z-index: 1;
     opacity: .8;
 }
 
@@ -537,6 +535,7 @@ li {
     padding: 0;
     text-align: center;
 }
+
 
 .hero-search-form .nav-tabs .nav-link.active {
     color: #fff;
@@ -1664,3 +1663,11 @@ li {
 .file-man-box:hover .file-close {
     visibility: visible
 }
+
+  
+  article h1 {
+    font-size: 2rem;
+    font-family: var(--font4);
+    line-height: 1.1;
+    color: var(--second-color);
+  }

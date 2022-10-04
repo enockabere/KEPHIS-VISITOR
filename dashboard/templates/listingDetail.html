@@ -26,8 +26,17 @@
                             </ul>
                         </nav>
                     </div>
+                    <div class="mt-50" id="detailHide">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <article>
+                                    <h1>Select Room to View Details</h1>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="overview-content mt-50" id="overview">
+                    <div class="overview-content mt-50" id="overview" style="display: none;">
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nibh sed mi ullamcorper
                             rhoncus. Curabitur pulvinar vel augue sit amet vestibulum. Proin tempus lacus porta lorem
                             blandit aliquam eget quis ipsum. Vivamus accumsan consequat ligula non volutpat. Sed mollis
@@ -77,7 +86,7 @@
                                 <label class="custom-control custom-checkbox mb-3">
                                     <i class="las la-angle-right"></i>
                                     <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Smoking Area</span>
+                                    <span class="custom-control-description">Maximum of 20 Guests</span>
                                 </label>
                             </div>
                         </div>
@@ -85,49 +94,48 @@
                 </div>
             </div>
             <div class="col-md-4 card-wrapper">
-                <div class="opening-hours-widget mt-30">
-                    <h6>Payments</h6>
-                    <ul class="opening-hours">
-                        <li>
-                            <p>Room Charges</p>
-                            <p class="text-dark">KES 1,000.00</p>
-                        </li>
-                        <li>
-                            <p>Total Room Charges</p>
-                            <p class="text-dark">KES 2,000.00</p>
-                        </li>
-                        <li>
-                            <p>Service Charges</p>
-                            <p class="text-dark">KES 3,000.00</p>
-                        </li>
-                        <li>
-                            <p>Total Service Charges</p>
-                            <p class="text-dark">KES 4,000.00</p>
-                        </li>
-                        <li>
-                            <p>Total Amount</p>
-                            <p class="text-dark">KES 10,000.00</p>
-                        </li>
-                    </ul>
-                </div>
                 <div class="book-a-table-widget mt-0">
                     <h6>Available Rooms</h6>
                     <form action="{% url 'ListingDetail' %}" method="POST" class="mt-5">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-12">
-                                <select class="form-select" name="room">
+                                <select class="form-select" name="room" id="room">
                                     <option selected disabled value="0">--Room X--</option>
                                     <option value="1">Room X</option>
                                     <option value="2">Room Y</option>
-                                    <option value="2">Room Z Y</option>
+                                    <option value="3">Room Z Y</option>
                                 </select>
                                 <button type="submit" class="button-87  w-100 my-3">Reserve
                                     Room</button>
                             </div>
                     </form>
-
                 </div>
+            </div>
+            <div class="opening-hours-widget mt-30" id="paymentPanel" style="display: none;">
+                <h6>Payments</h6>
+                <ul class="opening-hours">
+                    <li>
+                        <p>Room Charges</p>
+                        <p class="text-dark">KES 1,000.00</p>
+                    </li>
+                    <li>
+                        <p>Total Room Charges</p>
+                        <p class="text-dark">KES 2,000.00</p>
+                    </li>
+                    <li>
+                        <p>Service Charges</p>
+                        <p class="text-dark">KES 3,000.00</p>
+                    </li>
+                    <li>
+                        <p>Total Service Charges</p>
+                        <p class="text-dark">KES 4,000.00</p>
+                    </li>
+                    <li>
+                        <p>Total Amount</p>
+                        <p class="text-dark">KES 10,000.00</p>
+                    </li>
+                </ul>
             </div>
             <button type="button" class="button-5  w-100 my-3" data-bs-toggle="modal" data-bs-target="#cancelModal">Back
                 Home <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></button>
@@ -234,6 +242,18 @@
 <script>
     $(document).ready(function () {
         $('#example').DataTable();
+
+        $('#room').on('change', function () {
+            if (this.value == "1") {
+                $('#overview').show(1000);
+                $('#paymentPanel').show(1200);
+                $('#detailHide').hide();
+            } else {
+                $('#detailHide').show(1000)
+                $('#overview').hide();
+                $('#paymentPanel').hide();
+            }
+        });
     });
 </script>
 {% endblock %}
