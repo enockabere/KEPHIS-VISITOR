@@ -20,31 +20,17 @@ class Dashboard(View):
     def post(self,request):
         if request.method == "POST":
             try:
-                bookingType = request.POST.get('bookingType')
+
                 clientType = request.POST.get('clientType')
-                numberOfPeople = request.POST.get('numberOfPeople')
                 typeOfService = request.POST.get('typeOfService')
-                serviceRequired = request.POST.get('serviceRequired')
-                roomType = request.POST.get('roomType')
-                startDate = request.POST.get('startDate')
-                endDate = request.POST.get('endDate')
-                numberOfAdults = request.POST.get('numberOfAdults')
-                numberOfChildren = request.POST.get('numberOfChildren')
-                
+               
                 try:
-                    request.session['endDate'] = endDate
-                    request.session['roomType'] = roomType
-                    request.session['startDate'] = startDate
                     request.session['clientType'] = clientType
-                    request.session['bookingType'] = bookingType
                     request.session['typeOfService'] = typeOfService
-                    request.session['numberOfPeople'] = numberOfPeople
-                    request.session['numberOfAdults'] = numberOfAdults
-                    request.session['serviceRequired'] = serviceRequired
-                    request.session['numberOfChildren'] = numberOfChildren
+
                     messages.success(request,"Success")
                     print("Success")
-                    return redirect('ListingDetail')
+                    return redirect('ListingDetail',pk=request.session['typeOfService'])
                 except  Exception as e:
                     print (e)
                     messages.error(request,e)
@@ -52,47 +38,84 @@ class Dashboard(View):
             except  Exception as e:
                 messages.error(request,e)
                 return redirect('dashboard')
-class ListingDetail(View):
-    def get(self,request):
+class ListingDetail(UserObjectMixin,View):
+    def get(self,request,pk):
         try:
-            endDate = request.session['endDate'] 
-            roomType = request.session['roomType'] 
-            startDate = request.session['startDate']
+
             clientType = request.session['clientType']
             typeOfService = request.session['typeOfService']
-            numberOfPeople = request.session['numberOfPeople']
-            numberOfAdults = request.session['numberOfAdults']
-            serviceRequired = request.session['serviceRequired']
-            numberOfChildren = request.session['numberOfChildren']
+
+            Access_Point = config.O_DATA.format("QYRooms?$filter=Booked%20eq%20false%20and%20Reserved%20eq%20false")
+            roomResponse = self.get_object(Access_Point)
+            roomOutput = [room for room in roomResponse['value']]
+
+            serviceRequired = config.O_DATA.format(f"QYServicerequired?$filter=Service_Requred_Code%20eq%20%27{pk}%27")
+            serviceResponse = self.get_object(serviceRequired)
+            serviceOutput = [service for service in serviceResponse['value']]
+
         except ValueError as e:
             print (e)
             messages.error(request,e)
-            return redirect('ListingDetail')
+            return redirect('ListingDetail',pk=pk)
 
         ctx = {
-            "endDate":endDate,"roomType":roomType,
-            "startDate":startDate,"clientType":clientType,
-            "typeOfService":typeOfService,"numberOfPeople":numberOfPeople,
-            "numberOfAdults":numberOfAdults,"serviceRequired":serviceRequired,
-            "numberOfChildren":numberOfChildren
+            "clientType":clientType,"typeOfService":typeOfService
+            ,"availableRooms":roomOutput,"serviceOutput":serviceOutput,
             }
         return render(request,"listingDetail.html",ctx)
-    def post(self, request):
+    def post(self,request,pk):
         if request.method == "POST":
             try:
-                room = request.POST.get('room')
-                try:
-                    request.session['room'] = room
-                    messages.success(request,"Sign in or Register to Continue.")
-                    return redirect('login')
-                except Exception as e:
-                    print (e)
-                    messages.error(request,e)
-                    return redirect("ListingDetail")
+                ServiceRequired = request.POST.get('ServiceRequired')
+                TypeOfRoom = request.POST.get('TypeOfRoom')
+                TypeOfAccommodation = request.POST.get('TypeOfAccommodation')
+                NumberOfPeople = request.POST.get('NumberOfPeople')
+                startDate = request.POST.get('startDate')
+                endDate = request.POST.get('endDate')
+
+                request.session['ServiceRequired'] = ServiceRequired
+                request.session['TypeOfRoom'] = TypeOfRoom
+                request.session['TypeOfAccommodation'] = TypeOfAccommodation
+                request.session['NumberOfPeople'] = NumberOfPeople
+                request.session['startDate'] = startDate
+                request.session['endDate'] = endDate
+                messages.success(request,"Added Successfully.")
+                return redirect('ListingDetail',pk=pk)
+
             except Exception as e:
                 print (e)
                 messages.error(request,e)
-                return redirect("ListingDetail")
+                return redirect("ListingDetail",pk=pk)
+
+class submitReservation(UserObjectMixin,View):
+    def post(self, request,pk):
+        try:
+            clientType = request.session['clientType']
+            typeOfService = request.session['typeOfService']
+            ServiceRequired = request.session['ServiceRequired']
+            TypeOfRoom = request.session['TypeOfRoom'] 
+            TypeOfAccommodation = request.session['TypeOfAccommodation'] 
+            NumberOfPeople = request.session['NumberOfPeople']
+            startDate = request.session['startDate']
+            endDate = request.session['endDate'] 
+            messages.success(request,"Success. Please login or sign up to continue.")
+            return redirect('login')
+        except Exception as e:
+            print (e)
+            messages.error(request,"Please add booking line(s)")
+            return redirect('ListingDetail',pk=pk)
+
+
+class availableRoom(UserObjectMixin,View):
+    def get(self, request):
+        RoomCode = request.GET.get('RoomCode')
+        subProduct = config.O_DATA.format(f"QYRooms?$filter=Code%20eq%20%27{RoomCode}%27")
+        try:
+            roomResponse = self.get_object(subProduct)
+            return JsonResponse(roomResponse)
+        except  Exception as e:
+            print(e)
+        return redirect("ListingDetail")
 
 class serviceRequired(UserObjectMixin,View):
     def get(self, request):
@@ -108,17 +131,10 @@ class serviceRequired(UserObjectMixin,View):
 class CancelReservation(View):
     def post(self,request):
         try:
-            del request.session['endDate'] 
-            del request.session['roomType'] 
-            del request.session['startDate']
+
             del request.session['clientType']
-            del request.session['bookingType']
             del request.session['typeOfService']
-            del request.session['numberOfPeople']
-            del request.session['numberOfAdults']
-            del request.session['serviceRequired']
-            del request.session['numberOfChildren']
-            messages.info(request,"Reservation Cancelled successfully")
+            messages.error(request,"Reservation Cancelled successfully")
             return redirect('dashboard')
         except Exception as e:
             print (e)

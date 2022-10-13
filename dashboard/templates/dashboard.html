@@ -39,97 +39,30 @@
                             aria-labelledby="nav-places-tab">
                             {% include 'alerts.html' %}
                             <h6>Room Reservation</h6>
-                            <form action="{% url 'dashboard' %}" id="regForm" method="POST">
+                            <form action="{% url 'dashboard' %}" method="POST">
                                 {% csrf_token %}
-                                <div class="tab">General Information
-                                    <div class="row gx-2">
-                                        <div class="col-md-12">
-                                            <select class="form-select" name="bookingType">
-                                                <option selected disabled value="0">--Select Type of Booking--</option>
-                                                <option value="1">Internal</option>
-                                                <option value="2">External</option>
-                                            </select>
-                                        </div>
+                                <div class="row gx-2 my-3">
+                                    <div class="col-md-6">
+                                        <label for="" class="form-label">Client Type</label>
+                                        <select class="form-select" name="clientType">
+                                            <option selected disabled value="0">--Select Client Type--</option>
+                                            <option value="1">Private</option>
+                                            <option value="2">Public</option>
+                                            <option value="3">Foreign</option>
+                                        </select>
                                     </div>
-                                    <div class="row gx-2 my-2">
-                                        <div class="col-md-6">
-                                            <select class="form-select" name="clientType">
-                                                <option selected disabled value="0">--Select Client Type--</option>
-                                                <option value="1">Private</option>
-                                                <option value="2">Public</option>
-                                                <option value="3">Not Resident</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <select class="form-select" name="typeOfService" id="typeOfService"
-                                                aria-label="Default select example">
-                                                <option selected disabled value="0">--Select Type of Service--</option>
-                                                <option value="1">Meeting Room</option>
-                                                <option value="2">Accommodation</option>
-                                                <option value="3">Meeting Room and Accommodation</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row gx-2 my-2">
-                                        <div class="col-md-6">
-                                            <select class="form-select" name="serviceRequired">
-                                                <option class="after" value="0" disabled>--Select Service Required--
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input type="text" class="form-control" name="numberOfPeople"
-                                                placeholder="Number of People">
-                                        </div>
+                                    <div class="col-md-6">
+                                        <label for="" class="form-label">Type of Service</label>
+                                        <select class="form-select" name="typeOfService" id="typeOfService"
+                                            aria-label="Default select example">
+                                            <option selected disabled value="0">--Select Type of Service--</option>
+                                            <option value="1">Meeting Room</option>
+                                            <option value="2">Accommodation</option>
+                                            <option value="3">Meeting Room and Accommodation</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="tab">
-                                    <div class="row gx-3 my-2">
-                                        <div class="col-md-6">
-                                            <label for="" class="form-label">Start Date and Time</label>
-                                            <input type="datetime-local" class="form-control" name="startDate" min=""
-                                                id="startDate">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="" class="form-label">End Date and Time</label>
-                                            <input type="datetime-local" class="form-control" name="endDate" min=""
-                                                id="endDate">
-                                        </div>
-                                    </div>
-
-                                    <div class="row gx-2 my-3">
-                                        <div class="col-md-6">
-                                            <input type="number" class="form-control" name="numberOfAdults"
-                                                placeholder="No. of Adults">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <input type="number" class="form-control" name="numberOfChildren"
-                                                placeholder="No. of Children">
-                                        </div>
-                                    </div>
-                                    <div class="row gx-2 my-3">
-                                        <div class="col-md-12">
-                                            <select class="form-select" name="roomType">
-                                                <option selected disabled value="0">--Select Type of Room--</option>
-                                                <option value="1">Single</option>
-                                                <option value="2">Double</option>
-                                                <option value="3">Triple</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="overflow:auto;">
-                                    <div style="float:left;">
-                                        <button type="button" id="prevBtn" class="button-0"
-                                            onclick="nextPrev(-1)">Previous</button>
-                                        <button type="button" id="nextBtn" class="button-5"
-                                            onclick="nextPrev(1)">Next</button>
-                                    </div>
-                                </div>
-                                <div style="text-align:center;margin-top:-2rem;">
-                                    <span class="step"></span>
-                                    <span class="step"></span>
-                                </div>
+                                <button class="btn button-87" type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
@@ -175,76 +108,14 @@
         } else {
             $("#regForm select[name='serviceRequired']").find('.after').nextAll().remove();
         }
-    });
-    var currentTab = 0;
-    showTab(currentTab);
-
-    function showTab(n) {
-        var x = document.getElementsByClassName("tab");
-        x[n].style.display = "block";
-        if (n == 0) {
-            document.getElementById("prevBtn").style.display = "none";
+        if (ItemCode === '1') {
+            $('#roomTypeRow').show(1000)
+            $('#roomType').prop('disabled', false);
         } else {
-            document.getElementById("prevBtn").style.display = "inline";
+            $('#roomType').prop('disabled', true);
+            $('#roomTypeRow').hide(1000)
         }
-        if (n == (x.length - 1)) {
-            document.getElementById("nextBtn").innerHTML = "Submit";
-        } else {
-            document.getElementById("nextBtn").innerHTML = "Next";
-        }
-        fixStepIndicator(n)
-    }
-
-    function nextPrev(n) {
-        var x = document.getElementsByClassName("tab");
-        if (n == 1 && !validateForm()) return false;
-        x[currentTab].style.display = "none";
-        currentTab = currentTab + n;
-        if (currentTab >= x.length) {
-            document.getElementById("regForm").submit();
-            return false;
-        }
-        showTab(currentTab);
-    }
-
-    function validateForm() {
-        var x, y, i, valid = true;
-        x = document.getElementsByClassName("tab");
-        y = x[currentTab].getElementsByTagName("input");
-        // for (i = 0; i < y.length; i++) {
-        //     if (y[i].value == "") {
-        //         y[i].className += " invalid";
-        //         valid = false;
-        //     }
-        // }
-        if (valid) {
-            document.getElementsByClassName("step")[currentTab].className += " finish";
-        }
-        return valid;
-    }
-
-    function fixStepIndicator(n) {
-        var i, x = document.getElementsByClassName("step");
-        for (i = 0; i < x.length; i++) {
-            x[i].className = x[i].className.replace(" active", "");
-        }
-        x[n].className += " active";
-    }
-
-    Sortable.create(listWithHandle, {
-        handle: '.my-handle',
-        animation: 150
     });
-    $(document).ready(function () {
-        var utc = new Date().toJSON().slice(0, 10).replace(/-/g, '-');
-        var x = document.getElementById("startDate").min = utc;
-        var text = document.getElementById("startDate").getAttribute("min");
-
-        var xy = document.getElementById("endDate").min = utc;
-        var texts = document.getElementById("endDate").getAttribute("min");
-        console.log(texts)
-
-    })
 </script>
 
 {% endblock %}
