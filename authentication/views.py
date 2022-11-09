@@ -11,6 +11,7 @@ from  django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 import threading
 import requests
+from datetime import  datetime
 
 # Create your views here.
 class UserObjectMixin(object):
@@ -62,53 +63,106 @@ class Login(UserObjectMixin,View):
                 if not password:
                     messages.error(request,"Password Missing")
                     return redirect("login")
-                Customer = config.O_DATA.format(f"/CustomersList?$filter=Email_Address%20eq%20%27{email}%27")
+
+                Customer = config.O_DATA.format(f"QyVisitorsLogins?$filter=EmailAddress%20eq%20%27{email}%27")
                 CustomerResponse = self.get_object(Customer)
+
                 for applicant in CustomerResponse['value']:
                     if applicant['Verified']==True:
-                        decoded_text = passwordCipher(applicant['Password'])
+                        decoded_text = passwordCipher(applicant['MyPassword'])
                         if decoded_text == password:
                             request.session['CustomerName'] = applicant['ContactName']
                             request.session['customerEmail'] = applicant['EmailAddress']
                             request.session['customerIDNumber'] = applicant['IdNoKraPin']
                             request.session['customerPhone'] = applicant['BookedByPhoneNo']
+                            request.session['UserID'] = applicant['No']
 
-                            clientType = request.session['clientType']
-                            typeOfService = request.session['typeOfService']
+                            try:
+                                clientType = request.session['clientType']
+                                typeOfService = request.session['typeOfService']
 
-                            BookingHeaderResponse = config.CLIENT.service.FnVisitorsCard(clientType,typeOfService)
+                                print("type of service:",request.session['typeOfService'])
 
-                            if BookingHeaderResponse == True:
-                                del request.session['clientType']
-                                del request.session['typeOfService']
+                                if clientType and typeOfService:
+                                    bookingNo = ''
+                                    myAction = 'insert'
+                                    typeOfBooking = int(typeOfService)
+                                    typeOfClient = int(clientType)
+                                    userCode = request.session['UserID']
+
+                                    BookingHeaderResponse = config.CLIENT.service.FnVisitorsCard(
+                                        bookingNo,myAction,typeOfBooking,typeOfClient,userCode)
+
+                                    if BookingHeaderResponse:
                                 
-                                ServiceRequired = request.session['ServiceRequired']
-                                TypeOfRoom = request.session['TypeOfRoom']
-                                TypeOfAccommodation = request.session['TypeOfAccommodation']
-                                NumberOfPeople = request.session['NumberOfPeople'] 
-                                startDate = request.session['startDate'] 
-                                endDate = request.session['endDate'] 
+                                        ServiceRequired = request.session['ServiceRequired']
+                                        NumberOfPeople = request.session['NumberOfPeople'] 
+                                        startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
+                                        bookingNo = BookingHeaderResponse
+                                        
+                                        if request.session['typeOfService'] == '1':
 
-                                BookingLineResponse = config.CLIENT.service.FnVisitorsCard(
-                                    ServiceRequired,TypeOfRoom,TypeOfAccommodation,
-                                    NumberOfPeople,startDate,endDate)
-                                if BookingLineResponse == True:
-                                    del request.session['ServiceRequired']
-                                    del request.session['TypeOfRoom']
-                                    del request.session['TypeOfAccommodation']
-                                    del request.session['NumberOfPeople'] 
-                                    del request.session['startDate'] 
-                                    del request.session['endDate'] 
-                                    messages.success(request,f"Welcome, {email}. See Reservations below.")
-                                    return redirect('reserve')
-                                else:
-                                    messages.error(request,f"Internal Error Contact System Admin")
-                                    return redirect('login') 
-                            else:
-                                messages.error(request,f"Internal Error Contact System Admin")
-                                return redirect('login') 
+                                            startTime = datetime.strptime(request.session['startTime'], '%H:%M').time()
+                                            endTime = datetime.strptime(request.session['endTime'], '%H:%M').time()
+                                            TypeOfRoom = request.session['TypeOfRoom']
+                                            BookingLineResponse = config.CLIENT.service.FnRoomBookingLine(
+                                                bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
+                                                startDate,startTime,endTime,NumberOfPeople)
+
+                                            if BookingLineResponse == True:
+                                                del request.session['clientType']
+                                                del request.session['typeOfService']
+                                                del request.session['ServiceRequired']
+                                                del request.session['TypeOfRoom']
+                                                del request.session['startTime']
+                                                del request.session['NumberOfPeople'] 
+                                                del request.session['startDate'] 
+                                                del request.session['endTime'] 
+                                                messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                                return redirect('reserve')
+                                        if request.session['typeOfService'] == '2':
+
+                                            endDate = datetime.strptime(request.session['endDate'], '%Y-%m-%d').date()
+                                            AccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
+                                                bookingNo,myAction,userCode,ServiceRequired,NumberOfPeople,
+                                                "0",startDate,endDate)
+
+                                            if AccomodationLineResponse == True:
+                                                del request.session['clientType']
+                                                del request.session['typeOfService']
+                                                del request.session['ServiceRequired']
+                                                del request.session['NumberOfPeople'] 
+                                                del request.session['startDate'] 
+                                                del request.session['endDate'] 
+                                                messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                                return redirect('reserve')
+
+                                        if request.session['typeOfService'] == '3':
+                                            meetingAccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
+                                                bookingNo,myAction,userCode,ServiceRequired,
+                                                startDate,endDate,TypeOfRoom,)
+
+                                            if AccomodationLineResponse == True:
+                                                del request.session['clientType']
+                                                del request.session['typeOfService']
+                                                del request.session['ServiceRequired']
+                                                del request.session['TypeOfRoom']
+                                                del request.session['NumberOfPeople'] 
+                                                del request.session['startDate'] 
+                                                del request.session['endDate'] 
+                                                messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                                return redirect('reserve') 
+                            
+                            except KeyError as e:
+                                print(e)
+                                messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                return redirect('reserve')                          
+                        messages.error(request, "Invalid Credentials. Please reset your password else create a new account")
+                        return redirect('login')
+                    messages.error(request, "Your email is not verified.")
+                    return redirect('login')
                 messages.error(
-                request, "Invalid Credentials. Please reset your password else create a new account")
+                request, "Invalid Credentials.")
                 return redirect('login') 
             except Exception as e:
                 print(e)
@@ -157,6 +211,8 @@ class Register(View):
                 
                 encrypted_text = cipher_suite.encrypt(password.encode('ascii'))
                 myPassword = base64.urlsafe_b64encode(encrypted_text).decode("ascii")
+
+                print(myPassword)
 
                 response = config.CLIENT.service.VisitorSignup(loginNo, customerName, email,idNumber,
                 phoneNumber,myPassword,verificationToken, myAction)

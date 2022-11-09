@@ -6,7 +6,7 @@ from django.views import View
 class Reservations(View):
     def get(self, request):
         try:
-            customerName = request.session['customerName'] 
+            customerName = request.session['CustomerName']
             customerEmail = request.session['customerEmail']
             idNumber = request.session['customerIDNumber'] 
             phoneNumber = request.session['customerPhone']

@@ -4,6 +4,8 @@ from django.contrib import messages
 import requests
 from django.conf import settings as config
 from django.http import JsonResponse
+import simplejson as jsons
+from datetime import datetime
 
 # Create your views here.
 class UserObjectMixin(object):
@@ -45,7 +47,7 @@ class ListingDetail(UserObjectMixin,View):
             clientType = request.session['clientType']
             typeOfService = request.session['typeOfService']
 
-            Access_Point = config.O_DATA.format("QYRooms?$filter=Booked%20eq%20false%20and%20Reserved%20eq%20false")
+            Access_Point = config.O_DATA.format("QyRoomBookingSetUp?$filter=Booked%20eq%20false")
             roomResponse = self.get_object(Access_Point)
             roomOutput = [room for room in roomResponse['value']]
 
@@ -72,44 +74,50 @@ class ListingDetail(UserObjectMixin,View):
                 NumberOfPeople = request.POST.get('NumberOfPeople')
                 startDate = request.POST.get('startDate')
                 endDate = request.POST.get('endDate')
+                typeOfClient = int(request.session['clientType'])
+                noOfPeople = int(NumberOfPeople)
+                startTime = request.POST.get('startTime')
+                endTime = request.POST.get('endTime')
+
+                if not TypeOfAccommodation:
+                    TypeOfAccommodation = "None"
 
                 request.session['ServiceRequired'] = ServiceRequired
                 request.session['TypeOfRoom'] = TypeOfRoom
-                request.session['TypeOfAccommodation'] = TypeOfAccommodation
                 request.session['NumberOfPeople'] = NumberOfPeople
                 request.session['startDate'] = startDate
-                request.session['endDate'] = endDate
-                messages.success(request,"Added Successfully.")
-                return redirect('ListingDetail',pk=pk)
 
+    
+                if request.session['typeOfService'] == '1':
+
+                    request.session['startTime'] = startTime
+                    request.session['endTime'] = endTime
+
+                    response = config.CLIENT.service.FnMeetingFees(TypeOfRoom,typeOfClient,ServiceRequired,noOfPeople)
+                    mp = jsons.dumps(response,use_decimal=True)
+                    return JsonResponse(mp,safe=False)
+
+                if request.session['typeOfService'] == '2':
+
+                    request.session['endDate'] = endDate
+
+                    response = config.CLIENT.service.FnAccomodationFees(typeOfClient,ServiceRequired,noOfPeople)
+                    print(response)
+                    mp = jsons.dumps(response,use_decimal=True)
+                    return JsonResponse(mp,safe=False)
+
+                messages.success(request,"Success. Please login or sign up to continue.")
+                return redirect('login')
             except Exception as e:
                 print (e)
                 messages.error(request,e)
                 return redirect("ListingDetail",pk=pk)
 
-class submitReservation(UserObjectMixin,View):
-    def post(self, request,pk):
-        try:
-            clientType = request.session['clientType']
-            typeOfService = request.session['typeOfService']
-            ServiceRequired = request.session['ServiceRequired']
-            TypeOfRoom = request.session['TypeOfRoom'] 
-            TypeOfAccommodation = request.session['TypeOfAccommodation'] 
-            NumberOfPeople = request.session['NumberOfPeople']
-            startDate = request.session['startDate']
-            endDate = request.session['endDate'] 
-            messages.success(request,"Success. Please login or sign up to continue.")
-            return redirect('login')
-        except Exception as e:
-            print (e)
-            messages.error(request,"Please add booking line(s)")
-            return redirect('ListingDetail',pk=pk)
-
 
 class availableRoom(UserObjectMixin,View):
     def get(self, request):
         RoomCode = request.GET.get('RoomCode')
-        subProduct = config.O_DATA.format(f"QYRooms?$filter=Code%20eq%20%27{RoomCode}%27")
+        subProduct = config.O_DATA.format(f"QyRoomBookingSetUp?$filter=Code%20eq%20%27{RoomCode}%27")
         try:
             roomResponse = self.get_object(subProduct)
             return JsonResponse(roomResponse)
@@ -127,6 +135,38 @@ class serviceRequired(UserObjectMixin,View):
         except  Exception as e:
             print(e)
             return redirect('dashboard')
+
+def makeReservation(request,pk):
+    if request.method == 'POST':
+        try:
+            clientType = request.session['clientType']
+            typeOfService = request.session['typeOfService']
+            if typeOfService == '1':
+                TypeOfRoom = request.session['TypeOfRoom'] 
+                ServiceRequired = request.session['ServiceRequired']
+                startDate = request.session['startDate'] 
+                startTime = request.session['startTime']
+                endTime = request.session['endTime'] 
+                NumberOfPeople = request.session['NumberOfPeople'] 
+                messages.success(request,"Success. Please login or sign up to continue.")
+                return redirect('login') 
+            if typeOfService == '2':
+                ServiceRequired = request.session['ServiceRequired']
+                NumberOfPeople = request.session['NumberOfPeople']
+                startDate = request.session['startDate']
+                endDate = request.session['endDate']
+                messages.success(request,"Success. Please login or sign up to continue.")
+                return redirect('login') 
+            if typeOfService == '3':
+                messages.error(request, "Setup sessions for meeting room and accomodation")
+                return redirect("ListingDetail",pk=pk)
+            
+        except Exception as e:
+            print(e)
+            messages.error(request, f"{e} missing, please fill general information form and add a booking line.")
+            return redirect("ListingDetail",pk=pk)
+    return redirect("ListingDetail",pk=pk)
+
 
 class CancelReservation(View):
     def post(self,request):

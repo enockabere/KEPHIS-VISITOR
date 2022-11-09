@@ -172,8 +172,9 @@ AUTHS = Session()
 
 WEB_SERVICE_PWD = 'W3C0d3@llD@y'
 
-O_DATA = "http://13.68.215.64:1548/KEPHIS/ODataV4/Company(%27CRONUS%20International%20Ltd.%27)/{}"
-BASE_URL = 'http://13.68.215.64:1547/KEPHIS/WS/CRONUS%20International%20Ltd./Codeunit/Webportal'
+O_DATA = "http://20.231.15.166:7048/BC140/ODataV4/Company('CRONUS%20International%20Ltd.')/{}"
+
+BASE_URL = 'http://20.231.15.166:7047/BC140/WS/CRONUS%20International%20Ltd./Codeunit/Webportal'
 AUTHS.auth = HTTPBasicAuth('ktl-admin', WEB_SERVICE_PWD)
 
 CLIENT = Client(BASE_URL, transport=Transport(session=AUTHS))
@@ -183,7 +184,7 @@ AUTHS = HTTPBasicAuth('ktl-admin', WEB_SERVICE_PWD)
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER ='hypertextassassin3@gmail.com'
-EMAIL_HOST_PASSWORD='cheuidpnjchozicp'
+EMAIL_HOST_USER ='maebaenock95@gmail.com'
+EMAIL_HOST_PASSWORD='xcqlcdzmtcpncgvl'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587

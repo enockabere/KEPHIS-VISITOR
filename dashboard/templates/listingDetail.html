@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block base %}
+<script src="../../static/js/currency.js"></script>
 <div class="container-fluid height-700 bg-img bg-overlay"
     style="background-image: url(../../static/img/bg-img/meeting-1177454_1920.jpg);">
     <div class="row">
@@ -32,37 +33,43 @@
                             <span class="text-success"> Client Type:</span>
                             {% if clientType == "1" %}
                             Private
-                            {% else %}
+                            {% elif clientType == '2' %}
                             Public
+                            {% elif clientType == '3' %}
+                            Foreign
                             {% endif %}
                         </h6>
                     </div>
                     <div class="row">
                         <div class="col-md-12 hero-search-form">
-                            <form action="{% url 'ListingDetail' typeOfService  %}" method="post">
+                            <form id="ListingDetail" method="post">
                                 {% csrf_token %}
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="" class="form-label">Service Required</label>
-                                        <select class="form-select" aria-label="Default select example"
-                                            name="ServiceRequired">
-                                            <option selected disabled value="0">--Select Service Required--</option>
-                                            {% for service in serviceOutput %}
-                                            <option value="{{service.Code}}">"{{service.ServiceDescription}}"</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
                                     <div class="col-md-6" id="TypeOfRoomCol">
                                         <label for="" class="form-label">Type of Room</label>
                                         <select class="form-select" name="TypeOfRoom" id="TypeOfRoom"
                                             aria-label="Default select example" disabled>
                                             <option selected disabled value="0">--Select Type of Room--</option>
                                             {% for room in availableRooms %}
-                                            <option value="{{room.Code}}">{{room.Unit}} (Capacity-{{room.Capacity}})
+                                            <option value="{{room.Code}}">{{room.RoomName}}
+                                                (Capacity-{{room.RoomCapacity}})
                                             </option>
+                                            {% empty %}
+                                            <option value="0">There are no available rooms</option>
                                             {% endfor %}
                                         </select>
                                     </div>
+                                    <div class="col-md-6">
+                                        <label for="" class="form-label">Service Required</label>
+                                        <select class="form-select" aria-label="Default select example"
+                                            name="ServiceRequired" id="ServiceRequired">
+                                            <option selected disabled value="0">--Select Service Required--</option>
+                                            {% for service in serviceOutput %}
+                                            <option value="{{service.Code}}">"{{service.ServiceDescription}}"</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
                                     <div class="col-md-6" id="TypeOfAccommodationCol" style="display: none">
                                         <label for="" class="form-label">Type of Accommodation</label>
                                         <select class="form-select" aria-label="Default select example"
@@ -74,18 +81,35 @@
                                 <div class="row my-3">
                                     <div class="col-md-4">
                                         <label for="" class="form-label">Number of People</label>
-                                        <input type="number" class="form-control" name="NumberOfPeople" min="0">
+                                        <input type="number" class="form-control" name="NumberOfPeople"
+                                            id="NumberOfPeople" min="1">
                                     </div>
                                     <div class="col-md-4">
-                                        <label for="" class="form-label">Start Date & Time</label>
-                                        <input type="datetime-local" class="form-control" name="startDate">
+                                        <label for="" class="form-label">Start Date</label>
+                                        <input type="date" class="form-control" name="startDate" id="startDate">
                                     </div>
                                     <div class="col-md-4">
-                                        <label for="" class="form-label">End Date & Time</label>
-                                        <input type="datetime-local" class="form-control" name="endDate">
+                                        <label for="" class="form-label">End Date</label>
+                                        <input type="date" class="form-control" name="endDate" id="endDate" disabled>
                                     </div>
                                 </div>
-                                <button type="submit" class="button-87  w-100 my-3">Add Booking Line(s)
+                                <div class="row my-3" style="display: none;" id="timeRow">
+                                    <div class="col-md-6">
+                                        <label for="" class="form-label">Start Time</label>
+                                        <input type="time" class="form-control" name="startTime" id="startTime"
+                                            disabled>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="" class="form-label">End Time</label>
+                                        <input type="time" class="form-control" name="endTime" id="endTime" disabled>
+                                    </div>
+                                </div>
+                                <div class="money-spinner mx-auto text-center" id="money-spinner1"
+                                    style="display: none;">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+                                        alt="Loading Gif" style="height: 100px;" class="img-fluid">
+                                </div>
+                                <button type="submit" class="button-87  w-100 my-3">Add Booking Line
                                 </button>
                             </form>
                         </div>
@@ -163,31 +187,35 @@
                 <div class="opening-hours-widget mt-30 card-wrapper" id="paymentPanel">
                     <h6>Payments</h6>
                     <ul class="opening-hours">
+                        {% if typeOfService == "3" or typeOfService == '1'  %}
                         <li>
                             <p>Room Charges</p>
-                            <p class="text-dark">KES 1,000.00</p>
+                            <p class="text-dark"><span class="ChargeAmount" id="ChargeAmount">KES ---.--</span></p>
                         </li>
-                        <li>
-                            <p>Total Room Charges</p>
-                            <p class="text-dark">KES 2,000.00</p>
-                        </li>
+                        {% endif %}
                         <li>
                             <p>Service Charges</p>
-                            <p class="text-dark">KES 3,000.00</p>
-                        </li>
-                        <li>
-                            <p>Total Service Charges</p>
-                            <p class="text-dark">KES 4,000.00</p>
+                            <p class="text-dark">
+                                {% if clientType == 3 %}
+                                <span class="Non_Resident_Amount" id="Non_Resident_Amount">KES ---.--</span>
+                                {% else %}
+                                <span class="serviceCharges" id="serviceCharges">KES ---.--</span>
+                                {% endif %}
+                            </p>
                         </li>
                         <li>
                             <p>Total Amount</p>
-                            <p class="text-dark">KES 10,000.00</p>
+                            <p class="text-dark"><span id="TotalOutput">KES ---.--</span></p>
                         </li>
                     </ul>
+                    <div class="money-spinner mx-auto text-center" id="money-spinner" style="display: none">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+                            alt="Loading Gif" style="height: 100px;" class="img-fluid">
+                    </div>
                 </div>
                 <div class="book-a-table-widget mt-0">
                     <h6>Actions</h6>
-                    <form action="{% url 'submitReservation' typeOfService  %}" method="post">
+                    <form action="{% url 'makeReservation' typeOfService %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="button-87  w-100 my-3">Make Reservation </button>
                     </form>
@@ -302,6 +330,7 @@
         $('#example').DataTable();
         $('#TypeOfRoom').on('change', function (e) {
             e.preventDefault();
+            $('#money-spinner').show();
             var RoomCode = $("#TypeOfRoom").val();
             if (RoomCode != null) {
                 $.ajax({
@@ -316,11 +345,16 @@
                             if (response.value[i].Code == RoomCode) {
                                 $("#roomCodeOutput").empty().append(response.value[i].Code);
                                 $("#DescriptionOutput").empty().append(response.value[i]
-                                    .Description);
+                                    .ServiceDescription);
                                 $("#CapacityOutput").empty().append(response.value[i]
-                                    .Capacity);
+                                    .RoomCapacity);
+                                $(".ChargeAmount").empty().append(currency(response.value[i]
+                                    .AmountPayable, {
+                                        separator: ','
+                                    }).format());
                                 $('#detailHide').hide();
                                 $('#overview').show(1000);
+                                $('#money-spinner').hide();
                             }
                         }
                     },
@@ -332,18 +366,97 @@
                 $("#regForm select[name='serviceRequired']").find('.after').nextAll().remove();
             }
         });
+        $('#ServiceRequired').on('change', function (e) {
+            e.preventDefault();
+            $('#money-spinner').show();
+            var serviceCode = $("#ServiceRequired").val();
+            if (serviceCode != null) {
+                $.ajax({
+                    type: 'get',
+                    url: '{% url "serviceRequired" %}',
+                    dataType: 'json',
+                    data: {
+                        serviceCode: serviceCode
+                    },
+                    success: function (response) {
+                        for (var i = 0; i < response.value.length; i++) {
+                            if (response.value[i].Code == serviceCode) {
+                                $("#serviceCharges").empty().append(currency(response.value[
+                                    i].ChargeAmount, {
+                                    separator: ','
+                                }).format());
+                                $("#Non_Resident_Amount").empty().append(currency(response
+                                    .value[i].Non_Resident_Amount, {
+                                        separator: ','
+                                    }).format());
+                                $('#money-spinner').hide();
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        console.log('Something went wrong');
+                    }
+                });
+            } else {}
+        });
+
+        $(document).on('submit', '#ListingDetail', function (e) {
+            e.preventDefault();
+            $('#money-spinner1').show();
+            $('#money-spinner').show();
+            $.ajax({
+                type: 'POST',
+                url: '{% url "ListingDetail" typeOfService  %}',
+                data: {
+                    TypeOfRoom: $("#TypeOfRoom").val(),
+                    ServiceRequired: $("#ServiceRequired").val(),
+                    TypeOfAccommodation: $("#TypeOfAccommodation").val(),
+                    NumberOfPeople: $("#NumberOfPeople").val(),
+                    startDate: $("#startDate").val(),
+                    endDate: $("#startDate").val(),
+                    startTime: $('#startTime').val(),
+                    endTime: $('#startTime').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (response) {
+                    $("#TypeOfRoom").val("");
+                    $("#ServiceRequired").val("");
+                    $("#TypeOfAccommodation").val("");
+                    $("#NumberOfPeople").val("");
+                    $("#startDate").val("");
+                    $("#endDate").val("");
+                    $("#startTime").val("");
+                    $("#endTime").val("");
+                    $("#TotalOutput").empty().append(currency(response, {
+                        separator: ','
+                    }).format());
+                    $('#money-spinner1').hide();
+                    $('#money-spinner').hide();
+                }
+            })
+
+        });
+
         var typeOfService = '{{typeOfService}}'
         if (typeOfService == '1' || typeOfService == '3') {
             $('#TypeOfRoomCol').show(500);
+            $('#timeRow').show(1000);
             $('#TypeOfRoom').prop('disabled', false);
+            $('#startTime').prop('disabled', false);
+            $('#endTime').prop('disabled', false);
+            $('#endDate').prop('disabled', true);
             $('#TypeOfAccommodationCol').hide();
             $('#TypeOfAccommodation').prop('disabled', true);
 
         } else {
             $('#TypeOfRoomCol').hide();
+            $('#timeRow').hide();
             $('#TypeOfRoom').prop('disabled', true);
+            $('#startTime').prop('disabled', true);
+            $('#startTime').prop('disabled', true);
+            $('#endDate').prop('disabled', false);
             $('#TypeOfAccommodationCol').show(500);
-            $('#TypeOfAccommodation').prop('disabled', false);
+            $('#TypeOfAccommodation').prop('disabled', true);
         }
     });
 </script>
