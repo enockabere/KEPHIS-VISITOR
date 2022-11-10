@@ -1,6 +1,6 @@
+{% for reservation in open_reservations %}
 <div
     class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm">
-    <!-- Basic Plan -->
     <div class="row align-items-center">
         <div class="col-12 col-md-4">
             <h4 class="pt-3 text-170 text-600 brs letter-spacing">
@@ -8,7 +8,15 @@
             </h4>
 
             <div class="text-secondary-d1 text-120">
-                <span class="ml-n15 align-text-bottom">KES 20,000.00</span>
+                <span class="ml-n15 align-text-bottom">
+                    {% if reservation.Service_Requred == 'Meeting Room' %}
+                    {{reservation.Room_Booking_Total_Amount}}
+                    {% elif reservation.Service_Requred == 'Accommodation' %}
+                    {{reservation.Accomodation_Total_Amount}}
+                    {% else %}
+                    Null
+                    {% endif %}
+                </span>
             </div>
         </div>
 
@@ -16,71 +24,47 @@
             <li>
                 <i class="fa fa-check text-success-m2 text-110 mr-2 mt-1"></i>
                 <span>
-                    <span class="text-110">Meeting Room
+                    <span class="text-110">{{reservation.Service_Requred}}
                     </span>
             </li>
 
             <li class="mt-25">
                 <i class="fa fa-check text-success-m2 text-110 mr-2 mt-1"></i>
                 <span class="text-110 text-success">
-                    2022-10-15 <span class="mx-1">12:00 pm</span>
+                    Status: {% if reservation.Booking_Status == 'Open' %}
+                    <span class="mx-1">Available</span>
+                    {% else %}
+                    <span class="mx-1">Booked</span>
+                    {% endif %}
                 </span>
             </li>
 
             <li class="mt-25">
                 <i class="fa fa-check text-danger-m3 text-110 mr-25 mt-1"></i>
                 <span class="text-110 text-danger">
-                    2022-10-16 <span class="mx-1">12:00 pm</span>
+                    {% if reservation.Booking_Status == 'Open' %}
+                    Date Reserved:
+                    <span class="mx-1">{{reservation.Document_Date}}</span>
+                    {% else %}
+                    Date Booked:
+                    <span class="mx-1">{{reservation.Document_Date}}</span>
+                    {% endif %}
                 </span>
             </li>
         </ul>
         <div class="col-12 col-md-4 text-center">
-            <a href="{% url 'BookingGateway' 1 %}"
+            <a href="{% url 'BookingGateway' reservation.No_ %}"
                 class="f-n-hover btn button-2 btn-raised px-4 py-25 w-75 text-600">Book <i
                     class="las la-angle-double-right"></i></a>
         </div>
     </div>
 </div>
+{% empty %}
+<div class="mr-auto text-center">
+    <p class="my-2 text-muted">
+        Stack is empty, please contact admin if you can't see your incomplete reservations.
+    </p>
+    <img src="../../static/img/icons/empty-box.png" class="img-fluid" height="200" alt="" srcset="">
 
-<div
-    class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm">
-    <!-- Basic Plan -->
-    <div class="row align-items-center">
-        <div class="col-12 col-md-4">
-            <h4 class="pt-3 text-170 text-600 brs letter-spacing">
-                Total Fee
-            </h4>
-
-            <div class="text-secondary-d1 text-120">
-                <span class="ml-n15 align-text-bottom">KES 20,000.00</span>
-            </div>
-        </div>
-
-        <ul class="list-unstyled mb-0 col-12 col-md-4 text-dark-l1 text-90 text-left my-4 my-md-0">
-            <li>
-                <i class="fa fa-check text-success-m2 text-110 mr-2 mt-1"></i>
-                <span>
-                    <span class="text-110">Accommodation
-                    </span>
-            </li>
-
-            <li class="mt-25">
-                <i class="fa fa-check text-success-m2 text-110 mr-2 mt-1"></i>
-                <span class="text-110 text-success">
-                    2022-10-15 <span class="mx-1">12:00 pm</span>
-                </span>
-            </li>
-
-            <li class="mt-25">
-                <i class="fa fa-check text-danger-m3 text-110 mr-25 mt-1"></i>
-                <span class="text-110 text-danger">
-                    2022-10-16 <span class="mx-1">12:00 pm</span>
-                </span>
-            </li>
-        </ul>
-        <div class="col-12 col-md-4 text-center">
-            <a href="#" class="f-n-hover btn button-2 btn-raised px-4 py-25 w-75 text-600">Book <i
-                    class="las la-angle-double-right"></i></a>
-        </div>
-    </div>
 </div>
+{% endfor %}
