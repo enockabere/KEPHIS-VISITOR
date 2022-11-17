@@ -94,17 +94,16 @@ class Login(UserObjectMixin,View):
                                         bookingNo,myAction,typeOfBooking,typeOfClient,userCode)
 
                                     if BookingHeaderResponse:
-                                
-                                        ServiceRequired = request.session['ServiceRequired']
-                                        NumberOfPeople = request.session['NumberOfPeople'] 
-                                        startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
                                         bookingNo = BookingHeaderResponse
                                         
                                         if request.session['typeOfService'] == '1':
-
+                                            ServiceRequired = request.session['ServiceRequired']
+                                            startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
                                             startTime = datetime.strptime(request.session['startTime'], '%H:%M').time()
                                             endTime = datetime.strptime(request.session['endTime'], '%H:%M').time()
                                             TypeOfRoom = request.session['TypeOfRoom']
+                                            NumberOfPeople = request.session['NumberOfPeople'] 
+
                                             BookingLineResponse = config.CLIENT.service.FnRoomBookingLine(
                                                 bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
                                                 startDate,startTime,endTime,NumberOfPeople)
@@ -121,38 +120,63 @@ class Login(UserObjectMixin,View):
                                                 messages.success(request,f"Welcome, {email}. See Reservations below.")
                                                 return redirect('reserve')
                                         if request.session['typeOfService'] == '2':
-
-                                            endDate = datetime.strptime(request.session['endDate'], '%Y-%m-%d').date()
+                                            accom_service = request.session['accom_ServiceRequired']
+                                            NumberOfRooms = request.session['NumberOfRooms'] 
+                                            accom_startDate = datetime.strptime(request.session['accom_startDate'], '%Y-%m-%d').date()
+                                            accom_endDate = datetime.strptime(request.session['accom_endDate'], '%Y-%m-%d').date()
                                             AccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
-                                                bookingNo,myAction,userCode,ServiceRequired,NumberOfPeople,
-                                                "0",startDate,endDate)
+                                                bookingNo,myAction,userCode,accom_service,NumberOfRooms,
+                                                "0",accom_startDate,accom_endDate)
 
                                             if AccomodationLineResponse == True:
                                                 del request.session['clientType']
                                                 del request.session['typeOfService']
-                                                del request.session['ServiceRequired']
-                                                del request.session['NumberOfPeople'] 
-                                                del request.session['startDate'] 
-                                                del request.session['endDate'] 
+                                                del request.session['accom_service']
+                                                del request.session['NumberOfRooms'] 
+                                                del request.session['accom_startDate'] 
+                                                del request.session['accom_endDate'] 
                                                 messages.success(request,f"Welcome, {email}. See Reservations below.")
                                                 return redirect('reserve')
 
                                         if request.session['typeOfService'] == '3':
-                                            meetingAccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
-                                                bookingNo,myAction,userCode,ServiceRequired,
-                                                startDate,endDate,TypeOfRoom,)
+                                            ServiceRequired = request.session['ServiceRequired']
+                                            startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
+                                            startTime = datetime.strptime(request.session['startTime'], '%H:%M').time()
+                                            endTime = datetime.strptime(request.session['endTime'], '%H:%M').time()
+                                            TypeOfRoom = request.session['TypeOfRoom']
+                                            NumberOfPeople = request.session['NumberOfPeople'] 
 
-                                            if AccomodationLineResponse == True:
-                                                del request.session['clientType']
-                                                del request.session['typeOfService']
-                                                del request.session['ServiceRequired']
-                                                del request.session['TypeOfRoom']
-                                                del request.session['NumberOfPeople'] 
-                                                del request.session['startDate'] 
-                                                del request.session['endDate'] 
-                                                messages.success(request,f"Welcome, {email}. See Reservations below.")
-                                                return redirect('reserve') 
-                            
+                                            BookingLineResponse = config.CLIENT.service.FnRoomBookingLine(
+                                                bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
+                                                startDate,startTime,endTime,NumberOfPeople)
+
+                                            if BookingLineResponse == True:
+                                                accom_service = request.session['accom_ServiceRequired']
+                                                NumberOfRooms = request.session['NumberOfRooms'] 
+                                                accom_startDate = datetime.strptime(request.session['accom_startDate'], '%Y-%m-%d').date()
+                                                accom_endDate = datetime.strptime(request.session['accom_endDate'], '%Y-%m-%d').date()
+                                                AccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
+                                                    bookingNo,myAction,userCode,accom_service,NumberOfRooms,
+                                                    "0",accom_startDate,accom_endDate)
+                                                if AccomodationLineResponse == True:
+                                                    del request.session['clientType']
+                                                    del request.session['typeOfService']
+                                                    del request.session['ServiceRequired']
+                                                    del request.session['TypeOfRoom']
+                                                    del request.session['startTime']
+                                                    del request.session['NumberOfPeople'] 
+                                                    del request.session['startDate'] 
+                                                    del request.session['endTime']
+                                                    del request.session['accom_service']
+                                                    del request.session['NumberOfRooms'] 
+                                                    del request.session['accom_startDate'] 
+                                                    del request.session['accom_endDate'] 
+                                                    messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                                    return redirect('reserve')
+                                                messages.error(request, "Accomodation Details not added, contact admin.")
+                                                return redirect('login')
+                                            messages.error(request, "Meeting Room Details not added, contact admin.")
+                                            return redirect('login')
                             except KeyError as e:
                                 print(e)
                                 messages.success(request,f"Welcome, {email}. See Reservations below.")

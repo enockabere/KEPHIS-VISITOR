@@ -25,13 +25,12 @@ class Reservations(UserObjectMixin,View):
             # open_reservation_count = reservations[0]
             open_reservations = reservations[1]
 
-            cleaned_reservations = [x for x in open_reservations if x['Total_Amount_Payable'] > 0 or x['Room_Booking_Total_Amount'] > 0 or x['Accomodation_Total_Amount'] > 0]
-            open_reservation_count = len(cleaned_reservations)
+            open_reservation_count = len(open_reservations)
 
             ctx = {
                 "customerName":customerName,"customerEmail":customerEmail,
                 "idNumber":idNumber,"phoneNumber":phoneNumber,
-                "open_reservation_count":open_reservation_count,"open_reservations":cleaned_reservations
+                "open_reservation_count":open_reservation_count,"open_reservations":open_reservations
             }
         except KeyError as e:
             print(e)
