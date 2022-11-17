@@ -1,0 +1,62 @@
+<div class="card mb-3">
+    <div class="card-header" id="headingFour">
+        <h5 class="mb-0">
+            <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true"
+                aria-controls="collapseFour">Enter Accomodation Details
+            </button>
+        </h5>
+    </div>
+    <div id="collapseFour" class="collapse show" aria-labelledby="headingFour" data-bs-parent="#accordion">
+        <div class="card-body">
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="col-md-12 hero-search-form">
+                        <form id="AccomodationForm" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Service
+                                        Required</label>
+                                    <select class="form-select" aria-label="Default select example"
+                                        name="ServiceRequired" id="accom_ServiceRequired">
+                                        <option selected disabled value="0">--Select
+                                            Service Required--</option>
+                                        {% for service in serviceOutput %}
+                                        <option value="{{service.Code}}">
+                                            "{{service.ServiceDescription}}"</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Number of
+                                        Rooms</label>
+                                    <input type="number" class="form-control" name="NumberOfPeople" id="NumberOfRooms"
+                                        min="1">
+                                </div>
+                            </div>
+                            <div class="row my-3">
+
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" name="startDate" id="accom_startDate">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" name="endDate" id="accom_startDate">
+                                </div>
+                            </div>
+                            <div class="money-spinner mx-auto text-center" id="money-spinner_accom"
+                                style="display: none;">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+                                    alt="Loading Gif" style="height: 100px;" class="img-fluid">
+                            </div>
+                            <button type="submit" class="button-87  w-100 my-3">Add
+                                Booking Line
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

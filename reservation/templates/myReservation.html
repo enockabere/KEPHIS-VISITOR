@@ -10,8 +10,9 @@
             <div class="text-secondary-d1 text-120">
                 <span class="ml-n15 align-text-bottom">
                     {% if reservation.Service_Requred == 'Meeting Room' %}
-                    {{reservation.Room_Booking_Total_Amount}}
+                    <span id="Room_Booking_Total_Amount{{reservation.No_}}"></span>
                     {% elif reservation.Service_Requred == 'Accommodation' %}
+                    <span id="Accomodation_Total_Amount{{reservation.No_}}"></span>
                     {{reservation.Accomodation_Total_Amount}}
                     {% else %}
                     Null
@@ -19,7 +20,18 @@
                 </span>
             </div>
         </div>
-
+        <script>
+            $(document).ready(function () {
+                $("#Room_Booking_Total_Amount{{reservation.No_}}").empty().append(currency(
+                    '{{reservation.Room_Booking_Total_Amount}}', {
+                        separator: ','
+                    }).format());
+                $("#Accomodation_Total_Amount{{reservation.No_}}").empty().append(currency(
+                    '{{reservation.Accomodation_Total_Amount}}', {
+                        separator: ','
+                    }).format());
+            })
+        </script>
         <ul class="list-unstyled mb-0 col-12 col-md-4 text-dark-l1 text-90 text-left my-4 my-md-0">
             <li>
                 <i class="fa fa-check text-success-m2 text-110 mr-2 mt-1"></i>
@@ -55,7 +67,8 @@
         <div class="col-12 col-md-4 text-center">
             <a href="{% url 'BookingGateway' reservation.No_ %}"
                 class="f-n-hover btn button-2 btn-raised px-4 py-25 w-75 text-600">Book <i
-                    class="las la-angle-double-right"></i></a>
+                    class="las la-angle-double-right"></i>
+            </a>
         </div>
     </div>
 </div>

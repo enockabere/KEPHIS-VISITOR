@@ -2,14 +2,15 @@
 {% load static %}
 {% block base %}
 <script src="../../static/js/currency.js"></script>
-<div class="container-fluid height-700 bg-img bg-overlay"
-    style="background-image: url(../../static/img/bg-img/meeting-1177454_1920.jpg);">
-    <div class="row">
-        <div class="col-md-12">
+<section class="bg-img">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
 
+            </div>
         </div>
     </div>
-</div>
+</section>
 <section class="section-padding-100">
     <div class="container">
         <div class="row justify-content-center">
@@ -41,143 +42,66 @@
                         </h6>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 hero-search-form">
-                            <form id="ListingDetail" method="post">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-md-6" id="TypeOfRoomCol">
-                                        <label for="" class="form-label">Type of Room</label>
-                                        <select class="form-select" name="TypeOfRoom" id="TypeOfRoom"
-                                            aria-label="Default select example" disabled>
-                                            <option selected disabled value="0">--Select Type of Room--</option>
-                                            {% for room in availableRooms %}
-                                            <option value="{{room.Code}}">{{room.RoomName}}
-                                                (Capacity-{{room.RoomCapacity}})
-                                            </option>
-                                            {% empty %}
-                                            <option value="0">There are no available rooms</option>
-                                            {% endfor %}
-                                        </select>
+                        <div class="col-md-12">
+                            <div id="accordion" class="accordion-style">
+                                <div class="card mb-3">
+                                    <div class="card-header" id="headingOne">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseOne" aria-expanded="false"
+                                                aria-controls="collapseOne">
+                                                Modify Booking Request
+                                            </button>
+                                        </h5>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label for="" class="form-label">Service Required</label>
-                                        <select class="form-select" aria-label="Default select example"
-                                            name="ServiceRequired" id="ServiceRequired">
-                                            <option selected disabled value="0">--Select Service Required--</option>
-                                            {% for service in serviceOutput %}
-                                            <option value="{{service.Code}}">"{{service.ServiceDescription}}"</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-6" id="TypeOfAccommodationCol" style="display: none">
-                                        <label for="" class="form-label">Type of Accommodation</label>
-                                        <select class="form-select" aria-label="Default select example"
-                                            name="TypeOfAccommodation" id="TypeOfAccommodation" disabled>
-                                            <option selected disabled value="0">--Single Room--</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row my-3">
-                                    <div class="col-md-4">
-                                        <label for="" class="form-label">Number of People</label>
-                                        <input type="number" class="form-control" name="NumberOfPeople"
-                                            id="NumberOfPeople" min="1">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="" class="form-label">Start Date</label>
-                                        <input type="date" class="form-control" name="startDate" id="startDate">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="" class="form-label">End Date</label>
-                                        <input type="date" class="form-control" name="endDate" id="endDate" disabled>
-                                    </div>
-                                </div>
-                                <div class="row my-3" style="display: none;" id="timeRow">
-                                    <div class="col-md-6">
-                                        <label for="" class="form-label">Start Time</label>
-                                        <input type="time" class="form-control" name="startTime" id="startTime"
-                                            disabled>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="" class="form-label">End Time</label>
-                                        <input type="time" class="form-control" name="endTime" id="endTime" disabled>
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                        data-bs-parent="#accordion">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <form action="{% url 'dashboard' %}" method="post">
+                                                        {% csrf_token %}
+                                                        <div class="row gx-2 my-3">
+                                                            <div class="col-md-6">
+                                                                <label for="" class="form-label">Client Type</label>
+                                                                <select class="form-select" name="clientType">
+                                                                    <option selected disabled value="0">--Select
+                                                                        Client Type--</option>
+                                                                    <option value="1">Private</option>
+                                                                    <option value="2">Public</option>
+                                                                    <option value="3">Foreign</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="" class="form-label">Type of
+                                                                    Service</label>
+                                                                <select class="form-select" name="typeOfService"
+                                                                    id="typeOfService"
+                                                                    aria-label="Default select example">
+                                                                    <option selected disabled value="0">--Select
+                                                                        Type of Service--</option>
+                                                                    <option value="1">Meeting Room</option>
+                                                                    <option value="2">Accommodation</option>
+                                                                    <option value="3">Meeting Room and Accommodation
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <button class="btn button-87" type="submit">Modify</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="money-spinner mx-auto text-center" id="money-spinner1"
-                                    style="display: none;">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
-                                        alt="Loading Gif" style="height: 100px;" class="img-fluid">
-                                </div>
-                                <button type="submit" class="button-87  w-100 my-3">Add Booking Line
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="single-listing-nav">
-                        <nav>
-                            <ul id="listingNav">
-                                <li class="active"><a href="#overview"><span id="roomCodeOutput"></span> Overview</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="mt-50" id="detailHide">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <article>
-                                    <h1>Select Room to View Details</h1>
-                                </article>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="overview-content mt-50" id="overview" style="display: none;">
-                        <p id="DescriptionOutput"></p>
-                        <div class="row">
-                            <h6 class="mt-3 text-success">Features & Amenities</h6>
-                            <div class="col-6">
-                                <label class="custom-control custom-checkbox mb-3">
-                                    <i class="las la-angle-right"></i>
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Capacity</span><span
-                                        class="mx-1 text-primary" id="CapacityOutput"></span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <label class="custom-control custom-checkbox mb-3">
-                                    <i class="las la-angle-right"></i>
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Bike Parking</span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <label class="custom-control custom-checkbox mb-3">
-                                    <i class="las la-angle-right"></i>
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Wireless Internet</span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <label class="custom-control custom-checkbox mb-3">
-                                    <i class="las la-angle-right"></i>
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Reservations</span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <label class="custom-control custom-checkbox mb-3">
-                                    <i class="las la-angle-right"></i>
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Private Parking</span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <label class="custom-control custom-checkbox mb-3">
-                                    <i class="las la-angle-right"></i>
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Maximum of 20 Guests</span>
-                                </label>
+                                {% if typeOfService == "1" %}
+                                {% include 'meetingForm.html' %}
+                                {% elif typeOfService == "2" %}
+                                {% include 'accomForm.html' %}
+                                {% elif typeOfService == "3" %}
+                                {% include 'meetingForm.html' %}
+                                {% include 'accomForm.html' %}
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -187,14 +111,13 @@
                 <div class="opening-hours-widget mt-30 card-wrapper" id="paymentPanel">
                     <h6>Payments</h6>
                     <ul class="opening-hours">
-                        {% if typeOfService == "3" or typeOfService == '1'  %}
+                        {% if typeOfService == '1'  %}
                         <li>
-                            <p>Room Charges</p>
+                            <p>Meeting Room Charges</p>
                             <p class="text-dark"><span class="ChargeAmount" id="ChargeAmount">KES ---.--</span></p>
                         </li>
-                        {% endif %}
                         <li>
-                            <p>Service Charges</p>
+                            <p>Meeting Room Service Fees</p>
                             <p class="text-dark">
                                 {% if clientType == 3 %}
                                 <span class="Non_Resident_Amount" id="Non_Resident_Amount">KES ---.--</span>
@@ -205,8 +128,57 @@
                         </li>
                         <li>
                             <p>Total Amount</p>
-                            <p class="text-dark"><span id="TotalOutput">KES ---.--</span></p>
+                            <p class="text-dark"><span class="meetingTotal">KES ---.--</span></p>
                         </li>
+                        {% elif typeOfService == '2' %}
+                        <li>
+                            <p>Accomodation Service Fees</p>
+                            <p class="text-dark">
+                                {% if clientType == 3 %}
+                                <span class="accom_Non_Resident_Amount" id="Non_Resident_Amount">KES ---.--</span>
+                                {% else %}
+                                <span class="accom_serviceCharges" id="serviceCharges">KES ---.--</span>
+                                {% endif %}
+                            </p>
+                        </li>
+                        <li>
+                            <p>Total Amount</p>
+                            <p class="text-dark"><span class="accomTotal">KES ---.--</span></p>
+                        </li>
+                        {% elif typeOfService == '3' %}
+                        <li>
+                            <p>Meeting Room Charges</p>
+                            <p class="text-dark"><span class="ChargeAmount" id="ChargeAmount">KES ---.--</span></p>
+                        </li>
+                        <li>
+                            <p>Meeting Room Service Fees</p>
+                            <p class="text-dark">
+                                {% if clientType == 3 %}
+                                <span class="Non_Resident_Amount" id="Non_Resident_Amount">KES ---.--</span>
+                                {% else %}
+                                <span class="serviceCharges" id="serviceCharges">KES ---.--</span>
+                                {% endif %}
+                            </p>
+                        </li>
+                        <li>
+                            <p>Total Meeting Room Fee</p>
+                            <p class="text-dark"><span class="meetingTotal">KES ---.--</span></p>
+                        </li>
+                        <li>
+                            <p>Accomodation Service Fees</p>
+                            <p class="text-dark">
+                                {% if clientType == 3 %}
+                                <span class="accom_Non_Resident_Amount" id="Non_Resident_Amount">KES ---.--</span>
+                                {% else %}
+                                <span class="accom_serviceCharges" id="serviceCharges">KES ---.--</span>
+                                {% endif %}
+                            </p>
+                        </li>
+                        <li>
+                            <p>Total Accomodation Fee</p>
+                            <p class="text-dark"><span class="accomTotal">KES ---.--</span></p>
+                        </li>
+                        {% endif %}
                     </ul>
                     <div class="money-spinner mx-auto text-center" id="money-spinner" style="display: none">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
@@ -224,74 +196,17 @@
                 <button type="button" class="button-5  w-100 my-3" data-bs-toggle="modal"
                     data-bs-target="#cancelModal">Back
                     Home <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></button>
-            </div>
-        </div>
-        <!-- <div class="col-md-12 my-3">
-            <div class="card card-body data-card">
-                <h1 class="heading display-5 pb-3">Booking Details</h1>
-                <div class="row">
-                    <div class="col-md-12">
-                        <table id="example" class="ui celled table responsive nowrap unstackable" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Client Type</th>
-                                    <th>No. Of People</th>
-                                    <th>Type Of Service</th>
-                                    <th>Service Required</th>
-                                    <th>Room Type</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>No. Of Adults</th>
-                                    <th>No. Of Children</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-
-                                    <td>
-                                        {% if clientType == "1" %}
-                                        Private
-                                        {% else %}
-                                        Public
-                                        {% endif %}
-                                    </td>
-                                    <td> {{numberOfPeople}}</td>
-                                    <td>
-                                        {% if typeOfService == "1" %}
-                                        Meeting Room
-                                        {% elif typeOfService == "2" %}
-                                        Accommodation
-                                        {% else %}
-                                        Meeting Room and Accommodation
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if serviceRequired == "1" %}
-                                        Bed and Breakfast
-                                        {% else %}
-                                        Other
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if roomType == "1" %}
-                                        Single
-                                        {% elif roomType == "2" %}
-                                        Double
-                                        {% else %}
-                                        Triple
-                                        {% endif %}
-                                    </td>
-                                    <td> {{startDate}}</td>
-                                    <td> {{endDate}}</td>
-                                    <td> {{numberOfAdults}}</td>
-                                    <td> {{numberOfChildren}}</td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="alert alert-primary alert-dismissible fade show" id="listingAlert" role="alert">
+                    <h4 class="alert-heading">Added Successfully</h4>
+                    New entries will modify the existing entry.
+                    <hr>
+                    <p class="mb-0 text-dark">More entries can be
+                        added/modified on login.
+                    </p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
     <!-- Modals -->
     <div class="modal fade" id="cancelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -344,16 +259,10 @@
                         for (var i = 0; i < response.value.length; i++) {
                             if (response.value[i].Code == RoomCode) {
                                 $("#roomCodeOutput").empty().append(response.value[i].Code);
-                                $("#DescriptionOutput").empty().append(response.value[i]
-                                    .ServiceDescription);
-                                $("#CapacityOutput").empty().append(response.value[i]
-                                    .RoomCapacity);
                                 $(".ChargeAmount").empty().append(currency(response.value[i]
                                     .AmountPayable, {
                                         separator: ','
                                     }).format());
-                                $('#detailHide').hide();
-                                $('#overview').show(1000);
                                 $('#money-spinner').hide();
                             }
                         }
@@ -381,11 +290,11 @@
                     success: function (response) {
                         for (var i = 0; i < response.value.length; i++) {
                             if (response.value[i].Code == serviceCode) {
-                                $("#serviceCharges").empty().append(currency(response.value[
+                                $(".serviceCharges").empty().append(currency(response.value[
                                     i].ChargeAmount, {
                                     separator: ','
                                 }).format());
-                                $("#Non_Resident_Amount").empty().append(currency(response
+                                $(".Non_Resident_Amount").empty().append(currency(response
                                     .value[i].Non_Resident_Amount, {
                                         separator: ','
                                     }).format());
@@ -404,6 +313,7 @@
             e.preventDefault();
             $('#money-spinner1').show();
             $('#money-spinner').show();
+            $('#listingAlert').hide();
             $.ajax({
                 type: 'POST',
                 url: '{% url "ListingDetail" typeOfService  %}',
@@ -427,11 +337,78 @@
                     $("#endDate").val("");
                     $("#startTime").val("");
                     $("#endTime").val("");
-                    $("#TotalOutput").empty().append(currency(response, {
+                    $(".meetingTotal").empty().append(currency(response, {
                         separator: ','
                     }).format());
                     $('#money-spinner1').hide();
                     $('#money-spinner').hide();
+                    $('#listingAlert').show(1000);
+                }
+            })
+
+        });
+        $('#accom_ServiceRequired').on('change', function (e) {
+            e.preventDefault();
+            $('#money-spinner').show();
+            var serviceCode = $("#accom_ServiceRequired").val();
+            if (serviceCode != null) {
+                $.ajax({
+                    type: 'get',
+                    url: '{% url "serviceRequired" %}',
+                    dataType: 'json',
+                    data: {
+                        serviceCode: serviceCode
+                    },
+                    success: function (response) {
+                        for (var i = 0; i < response.value.length; i++) {
+                            if (response.value[i].Code == serviceCode) {
+                                $(".accom_serviceCharges").empty().append(currency(response
+                                    .value[
+                                        i].ChargeAmount, {
+                                        separator: ','
+                                    }).format());
+                                $(".accom_Non_Resident_Amount").empty().append(currency(
+                                    response
+                                    .value[i].Non_Resident_Amount, {
+                                        separator: ','
+                                    }).format());
+                                $('#money-spinner').hide();
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        console.log('Something went wrong');
+                    }
+                });
+            } else {}
+        });
+        $(document).on('submit', '#AccomodationForm', function (e) {
+            e.preventDefault();
+            $('#money-spinner_accom').show();
+            $('#money-spinner').show();
+            $('#listingAlert').hide();
+            $.ajax({
+                type: 'POST',
+                url: '{% url "AccomodationForm" typeOfService  %}',
+                data: {
+                    ServiceRequired: $("#accom_ServiceRequired").val(),
+                    NumberOfPeople: $("#NumberOfRooms").val(),
+                    startDate: $("#accom_startDate").val(),
+                    endDate: $("#accom_startDate").val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (response) {
+                    $("#accom_ServiceRequired").val("");
+                    $("#NumberOfRooms").val("");
+                    $("#accom_startDate").val("");
+                    $("#accom_startDate").val("");
+
+                    $(".accomTotal").empty().append(currency(response, {
+                        separator: ','
+                    }).format());
+                    $('#money-spinner_accom').hide();
+                    $('#money-spinner').hide();
+                    $('#listingAlert').show(1000);
                 }
             })
 

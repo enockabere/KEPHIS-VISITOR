@@ -1,10 +1,28 @@
-ServiceRequired = request.POST.get('ServiceRequired')
-                TypeOfRoom = request.POST.get('TypeOfRoom')
-                TypeOfAccommodation = request.POST.get('TypeOfAccommodation')
-                NumberOfPeople = request.POST.get('NumberOfPeople')
-                
-                endDate = datetime.strptime((request.POST.get('endDate')), '%Y-%m-%d').date()
-                typeOfClient = int(request.session['clientType'])
-                noOfPeople = int(NumberOfPeople)
-                startTime = datetime.strptime((request.POST.get('startTime')), '%H:%M').time()
-                endTime = datetime.strptime((request.POST.get('endTime')), '%H:%M').time()
+
+<header class="header_area" id="header">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <div class="col-12 h-100">
+                <nav class="h-100 navbar navbar-expand-lg">
+                    <a class="navbar-brand" href="">
+                        
+                    </a>
+
+                    <div class="collapse navbar-collapse justify-content-end" id="dorneNav">
+                        <ul class="navbar-nav mr-auto" id="dorneMenu">
+                            <!-- <li class="nav-item active">
+                                <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                            </li> -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sign-inLink" href=""></a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>

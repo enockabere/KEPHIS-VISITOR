@@ -1,0 +1,93 @@
+<div class="card mb-3">
+    <div class="card-header" id="headingThree">
+        <h5 class="mb-0">
+            <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true"
+                aria-controls="collapseThree">Enter Meeting Details
+            </button>
+        </h5>
+    </div>
+    <div id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-bs-parent="#accordion">
+        <div class="card-body">
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="col-md-12 hero-search-form">
+                        <form id="ListingDetail" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6" id="TypeOfRoomCol">
+                                    <label for="" class="form-label">Type of
+                                        Room</label>
+                                    <select class="form-select" name="TypeOfRoom" id="TypeOfRoom"
+                                        aria-label="Default select example" disabled>
+                                        <option selected disabled value="0">--Select
+                                            Type of Room--</option>
+                                        {% for room in availableRooms %}
+                                        <option value="{{room.Code}}">{{room.RoomName}}
+                                            (Capacity-{{room.RoomCapacity}})
+                                        </option>
+                                        {% empty %}
+                                        <option value="0">There are no available rooms
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Service
+                                        Required</label>
+                                    <select class="form-select" aria-label="Default select example"
+                                        name="ServiceRequired" id="ServiceRequired">
+                                        <option selected disabled value="0">--Select
+                                            Service Required--</option>
+                                        {% for service in serviceOutput %}
+                                        <option value="{{service.Code}}">
+                                            "{{service.ServiceDescription}}"</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6" id="TypeOfAccommodationCol" style="display: none">
+                                    <label for="" class="form-label">Type of
+                                        Accommodation</label>
+                                    <select class="form-select" aria-label="Default select example"
+                                        name="TypeOfAccommodation" id="TypeOfAccommodation" disabled>
+                                        <option selected disabled value="0">--Single
+                                            Room--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Number of
+                                        People</label>
+                                    <input type="number" class="form-control" name="NumberOfPeople" id="NumberOfPeople"
+                                        min="1">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" name="startDate" id="startDate">
+                                </div>
+                            </div>
+                            <div class="row my-3" style="display: none;" id="timeRow">
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">Start Time</label>
+                                    <input type="time" class="form-control" name="startTime" id="startTime" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="" class="form-label">End Time</label>
+                                    <input type="time" class="form-control" name="endTime" id="endTime" disabled>
+                                </div>
+                            </div>
+                            <div class="money-spinner mx-auto text-center" id="money-spinner1" style="display: none;">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+                                    alt="Loading Gif" style="height: 100px;" class="img-fluid">
+                            </div>
+                            <button type="submit" class="button-87  w-100 my-3">Add
+                                Booking Line
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
