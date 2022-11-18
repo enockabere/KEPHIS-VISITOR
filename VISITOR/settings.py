@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'reservation',
     'authentication',
     'myRequest',
+    'django_daraja',
     
 ]
 
@@ -189,3 +190,9 @@ EMAIL_HOST_USER ='maebaenock95@gmail.com'
 EMAIL_HOST_PASSWORD='xcqlcdzmtcpncgvl'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
+
+MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT')
+MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY')
+MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET')
+MPESA_EXPRESS_SHORTCODE = config('MPESA_EXPRESS_SHORTCODE')
+MPESA_PASSKEY = config('MPESA_PASSKEY')

@@ -1,12 +1,16 @@
 from django.shortcuts import render
 import requests
 from django.conf import settings as config
+from django_daraja.mpesa.core import MpesaClient
 
 # Create your views here.
 class UserObjectMixin(object):
     model =None
     session = requests.Session()
     session.auth = config.AUTHS
+
+    cl = MpesaClient()
+    stk_push_callback_url = 'https://darajambili.herokuapp.com/express-payment'
 
     def get_object(self,endpoint):
         response = self.session.get(endpoint, timeout=10).json()

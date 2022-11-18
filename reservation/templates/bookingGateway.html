@@ -17,7 +17,16 @@
                 <div class="single-listing-content">
                     {% include 'alerts.html' %}
                     <div class="listing-title">
-                        <h4>{{reservation.Service_Requred}} Booking <span class="brs">{{reservation.No_}}</span></h4>
+                        <ol class="breadcrumb d-flex justify-content-end">
+                            <li class="breadcrumb-item"><a href="{% url 'reserve' %}" class="breadcrumbs text-danger"><i
+                                        class="fa fa-home"></i>
+                                    Back</a>
+                            </li>
+                            <li class="breadcrumb-item "><span class="breadcrumbs text-muted">
+                                    {{reservation.Service_Requred}} <span class="brs">{{reservation.No_}}</span>
+                                </span></li>
+                        </ol>
+                        <h4>{{reservation.Service_Requred}} Booking </h4>
                         <h6><span class="text-success">Status: </span>
                             {% if reservation.Booking_Status == 'Open' %}
                             Reserved
@@ -34,7 +43,7 @@
                         </nav>
                     </div>
 
-                    <div class="overview-content mt-50" id="overview">
+                    <div class="overview-content mt-3" id="overview">
                         <div class="row">
                             <div class="col-6">
                                 <label class="custom-control custom-checkbox mb-3">
@@ -105,41 +114,14 @@
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Total Payable: <span
                                             class="brsn Accomodation_Total_Amount"></span></span>
-                                    {% else %}
+                                    {% elif reservation.Service_Requred == 'Meeting Room And Accommodation' %}
                                     <img src="../../static/img/icons/money.png" height="20" width="20" class="img-fluid"
                                         alt="">
                                     <span class="custom-control-indicator"></span>
                                     <span class="custom-control-description">Total Payable: <span
-                                            class="brs">Null</span></span>
+                                            class="brs Total_Amount_Payable"></span></span>
                                     {% endif %}
                                 </label>
-                            </div>
-                        </div>
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal">
-                            Launch demo modal
-                        </button>
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        ...
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -199,101 +181,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card mb-3">
-                                        <div class="card-header" id="headingThree">
-                                            <h5 class="mb-0">
-                                                <button class="btn btn-link" data-bs-toggle="collapse"
-                                                    data-bs-target="#collapseThree" aria-expanded="true"
-                                                    aria-controls="collapseThree">Booking Details
-                                                </button>
-                                            </h5>
-                                        </div>
-                                        <div id="collapseThree" class="collapse show" aria-labelledby="headingThree"
-                                            data-bs-parent="#accordion">
-                                            <div class="card-body">
-                                                <div class="row mt-4">
-                                                    <div class="col-md-12">
-                                                        <table id="example"
-                                                            class="ui celled table responsive nowrap unstackable"
-                                                            style="width:100%">
-                                                            {% if reservation.Service_Requred == 'Meeting Room' %}
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Type of Room</th>
-                                                                    <th>Service Required</th>
-                                                                    <th>No. of People</th>
-                                                                    <th>Start Date</th>
-                                                                    <th>Start Time</th>
-                                                                    <th>End Date</th>
-                                                                    <th>Room Charges</th>
-                                                                    <th>Action</th>
-                                                            </thead>
-                                                            <tbody>
-                                                                {% for meeting in meeting_room_lines %}
-                                                                <tr>
-                                                                    <td>{{meeting.Room}}</td>
-                                                                    <td> {{meeting.ServiceRequired}}</td>
-                                                                    <td>{{meeting.No_Of_Rooms}}</td>
-                                                                    <td>{{meeting.Booking_Date}}</td>
-                                                                    <td>{{meeting.Start_Time}}</td>
-                                                                    <td>{{meeting.End_Time}}</td>
-                                                                    <td id="roomAmount{{meeting.No}}">
-                                                                        KES 00.00</td>
-                                                                    <td>{{meeting.No_Of_Rooms}}</td>
-                                                                </tr>
-                                                                <script>
-                                                                    $(document).ready(function () {
-                                                                        $("#roomAmount{{meeting.No}}").empty()
-                                                                            .append(currency(
-                                                                                '{{meeting.Amount}}', {
-                                                                                    separator: ','
-                                                                                }).format());
-                                                                    })
-                                                                </script>
-                                                                {% endfor %}
-                                                            </tbody>
-                                                            {% elif reservation.Service_Requred == 'Accommodation' %}
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Type of Room</th>
-                                                                    <th>Service Required</th>
-                                                                    <th>No. of Rooms</th>
-                                                                    <th>Start Date</th>
-                                                                    <th>End Date</th>
-                                                                    <th>Room Charges</th>
-                                                                    <th>Action</th>
-                                                            </thead>
-                                                            <tbody>
-                                                                {% for accomodation in accomodation_lines %}
-                                                                <tr>
-                                                                    <td>{{accomodation.Room}}</td>
-                                                                    <td>{{accomodation.ServiceRequired}}</td>
-                                                                    <td>{{accomodation.No_Of_Rooms}}</td>
-                                                                    <td>{{accomodation.Start_Date}}</td>
-                                                                    <td>{{accomodation.End_Date}}</td>
-                                                                    <td id="accomoAmount{{accomodation.No}}">KES 00.00
-                                                                    </td>
-                                                                    <td>{{accomodation.No_Of_Rooms}}</td>
-                                                                </tr>
-                                                                <script>
-                                                                    $(document).ready(function () {
-                                                                        $("#accomoAmount{{accomodation.No}}")
-                                                                            .empty()
-                                                                            .append(currency(
-                                                                                '{{accomodation.Amount}}', {
-                                                                                    separator: ','
-                                                                                }).format());
-                                                                    })
-                                                                </script>
-                                                                {% endfor %}
-                                                            </tbody>
-                                                            {% endif %}
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% if reservation.Service_Requred == 'Meeting Room' %}
+                                    {% include 'meetingDetails.html' %}
+                                    {% elif reservation.Service_Requred == 'Accommodation' %}
+                                    {% include 'accomDetails.html' %}
+                                    {% elif reservation.Service_Requred == 'Meeting Room And Accommodation' %}
+                                    {% include 'meetingDetails.html' %}
+                                    {% include 'accomDetails.html' %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -312,25 +207,58 @@
                             {% elif reservation.Service_Requred == 'Accommodation' %}
                             <span class="Accomodation_Total_Amount">KES ---.--</span></p>
                             {% else %}
-                            <span class="">KES ---.--</span></p>
+                            <span class="Total_Amount_Payable">KES ---.--</span></p>
                             {% endif %}
                         </li>
                     </ul>
                 </div>
                 <div class="book-a-table-widget mt-0">
                     <h6>Make Payment</h6>
-                    <form action="" method="POST" class="mt-5">
+                    <form action="{% url 'Pay' reservation.No_  %}" method="POST" class="mt-5">
                         {% csrf_token %}
                         <div class="row">
+                            {% if reservation.Service_Requred == 'Meeting Room' %}
+                            <input type="hidden" name="amount" value="{{reservation.Room_Booking_Total_Amount}}">
+                            {% elif reservation.Service_Requred == 'Accommodation' %}
+                            <input type="hidden" name="amount" value="{{reservation.Accomodation_Total_Amount}}">
+                            {% else %}
+                            <input type="hidden" name="amount" value="{{reservation.Total_Amount_Payable}}">
+                            {% endif %}
+                            <input type="hidden" name="account_reference" value="KEPHIS ROOM RESERVATION">
                             <div class="col-md-12">
-                                <input type="text" class="form-control" placeholder="Enter Your Number">
-                                <button type="submit" class="button-87  w-100 my-3">Pay KES 10,000.00</button>
+                                <input type="text" class="form-control" name="phone_number"
+                                    placeholder="Enter Your Number">
+                                <button type="submit" class="button-87  w-100 my-3">Pay
+                                    {% if reservation.Service_Requred == 'Meeting Room' %}
+                                    <span class="Room_Booking_Total_Amount">KES ---.--</span>
+                                    {% elif reservation.Service_Requred == 'Accommodation' %}
+                                    <span class="Accomodation_Total_Amount">KES ---.--</span>
+                                    {% else %}
+                                    <span class="Total_Amount_Payable">KES ---.--</span>
+                                    {% endif %}
+                                </button>
                             </div>
                     </form>
 
                 </div>
             </div>
-            <a href="{% url 'reserve' %}" type="button" class="button-5  w-100 my-3">Go Back
+            {% if reservation.Service_Requred == 'Meeting Room' %}
+            <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
+                data-bs-target="#newMeetingLine">Add Meeting Details<i class="las la-plus mx-2"
+                    style="font-size:1.5rem"></i></a>
+            {% elif reservation.Service_Requred == 'Accommodation' %}
+            <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
+                data-bs-target="#newAccomoLine">Add Accommodation Details<i class="las la-plus mx-2"
+                    style="font-size:1.5rem"></i></a>
+            {% elif reservation.Service_Requred == 'Meeting Room And Accommodation' %}
+            <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
+                data-bs-target="#newMeetingLine">Add Meeting Details<i class="las la-plus mx-2"
+                    style="font-size:1.5rem"></i></a>
+            <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
+                data-bs-target="#newAccomoLine">Add Accommodation Details<i class="las la-plus mx-2"
+                    style="font-size:1.5rem"></i></a>
+            {% endif %}
+            <a href="{% url 'reserve' %}" type="button" class="btn btn-warning button-5  w-100 my-3">Go Back
                 <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></a>
         </div>
     </div>
@@ -351,10 +279,146 @@
                     <button type="button" class="btn button-0 my-3" data-bs-dismiss="modal"
                         style="display: inline-block">Discard <i class="las la-window-close mx-2"
                             style="font-size:1.5rem"></i></button>
-                    <form action="{% url 'CancelReservation' %}" method="post" style="display: inline-block">
+                    <form action="" method="post" style="display: inline-block">
 
                         <button type="submit" class="btn btn-primary my-3 button-5">Confirm <i
                                 class="las la-trash-alt mx-2" style="font-size:1.5rem"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="newMeetingLine" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Meeting Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'MeetingDetails' reservation.No_ %}" class="px-2" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="bookingNo" value="{{reservation.No_}}">
+                        <input type="hidden" name="lineNo" value="0">
+                        <input type="hidden" name="myAction" value="insert">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">Type of
+                                    Room</label>
+                                <select class="form-select" name="TypeOfRoom" aria-label="Default select example">
+                                    <option selected disabled value="0">--Select
+                                        Type of Room--</option>
+                                    {% for room in availableRooms %}
+                                    <option value="{{room.Code}}">{{room.RoomName}}
+                                        (Capacity-{{room.RoomCapacity}})
+                                    </option>
+                                    {% empty %}
+                                    <option value="0">There are no available rooms
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">Service
+                                    Required</label>
+                                <select class="form-select" aria-label="Default select example" name="ServiceRequired"
+                                    id="ServiceRequired">
+                                    <option selected disabled value="0">--Select
+                                        Service Required--</option>
+                                    {% for meeting_services in meeting_services %}
+                                    <option value="{{meeting_services.Code}}">
+                                        {{meeting_services.ServiceDescription}}</option>
+                                    {% empty %}
+                                    <option selected disabled value="0">--No Service--</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-md-6">
+                                <label for="" class="form-label">Number of
+                                    People</label>
+                                <input type="number" class="form-control" name="NumberOfPeople" id="NumberOfPeople"
+                                    min="1">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" name="startDate" id="startDate">
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-md-6">
+                                <label for="" class="form-label">Start Time</label>
+                                <input type="time" class="form-control" name="startTime" id="startTime">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="" class="form-label">End Time</label>
+                                <input type="time" class="form-control" name="endTime" id="endTime">
+                            </div>
+                        </div>
+                        <button type="submit" class="button-87  w-100 my-3"> Make Reservation
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="newAccomoLine" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Accomodation Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'AccomodationDetails' reservation.No_ %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="bookingNo" value="{{reservation.No_}}">
+                        <input type="hidden" name="lineNo" value="0">
+                        <input type="hidden" name="myAction" value="insert">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">Service
+                                    Required</label>
+                                <select class="form-select" aria-label="Default select example" name="ServiceRequired">
+                                    <option selected disabled value="0">--Select
+                                        Service Required--</option>
+                                    {% for service in accom_services %}
+                                    <option value="{{service.Code}}">
+                                        {{service.ServiceDescription}}</option>
+                                    {% empty %}
+                                    <option selected disabled value="0">--No Service--</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-md-12">
+                                <label for="" class="form-label">Number of
+                                    Rooms</label>
+                                <input type="number" class="form-control" name="NumberOfRooms" min="1">
+                            </div>
+                        </div>
+                        <div class="row my-3">
+
+                            <div class="col-md-6">
+                                <label for="" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" name="startDate">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="" class="form-label">End Date</label>
+                                <input type="date" class="form-control" name="endDate">
+                            </div>
+                        </div>
+                        <button type="submit" class="button-87  w-100 my-3"> Make Reservation
+                        </button>
                     </form>
                 </div>
             </div>
@@ -368,13 +432,17 @@
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.semanticui.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#example').DataTable();
+        $('.example').DataTable();
         $(".Room_Booking_Total_Amount").empty().append(currency(
             '{{reservation.Room_Booking_Total_Amount}}', {
                 separator: ','
             }).format());
         $(".Accomodation_Total_Amount").empty().append(currency(
             '{{reservation.Accomodation_Total_Amount}}', {
+                separator: ','
+            }).format());
+        $(".Total_Amount_Payable").empty().append(currency(
+            '{{reservation.Total_Amount_Payable}}', {
                 separator: ','
             }).format());
     });

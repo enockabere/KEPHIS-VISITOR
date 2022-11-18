@@ -18,7 +18,7 @@
                                     <label for="" class="form-label">Type of
                                         Room</label>
                                     <select class="form-select" name="TypeOfRoom" id="TypeOfRoom"
-                                        aria-label="Default select example" disabled>
+                                        aria-label="Default select example">
                                         <option selected disabled value="0">--Select
                                             Type of Room--</option>
                                         {% for room in availableRooms %}
@@ -38,20 +38,12 @@
                                         name="ServiceRequired" id="ServiceRequired">
                                         <option selected disabled value="0">--Select
                                             Service Required--</option>
-                                        {% for service in serviceOutput %}
-                                        <option value="{{service.Code}}">
-                                            "{{service.ServiceDescription}}"</option>
+                                        {% for meeting_services in meeting_services %}
+                                        <option value="{{meeting_services.Code}}">
+                                            {{meeting_services.ServiceDescription}}</option>
+                                        {% empty %}
+                                        <option selected disabled value="0">--No Service--</option>
                                         {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6" id="TypeOfAccommodationCol" style="display: none">
-                                    <label for="" class="form-label">Type of
-                                        Accommodation</label>
-                                    <select class="form-select" aria-label="Default select example"
-                                        name="TypeOfAccommodation" id="TypeOfAccommodation" disabled>
-                                        <option selected disabled value="0">--Single
-                                            Room--</option>
                                     </select>
                                 </div>
                             </div>
@@ -67,14 +59,14 @@
                                     <input type="date" class="form-control" name="startDate" id="startDate">
                                 </div>
                             </div>
-                            <div class="row my-3" style="display: none;" id="timeRow">
+                            <div class="row my-3">
                                 <div class="col-md-6">
                                     <label for="" class="form-label">Start Time</label>
-                                    <input type="time" class="form-control" name="startTime" id="startTime" disabled>
+                                    <input type="time" class="form-control" name="startTime" id="startTime">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="" class="form-label">End Time</label>
-                                    <input type="time" class="form-control" name="endTime" id="endTime" disabled>
+                                    <input type="time" class="form-control" name="endTime" id="endTime">
                                 </div>
                             </div>
                             <div class="money-spinner mx-auto text-center" id="money-spinner1" style="display: none;">

@@ -1,0 +1,71 @@
+<div class="card mb-3">
+    <div class="card-header" id="headingFive">
+        <h5 class="mb-0">
+            <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="true"
+                aria-controls="collapseFive">Accomodation Details
+            </button>
+        </h5>
+    </div>
+    <div id="collapseFive" class="collapse show" aria-labelledby="headingFive" data-bs-parent="#accordion">
+        <div class="card-body">
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <table id="example" class="example ui celled table responsive nowrap unstackable"
+                        style="width:100%">
+                        <thead>
+                            <tr>
+
+                                <th>Service Required</th>
+                                <th>Room Charges</th>
+                                <th>No. of Rooms</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Type of Room</th>
+                                <th>Action</th>
+                        </thead>
+                        <tbody>
+                            {% for accomodation in accomodation_lines %}
+                            <tr>
+
+                                <td>{{accomodation.ServiceRequired}}</td>
+                                <td id="accomoAmount{{accomodation.No}}">KES 00.00
+                                </td>
+                                <td>{{accomodation.No_Of_Rooms}}</td>
+                                <td>{{accomodation.Start_Date}}</td>
+                                <td>{{accomodation.End_Date}}</td>
+                                <td>{{accomodation.Room}}</td>
+                                <td>
+                                    <form action="{% url 'AccomodationDetails' accomodation.RoomNo %}" method="post"
+                                        style="display: inline-block;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="lineNo" value="{{accomodation.No}}">
+                                        <input type="hidden" name="myAction" value="delete">
+                                        <input type="hidden" name="ServiceRequired" value="0">
+                                        <input type="hidden" name="NumberOfRooms" value="0">
+                                        <input type="hidden" name="startDate" value="2001-01-01">
+                                        <input type="hidden" name="endDate" value="2001-01-01">
+
+                                        <button type="submit" class="btn btn-danger tableBtn" data-toggle="tooltip"
+                                            data-placement="top" title="Delete"><i class="las la-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <script>
+                                $(document).ready(function () {
+                                    $("#accomoAmount{{accomodation.No}}")
+                                        .empty()
+                                        .append(currency(
+                                            '{{accomodation.Amount}}', {
+                                                separator: ','
+                                            }).format());
+                                })
+                            </script>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

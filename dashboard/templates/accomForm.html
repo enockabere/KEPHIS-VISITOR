@@ -21,9 +21,11 @@
                                         name="ServiceRequired" id="accom_ServiceRequired">
                                         <option selected disabled value="0">--Select
                                             Service Required--</option>
-                                        {% for service in serviceOutput %}
+                                        {% for service in accom_services %}
                                         <option value="{{service.Code}}">
-                                            "{{service.ServiceDescription}}"</option>
+                                            {{service.ServiceDescription}}</option>
+                                        {% empty %}
+                                        <option selected disabled value="0">--No Service--</option>
                                         {% endfor %}
                                     </select>
                                 </div>

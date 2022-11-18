@@ -51,9 +51,11 @@ class ListingDetail(UserObjectMixin,View):
             roomResponse = self.get_object(Access_Point)
             roomOutput = [room for room in roomResponse['value']]
 
-            serviceRequired = config.O_DATA.format(f"QYServicerequired?$filter=Service_Requred_Code%20eq%20%27{pk}%27")
+            serviceRequired = config.O_DATA.format(f"QYServicerequired")
             serviceResponse = self.get_object(serviceRequired)
-            serviceOutput = [service for service in serviceResponse['value']]
+            
+            meeting_services = [service for service in serviceResponse['value'] if service['Service_Requred_Code']=='1']
+            accom_services = [service for service in serviceResponse['value'] if service['Service_Requred_Code']=='2']
 
         except ValueError as e:
             print (e)
@@ -62,7 +64,8 @@ class ListingDetail(UserObjectMixin,View):
 
         ctx = {
             "clientType":clientType,"typeOfService":typeOfService
-            ,"availableRooms":roomOutput,"serviceOutput":serviceOutput,
+            ,"availableRooms":roomOutput,"meeting_services":meeting_services,
+            "accom_services":accom_services,
             }
         return render(request,"listingDetail.html",ctx)
     def post(self,request,pk):
@@ -85,7 +88,7 @@ class ListingDetail(UserObjectMixin,View):
                 request.session['endTime'] = endTime
 
                 noOfRooms = int(NumberOfPeople)
-
+                
                 response = config.CLIENT.service.FnMeetingFees(
                     TypeOfRoom,typeOfClient,ServiceRequired,noOfRooms)
                 mp = jsons.dumps(response,use_decimal=True)
@@ -146,59 +149,61 @@ class serviceRequired(UserObjectMixin,View):
             print(e)
             return redirect('dashboard')
 
-def makeReservation(request,pk):
-    if request.method == 'POST':
-        try:
-            clientType = request.session['clientType']
-            typeOfService = request.session['typeOfService']
+class  MakeReservation(UserObjectMixin,View):
+    def post(self, request,pk):
+        if request.method == 'POST':
+            try:
+                clientType = request.session['clientType']
 
-            if typeOfService == '1':
-                TypeOfRoom = request.session['TypeOfRoom'] 
-                ServiceRequired = request.session['ServiceRequired']
-                startDate = request.session['startDate'] 
-                startTime = request.session['startTime']
-                endTime = request.session['endTime'] 
-                NumberOfPeople = request.session['NumberOfPeople'] 
-                messages.success(request,"Success. Please login or sign up to continue.")
-                return redirect('login') 
+                if pk == '1':
+                    TypeOfRoom = request.session['TypeOfRoom'] 
+                    ServiceRequired = request.session['ServiceRequired']
+                    startDate = request.session['startDate'] 
+                    startTime = request.session['startTime']
+                    endTime = request.session['endTime'] 
+                    NumberOfPeople = request.session['NumberOfPeople'] 
+                    messages.success(request,"Success. Please login or sign up to continue.")
+                    return redirect('login') 
 
-            if typeOfService == '2':
+                if pk == '2':
 
-                ServiceRequired = request.session['accom_ServiceRequired']
-                NumberOfRooms = request.session['NumberOfRooms'] 
-                startDate = request.session['accom_startDate']
-                endDate = request.session['accom_endDate']
-                messages.success(request,"Success. Please login or sign up to continue.")
-                return redirect('login') 
-            if typeOfService == '3':
-                TypeOfRoom = request.session['TypeOfRoom'] 
-                ServiceRequired = request.session['ServiceRequired']
-                startDate = request.session['startDate'] 
-                startTime = request.session['startTime']
-                endTime = request.session['endTime'] 
-                NumberOfPeople = request.session['NumberOfPeople'] 
-                ServiceRequired = request.session['accom_ServiceRequired']
-                NumberOfRooms = request.session['NumberOfRooms'] 
-                startDate = request.session['accom_startDate']
-                endDate = request.session['accom_endDate']
-                messages.error(request, "Setup sessions for meeting room and accomodation")
+                    ServiceRequired = request.session['accom_ServiceRequired']
+                    NumberOfRooms = request.session['NumberOfRooms'] 
+                    startDate = request.session['accom_startDate']
+                    endDate = request.session['accom_endDate']
+  
+                    messages.success(request,"Success. Please login or sign up to continue.")
+                    return redirect('login') 
+
+                if pk == '3':
+                    TypeOfRoom = request.session['TypeOfRoom'] 
+                    ServiceRequired = request.session['ServiceRequired']
+                    startDate = request.session['startDate'] 
+                    startTime = request.session['startTime']
+                    endTime = request.session['endTime'] 
+                    NumberOfPeople = request.session['NumberOfPeople'] 
+                    ServiceRequired = request.session['accom_ServiceRequired']
+                    NumberOfRooms = request.session['NumberOfRooms'] 
+                    startDate = request.session['accom_startDate']
+                    endDate = request.session['accom_endDate']
+
+                    messages.success(request,"Success. Please login or sign up to continue.")
+                    return redirect('login') 
+                
+            except Exception as e:
+                print(e)
+                messages.error(request, f"{e} missing, please fill general information form and add a booking line.")
                 return redirect("ListingDetail",pk=pk)
-            
-        except Exception as e:
-            print(e)
-            messages.error(request, f"{e} missing, please fill general information form and add a booking line.")
-            return redirect("ListingDetail",pk=pk)
-    return redirect("ListingDetail",pk=pk)
+        return redirect("ListingDetail",pk=pk)
 
 
 class CancelReservation(View):
-    def post(self,request):
+    def post(self,request,pk):
         try:
             del request.session['clientType']
             del request.session['typeOfService']
-            typeOfService = request.session['typeOfService']
 
-            if typeOfService == '1':
+            if pk == '1':
                 del request.session['TypeOfRoom'] 
                 del request.session['ServiceRequired']
                 del request.session['startDate'] 
@@ -208,7 +213,7 @@ class CancelReservation(View):
                 messages.error(request,"Reservation Cancelled successfully")
                 return redirect('dashboard') 
 
-            if typeOfService == '2':
+            if pk == '2':
 
                 del request.session['accom_ServiceRequired']
                 del request.session['NumberOfRooms'] 
@@ -216,7 +221,7 @@ class CancelReservation(View):
                 del request.session['accom_endDate']
                 messages.error(request,"Reservation Cancelled successfully")
                 return redirect('dashboard')
-            if typeOfService == '3':
+            if pk == '3':
                 del request.session['TypeOfRoom'] 
                 del request.session['ServiceRequired']
                 del request.session['startDate'] 
@@ -232,5 +237,5 @@ class CancelReservation(View):
         except Exception as e:
             print (e)
             messages.error(request,e)
-            return redirect('ListingDetail',pk=typeOfService)
+            return redirect('ListingDetail',pk=pk)
 

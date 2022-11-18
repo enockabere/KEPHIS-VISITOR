@@ -65,8 +65,14 @@
                                                             <div class="col-md-6">
                                                                 <label for="" class="form-label">Client Type</label>
                                                                 <select class="form-select" name="clientType">
-                                                                    <option selected disabled value="0">--Select
-                                                                        Client Type--</option>
+                                                                    <option selected value="{{clientType}}">
+                                                                        {% if clientType == "1" %}
+                                                                        Private
+                                                                        {% elif clientType == '2' %}
+                                                                        Public
+                                                                        {% elif clientType == '3' %}
+                                                                        Foreign
+                                                                        {% endif %}</option>
                                                                     <option value="1">Private</option>
                                                                     <option value="2">Public</option>
                                                                     <option value="3">Foreign</option>
@@ -78,8 +84,15 @@
                                                                 <select class="form-select" name="typeOfService"
                                                                     id="typeOfService"
                                                                     aria-label="Default select example">
-                                                                    <option selected disabled value="0">--Select
-                                                                        Type of Service--</option>
+                                                                    <option selected value="{{typeOfService}}">
+                                                                        {% if typeOfService == "1" %}
+                                                                        Meeting Room
+                                                                        {% elif typeOfService == "2" %}
+                                                                        Accommodation
+                                                                        {% elif typeOfService == "3" %}
+                                                                        Meeting Room and Accommodation
+                                                                        {% endif %}
+                                                                    </option>
                                                                     <option value="1">Meeting Room</option>
                                                                     <option value="2">Accommodation</option>
                                                                     <option value="3">Meeting Room and Accommodation
@@ -222,12 +235,13 @@
                 <div class="modal-body">
                     Do you want to cancel process? All your data will be <span class="text-danger">Deleted</span>!
 
-                    <button type="button" class="btn button-0 my-3" data-bs-dismiss="modal"
+                    <button type="button" class="btn  button-0 my-3" data-bs-dismiss="modal"
                         style="display: inline-block">Discard <i class="las la-window-close mx-2"
                             style="font-size:1.5rem"></i></button>
-                    <form action="{% url 'CancelReservation' %}" method="post" style="display: inline-block">
+                    <form action="{% url 'CancelReservation' typeOfService %}" method="post"
+                        style="display: inline-block">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary my-3 button-5">Confirm <i
+                        <button type="submit" class="btn btn-danger my-3 button-5">Confirm <i
                                 class="las la-trash-alt mx-2" style="font-size:1.5rem"></i></button>
                     </form>
                 </div>
@@ -413,28 +427,6 @@
             })
 
         });
-
-        var typeOfService = '{{typeOfService}}'
-        if (typeOfService == '1' || typeOfService == '3') {
-            $('#TypeOfRoomCol').show(500);
-            $('#timeRow').show(1000);
-            $('#TypeOfRoom').prop('disabled', false);
-            $('#startTime').prop('disabled', false);
-            $('#endTime').prop('disabled', false);
-            $('#endDate').prop('disabled', true);
-            $('#TypeOfAccommodationCol').hide();
-            $('#TypeOfAccommodation').prop('disabled', true);
-
-        } else {
-            $('#TypeOfRoomCol').hide();
-            $('#timeRow').hide();
-            $('#TypeOfRoom').prop('disabled', true);
-            $('#startTime').prop('disabled', true);
-            $('#startTime').prop('disabled', true);
-            $('#endDate').prop('disabled', false);
-            $('#TypeOfAccommodationCol').show(500);
-            $('#TypeOfAccommodation').prop('disabled', true);
-        }
     });
 </script>
 {% endblock %}

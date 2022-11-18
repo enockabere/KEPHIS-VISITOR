@@ -4,6 +4,7 @@ from django.views import View
 from myRequest.views import UserObjectMixin
 from django.conf import settings as config
 import requests
+from datetime import datetime
 
 # Create your views here.
 class Reservations(UserObjectMixin,View):
@@ -17,20 +18,23 @@ class Reservations(UserObjectMixin,View):
 
             open_reservation_count = '0'
 
-            reservations = self.double_filtered_data(
-                'QYvisitors',"User_Code","eq",userID,"and",
-                'Booking_Status', "eq", 'Open'
-                )
+            reservations = self.one_filter(
+                'QYvisitors',"User_Code","eq",userID)
 
-            # open_reservation_count = reservations[0]
-            open_reservations = reservations[1]
-
+            open_reservations = [x for x in reservations[1] if x['Booking_Status'] == 'Open']
             open_reservation_count = len(open_reservations)
+
+            booked_reservations = [x for x in reservations[1] if x['Booking_Status'] == 'Fully Booked']
+            booked_reservation_count = len(booked_reservations)
+
+            Cancel_reservations = [x for x in reservations[1] if x['Booking_Status'] == 'Cancel']
+            Cancel_reservation_count = len(open_reservations)
 
             ctx = {
                 "customerName":customerName,"customerEmail":customerEmail,
                 "idNumber":idNumber,"phoneNumber":phoneNumber,
-                "open_reservation_count":open_reservation_count,"open_reservations":open_reservations
+                "open_reservation_count":open_reservation_count,"open_reservations":open_reservations,
+                "booked_reservation_count":booked_reservation_count,"booked_reservations":booked_reservations
             }
         except KeyError as e:
             print(e)
@@ -40,6 +44,37 @@ class Reservations(UserObjectMixin,View):
             print(e)
             messages.error(request,e)
         return render(request,"reserve.html",ctx)
+    def post(self, request):
+        if request.method == "POST":
+            try:
+                bookingNo = request.POST.get('bookingNo')
+                myAction = request.POST.get('myAction')
+                typeOfService = int(request.POST.get('typeOfService'))
+                typeOfClient = int(request.POST.get('clientType'))
+                userCode = request.session['UserID']
+
+                BookingHeaderResponse = config.CLIENT.service.FnVisitorsCard(
+                                        bookingNo,myAction,typeOfService,typeOfClient,userCode)
+                if BookingHeaderResponse:
+                    messages.success(request,"Success, add booking details")
+                    return redirect("BookingGateway",pk=BookingHeaderResponse)
+                messages.success(request,"Failed")
+                return redirect("reserve")
+            except requests.exceptions.HTTPError as err:
+                print(err)
+                messages.error(request, f"Request Error Code: {err}")
+                return redirect('reserve')
+            except KeyError as e:
+                print(e)
+                messages.error(request,"Session ended. Login to continue.")
+                return redirect("login")
+            except Exception as e:
+                print(e)
+                messages.info(request, e)
+                return redirect('reserve')
+        return redirect('reserve')
+
+
 class BookingGateway(UserObjectMixin,View):
     def get(self,request,pk): 
         try:
@@ -60,6 +95,16 @@ class BookingGateway(UserObjectMixin,View):
                 'UserCode', "eq", userID
                 )
             accomodation_lines = accomodation_lines_response[1]
+
+            Access_Point = config.O_DATA.format("QyRoomBookingSetUp?$filter=Booked%20eq%20false")
+            roomResponse = self.get_object(Access_Point)
+            roomOutput = [room for room in roomResponse['value']]
+
+            serviceRequired = config.O_DATA.format(f"QYServicerequired")
+            serviceResponse = self.get_object(serviceRequired)
+            meeting_services = [service for service in serviceResponse['value'] if service['Service_Requred_Code']=='1']
+            accom_services = [service for service in serviceResponse['value'] if service['Service_Requred_Code']=='2']
+
         except requests.exceptions.HTTPError as err:
             print(err)
             messages.error(request, f"Request Error Code: {err}")
@@ -74,7 +119,8 @@ class BookingGateway(UserObjectMixin,View):
             return redirect('reserve')
         ctx = {
             "reservation":reservation,"meeting_room_lines":meeting_room_lines,
-            "accomodation_lines":accomodation_lines,
+            "accomodation_lines":accomodation_lines,"availableRooms":roomOutput,
+            "meeting_services":meeting_services,"accom_services":accom_services,
             }
         return render(request,"bookingGateway.html",ctx)
     def post(self,request,pk):
@@ -106,7 +152,109 @@ class BookingGateway(UserObjectMixin,View):
                 messages.info(request, e)
                 return redirect('reserve')
         return redirect('BookingGateway',pk=pk)
-        
+
+class MeetingDetails(UserObjectMixin,View):
+    def post(self, request,pk):
+        if request.method == 'POST':
+            try:
+                bookingNo = request.POST.get('bookingNo')
+                lineNo = request.POST.get('lineNo')
+                ServiceRequired = request.POST.get('ServiceRequired')
+                TypeOfRoom = request.POST.get('TypeOfRoom')
+                NumberOfPeople = int(request.POST.get('NumberOfPeople'))
+                startDate = datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
+                startTime = datetime.strptime(request.POST.get('startTime'), '%H:%M').time()
+                endTime = datetime.strptime(request.POST.get('endTime'), '%H:%M').time()
+                myAction = request.POST.get('myAction')
+                userCode = request.session['UserID']
+
+                BookingLineResponse = config.CLIENT.service.FnRoomBookingLine(
+                                                bookingNo,TypeOfRoom,lineNo,myAction,userCode,ServiceRequired,
+                                                startDate,startTime,endTime,NumberOfPeople)
+
+                if BookingLineResponse == True:
+                    messages.success(request,"Success")
+                    return redirect('BookingGateway',pk=pk)
+                messages.error(request,"Failed")
+                return redirect('BookingGateway',pk=pk)
+
+            except requests.exceptions.HTTPError as err:
+                print(err)
+                messages.error(request, f"Request Error Code: {err}")
+                return redirect('BookingGateway',pk=pk)
+            except KeyError as e:
+                print(e)
+                messages.error(request,"Session ended. Login to continue.")
+                return redirect("login")
+            except Exception as e:
+                print(e)
+                messages.info(request, e)
+                return redirect('BookingGateway',pk=pk)
+        return redirect('BookingGateway',pk=pk)
+
+class AccomodationDetails(UserObjectMixin,View):
+    def post(self, request,pk):
+        if request.method == 'POST':
+            try:
+                lineNo = request.POST.get('lineNo')
+                ServiceRequired = request.POST.get('ServiceRequired')
+                NumberOfRooms = int(request.POST.get('NumberOfRooms'))
+                startDate = datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
+                endDate = datetime.strptime(request.POST.get('endDate'), '%Y-%m-%d').date()
+                myAction = request.POST.get('myAction')
+                userCode = request.session['UserID']
+
+                AccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
+                                                pk,myAction,userCode,ServiceRequired,NumberOfRooms,
+                                                lineNo,startDate,endDate)
+
+                if AccomodationLineResponse == True:
+                    messages.success(request,"Success")
+                    return redirect('BookingGateway',pk=pk)
+                messages.error(request,"Failed")
+                return redirect('BookingGateway',pk=pk)
+
+            except requests.exceptions.HTTPError as err:
+                print(err)
+                messages.error(request, f"Request Error Code: {err}")
+                return redirect('BookingGateway',pk=pk)
+            except KeyError as e:
+                print(e)
+                messages.error(request,"Session ended. Login to continue.")
+                return redirect("login")
+            except Exception as e:
+                print(e)
+                messages.info(request, e)
+                return redirect('BookingGateway',pk=pk)
+        return redirect('BookingGateway',pk=pk)
+
+class Pay(UserObjectMixin,View):
+    def post(self,request,pk):
+        if request.method == 'POST':
+            try:
+                token = self.cl.access_token()
+                print(token)
+                phone_number = request.POST.get('phone_number')
+                amount = 1
+                account_reference = request.POST.get('account_reference')
+                transaction_desc = 'Description'
+
+                callback_url = self.stk_push_callback_url
+                r = self.cl.stk_push(
+                    phone_number, amount, account_reference, transaction_desc, callback_url)
+                messages.success(request, r.response_description)
+                print(r.json())
+                return redirect('Confirm',pk=pk)
+            except Exception as e:
+                print(e)
+                messages.info(request, e)
+                return redirect('BookingGateway',pk=pk)
+        return redirect('BookingGateway',pk=pk)
+
+class Confirm(UserObjectMixin,View):
+    def get(self,request,pk):
+        return render(request,"confirm.html")
+
 class BookingDetails(View):
     def get(self,request,pk):
         return render(request,"bookingDetails.html")

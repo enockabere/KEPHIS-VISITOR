@@ -1,0 +1,202 @@
+<div class="card mb-3">
+    <div class="card-header" id="headingThree">
+        <h5 class="mb-0">
+            <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true"
+                aria-controls="collapseThree">Booking Details
+            </button>
+        </h5>
+    </div>
+    <div id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-bs-parent="#accordion">
+        <div class="card-body">
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <table id="example" class="example ui celled table responsive nowrap unstackable"
+                        style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Service Required</th>
+                                <th>Room Charges</th>
+                                <th>No. of People</th>
+                                <th>Start Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Type of Room</th>
+                                <th>Action</th>
+                        </thead>
+                        <tbody>
+                            {% for meeting in meeting_room_lines %}
+                            <tr>
+                                <td> {{meeting.ServiceRequired}}</td>
+                                <td id="roomAmount{{meeting.No}}">
+                                    KES 00.00</td>
+                                <td>{{meeting.No_Of_Rooms}}</td>
+                                <td>{{meeting.Booking_Date}}</td>
+                                <td>{{meeting.Start_Time}}</td>
+                                <td>{{meeting.End_Time}}</td>
+                                <td>{{meeting.Room}}</td>
+                                <td>
+                                    <form action="{% url 'MeetingDetails' meeting.RoomNo %}" method="post"
+                                        style="display: inline-block;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="bookingNo" value="{{meeting.RoomNo}}">
+                                        <input type="hidden" name="lineNo" value="{{meeting.No}}">
+                                        <input type="hidden" name="lineNo" value="{{meeting.No}}">
+                                        <input type="hidden" name="myAction" value="delete">
+                                        <input type="hidden" name="TypeOfRoom" value="0">
+                                        <input type="hidden" name="ServiceRequired" value="0">
+                                        <input type="hidden" name="NumberOfPeople" value="0">
+                                        <input type="hidden" name="startDate" value="2001-01-01">
+                                        <input type="hidden" name="startTime" value="23:27:00">
+                                        <input type="hidden" name="endTime" value="23:27:00">
+
+                                        <button type="submit" class="btn btn-danger tableBtn" data-toggle="tooltip"
+                                            data-placement="top" title="Delete"><i class="las la-trash-alt"></i>
+                                        </button>
+                                    </form>
+
+                                    <div class="modal fade" id="meeting" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Edit
+                                                        Meeting Detail (<span class="text-small">{{meeting.No}}</span>)
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- <form
+                                                        action="{% url 'MeetingDetails' reservation.No_ %}"
+                                                        class="px-2" method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden"
+                                                            name="bookingNo"
+                                                            value="{{meeting.RoomNo}}">
+                                                        <input type="hidden"
+                                                            name="lineNo"
+                                                            value="{{meeting.No}}">
+                                                        <input type="hidden"
+                                                            name="myAction"
+                                                            value="modify">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <label for=""
+                                                                    class="form-label">Type
+                                                                    of
+                                                                    Room</label>
+                                                                <select
+                                                                    class="form-select"
+                                                                    name="TypeOfRoom"
+                                                                    aria-label="Default select example">
+                                                                    <option selected
+                                                                        value="{{meeting.Room}}">
+                                                                        {{meeting.Room}}
+                                                                    </option>
+                                                                    {% for room in availableRooms %}
+                                                                    {% if room.Code != meeting.Room %}
+                                                                    <option
+                                                                        value="{{room.Code}}">
+                                                                        {{room.RoomName}}
+                                                                        (Capacity-{{room.RoomCapacity}})
+                                                                    </option>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row my-3">
+                                                            <div class="col-md-12">
+                                                                <label for=""
+                                                                    class="form-label">Service
+                                                                    Required</label>
+                                                                <select
+                                                                    class="form-select"
+                                                                    aria-label="Default select example"
+                                                                    name="ServiceRequired">
+                                                                    <option selected
+                                                                        value="{{meeting.ServiceRequired}}">
+                                                                        {{meeting.ServiceRequired}}
+                                                                    </option>
+                                                                    {% for meeting_services in meeting_services %}
+                                                                    {% if meeting_services.Code != meeting.ServiceRequired %}
+                                                                    <option
+                                                                        value="{{meeting_services.Code}}">
+                                                                        {{meeting_services.ServiceDescription}}
+                                                                    </option>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row my-3">
+                                                            <div class="col-md-6">
+                                                                <label for=""
+                                                                    class="form-label">Number
+                                                                    of
+                                                                    People</label>
+                                                                <input type="number"
+                                                                    class="form-control"
+                                                                    name="NumberOfPeople"
+                                                                    value="{{meeting.No_Of_Rooms}}"
+                                                                    min="1">
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for=""
+                                                                    class="form-label">Start
+                                                                    Date</label>
+                                                                <input type="date"
+                                                                    class="form-control"
+                                                                    name="startDate"
+                                                                    value="{{meeting.Booking_Date}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row my-3">
+                                                            <div class="col-md-6">
+                                                                <label for=""
+                                                                    class="form-label">Start
+                                                                    Time</label>
+                                                                <input type="time"
+                                                                    class="form-control"
+                                                                    name="startTime"
+                                                                    value="{{meeting.Start_Time}}">
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for=""
+                                                                    class="form-label">End
+                                                                    Time</label>
+                                                                <input type="time"
+                                                                    class="form-control"
+                                                                    name="endTime"
+                                                                    value="{{meeting.End_Time}}">
+                                                            </div>
+                                                        </div>
+                                                        <button type="submit"
+                                                            class="button-87  w-100 my-3">
+                                                            Make Reservation
+                                                        </button>
+                                                    </form> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <script>
+                                $(document).ready(function () {
+                                    $("#roomAmount{{meeting.No}}").empty()
+                                        .append(currency(
+                                            '{{meeting.Amount}}', {
+                                                separator: ','
+                                            }).format());
+                                })
+                            </script>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

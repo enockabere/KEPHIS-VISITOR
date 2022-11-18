@@ -1,6 +1,6 @@
 {% for reservation in open_reservations %}
 <div
-    class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm">
+    class="d-style otherPageItem btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm">
     <div class="row align-items-center">
         <div class="col-12 col-md-4">
             <h4 class="pt-3 text-170 text-600 brs letter-spacing">
@@ -9,13 +9,24 @@
 
             <div class="text-secondary-d1 text-120">
                 <span class="ml-n15 align-text-bottom">
-                    {% if reservation.Service_Requred == 'Meeting Room' %}
+                    {% if reservation.Service_Requred == 'Meeting Room' and reservation.Room_Booking_Total_Amount == 0 %}
+                    <span><img src="../../static/img/icons/p1.png" height="20" width="20" alt="progress-image"
+                            class="img-fluid"></span><span class="text-small mx-2"><i class="las la-plus"></i>Add
+                        booking details</span>
+                    {% elif reservation.Service_Requred == 'Meeting Room' and reservation.Room_Booking_Total_Amount != 0 %}
                     <span id="Room_Booking_Total_Amount{{reservation.No_}}"></span>
-                    {% elif reservation.Service_Requred == 'Accommodation' %}
+                    {% elif reservation.Service_Requred == 'Accommodation' and reservation.Accomodation_Total_Amount == 0 %}
+                    <span><img src="../../static/img/icons/p1.png" height="20" width="20" alt="progress-image"
+                            class="img-fluid"></span><span class="text-small mx-2"><i class="las la-plus"></i>Add
+                        booking details</span>
+                    {% elif reservation.Service_Requred == 'Accommodation' and reservation.Accomodation_Total_Amount != 0 %}
                     <span id="Accomodation_Total_Amount{{reservation.No_}}"></span>
-                    {{reservation.Accomodation_Total_Amount}}
-                    {% else %}
-                    Null
+                    {% elif reservation.Service_Requred == 'Meeting Room And Accommodation' and reservation.Total_Amount_Payable == 0 %}
+                    <span><img src="../../static/img/icons/p1.png" height="20" width="20" alt="progress-image"
+                            class="img-fluid"></span><span class="text-small mx-2"><i class="las la-plus"></i>Add
+                        booking details</span>
+                    {% elif reservation.Service_Requred == 'Meeting Room And Accommodation' and reservation.Total_Amount_Payable != 0 %}
+                    <span id="Total_Amount_Payable{{reservation.No_}}"></span>
                     {% endif %}
                 </span>
             </div>
@@ -30,14 +41,17 @@
                     '{{reservation.Accomodation_Total_Amount}}', {
                         separator: ','
                     }).format());
+                $("#Total_Amount_Payable{{reservation.No_}}").empty().append(currency(
+                    '{{reservation.Total_Amount_Payable}}', {
+                        separator: ','
+                    }).format());
             })
         </script>
         <ul class="list-unstyled mb-0 col-12 col-md-4 text-dark-l1 text-90 text-left my-4 my-md-0">
             <li>
                 <i class="fa fa-check text-success-m2 text-110 mr-2 mt-1"></i>
-                <span>
-                    <span class="text-110">{{reservation.Service_Requred}}
-                    </span>
+                <span class="text-110">{{reservation.Service_Requred}}
+                </span>
             </li>
 
             <li class="mt-25">
@@ -46,7 +60,7 @@
                     Status: {% if reservation.Booking_Status == 'Open' %}
                     <span class="mx-1">Available</span>
                     {% else %}
-                    <span class="mx-1">Booked</span>
+                    <span class="mx-1">Not Available</span>
                     {% endif %}
                 </span>
             </li>
@@ -75,7 +89,7 @@
 {% empty %}
 <div class="mr-auto text-center">
     <p class="my-2 text-muted">
-        Stack is empty, please contact admin if you can't see your incomplete reservations.
+        Stack is empty, create new reservations.
     </p>
     <img src="../../static/img/icons/empty-box.png" class="img-fluid" height="200" alt="" srcset="">
 
