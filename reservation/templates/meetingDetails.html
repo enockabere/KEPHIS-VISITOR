@@ -35,6 +35,7 @@
                                 <td>{{meeting.End_Time}}</td>
                                 <td>{{meeting.Room}}</td>
                                 <td>
+                                    {% if reservation.Booking_Status == 'Open' %}
                                     <form action="{% url 'MeetingDetails' meeting.RoomNo %}" method="post"
                                         style="display: inline-block;">
                                         {% csrf_token %}
@@ -53,7 +54,7 @@
                                             data-placement="top" title="Delete"><i class="las la-trash-alt"></i>
                                         </button>
                                     </form>
-
+                                    {% endif %}
                                     <div class="modal fade" id="meeting" tabindex="-1"
                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">

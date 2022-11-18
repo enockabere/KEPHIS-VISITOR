@@ -36,3 +36,4 @@ docs/_build/
 # File based database
 *.sqlite3
 .vscode
+notes.txt

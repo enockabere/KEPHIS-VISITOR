@@ -34,7 +34,7 @@
                     {% include 'alerts.html' %}
                     <div class="listing-title">
                         <h4>Reservation/Booking History</h4>
-                        <h6><span class="text-success">Hello? </span>{{customerName}}</h6>
+                        <h6><span class="text-success">Hello, </span>{{customerName}}</h6>
                     </div>
                     <div class="card data-cards">
                         <div class="card-body pt-3">
@@ -56,7 +56,8 @@
 
                                 <li class="nav-item flex-fill">
                                     <button class="nav-link" data-bs-toggle="tab"
-                                        data-bs-target="#profile-settings">Reports</button>
+                                        data-bs-target="#profile-settings">Cancelled (<span
+                                            class="text-small brs">{{Cancel_reservation_count}}</span>)</button>
                                 </li>
                             </ul>
                             <div class="tab-content pt-5">
@@ -71,13 +72,21 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                                <div class="tab-pane fade profile-edit pt-3 bookedPager" id="profile-edit">
                                     {% include 'myBooking.html' %}
+                                    <div class="row">
+                                        <div class="col-md-12 mr-auto text-center">
+                                            <div class="my-3" id="bookedPagination"></div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="tab-pane fade pt-3" id="profile-settings">
+                                <div class="tab-pane fade pt-3 cancelPager" id="profile-settings">
+                                    {% include 'cancelled.html' %}
                                     <div class="row">
-                                        {% include 'myReports.html' %}
+                                        <div class="col-md-12 mr-auto text-center">
+                                            <div class="my-3" id="cancelPagination"></div>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -197,6 +206,32 @@
 
         onPageClick: function (noofele) {
             $(".otherPager .otherPageItem").hide()
+                .slice(3 * (noofele - 1),
+                    3 + 3 * (noofele - 1)).show();
+        },
+
+    });
+    $(".bookedPager .bookedPageItem").slice(3).hide();
+    $('#bookedPagination').pagination({
+        items: '{{booked_reservation_count}}',
+        itemsOnPage: 3,
+        cssStyle: 'dark-theme',
+
+        onPageClick: function (noofele) {
+            $(".bookedPager .bookedPageItem").hide()
+                .slice(3 * (noofele - 1),
+                    3 + 3 * (noofele - 1)).show();
+        },
+
+    });
+    $(".cancelPager .cancelPageItem").slice(3).hide();
+    $('#cancelPagination').pagination({
+        items: '{{Cancel_reservation_count}}',
+        itemsOnPage: 3,
+        cssStyle: 'dark-theme',
+
+        onPageClick: function (noofele) {
+            $(".cancelPager .cancelPageItem").hide()
                 .slice(3 * (noofele - 1),
                     3 + 3 * (noofele - 1)).show();
         },

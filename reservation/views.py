@@ -28,13 +28,14 @@ class Reservations(UserObjectMixin,View):
             booked_reservation_count = len(booked_reservations)
 
             Cancel_reservations = [x for x in reservations[1] if x['Booking_Status'] == 'Cancel']
-            Cancel_reservation_count = len(open_reservations)
+            Cancel_reservation_count = len(Cancel_reservations)
 
             ctx = {
                 "customerName":customerName,"customerEmail":customerEmail,
                 "idNumber":idNumber,"phoneNumber":phoneNumber,
                 "open_reservation_count":open_reservation_count,"open_reservations":open_reservations,
-                "booked_reservation_count":booked_reservation_count,"booked_reservations":booked_reservations
+                "booked_reservation_count":booked_reservation_count,"booked_reservations":booked_reservations,
+                "Cancel_reservations":Cancel_reservations,"Cancel_reservation_count":Cancel_reservation_count
             }
         except KeyError as e:
             print(e)

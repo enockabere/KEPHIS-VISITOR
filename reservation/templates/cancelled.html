@@ -1,6 +1,6 @@
-{% for booked in booked_reservations %}
+{% for cancelled in Cancel_reservations %}
 <div
-    class="bookedPageItem d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm">
+    class="cancelPageItem d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm">
     <!-- Basic Plan -->
     <div class="row align-items-center">
         <div class="col-12 col-md-4">
@@ -11,27 +11,27 @@
             <div class="text-secondary-d1 text-120">
                 <span class="ml-n15 align-text-bottom">
                     {% if booked.Service_Requred == 'Meeting Room' %}
-                    <span id="Room_Booking_Total_Amount{{booked.No_}}"></span>
+                    <span id="Room_Booking_Total_Amount{{cancelled.No_}}"></span>
                     {% elif booked.Service_Requred == 'Accommodation' %}
-                    <span id="Accomodation_Total_Amount{{booked.No_}}"></span>
+                    <span id="Accomodation_Total_Amount{{cancelled.No_}}"></span>
                     {% elif booked.Service_Requred == 'Meeting Room And Accommodation'  %}
-                    <span id="Total_Amount_Payable{{booked.No_}}"></span>
+                    <span id="Total_Amount_Payable{{cancelled.No_}}"></span>
                     {% endif %}
                 </span>
             </div>
         </div>
         <script>
             $(document).ready(function () {
-                $("#Room_Booking_Total_Amount{{booked.No_}}").empty().append(currency(
-                    '{{booked.Room_Booking_Total_Amount}}', {
+                $("#Room_Booking_Total_Amount{{cancelled.No_}}").empty().append(currency(
+                    '{{cancelled.Room_Booking_Total_Amount}}', {
                         separator: ','
                     }).format());
-                $("#Accomodation_Total_Amount{{booked.No_}}").empty().append(currency(
-                    '{{booked.Accomodation_Total_Amount}}', {
+                $("#Accomodation_Total_Amount{{cancelled.No_}}").empty().append(currency(
+                    '{{cancelled.Accomodation_Total_Amount}}', {
                         separator: ','
                     }).format());
-                $("#Total_Amount_Payable{{booked.No_}}").empty().append(currency(
-                    '{{booked.Total_Amount_Payable}}', {
+                $("#Total_Amount_Payable{{cancelled.No_}}").empty().append(currency(
+                    '{{cancelled.Total_Amount_Payable}}', {
                         separator: ','
                     }).format());
             })
@@ -39,14 +39,14 @@
         <ul class="list-unstyled mb-0 col-12 col-md-4 text-dark-l1 text-90 text-left my-4 my-md-0">
             <li>
                 <i class="fa fa-check text-success-m2 text-110 mr-2 mt-1"></i>
-                <span class="text-110">{{booked.Service_Requred}}
+                <span class="text-110">{{cancelled.Service_Requred}}
                 </span>
             </li>
             <li class="mt-25">
                 <i class="fa fa-check text-success-m2 text-110 mr-2 mt-1"></i>
                 <span class="text-110 text-success">
-                    Status: {% if booked.Booking_Status == 'Fully Booked' %}
-                    <span class="mx-1">Booked</span>
+                    Status: {% if cancelled.Booking_Status == 'Cancel' %}
+                    <span class="mx-1">Cancelled</span>
                     {% endif %}
                 </span>
             </li>
@@ -54,15 +54,15 @@
             <li class="mt-25">
                 <i class="fa fa-check text-danger-m3 text-110 mr-25 mt-1"></i>
                 <span class="text-110 text-danger">
-                    {% if booked.Booking_Status == 'Fully Booked' %}
-                    Date Booked:
+                    {% if cancelled.Booking_Status == 'Cancel' %}
+                    Date Cancelled:
                     <span class="mx-1">{{booked.Document_Date}}</span>
                     {% endif %}
                 </span>
             </li>
         </ul>
         <div class="col-12 col-md-4 text-center">
-            <a href="{% url 'BookingGateway' reservation.No_ %}"
+            <a href="{% url 'BookingGateway' cancelled.No_ %}"
                 class="f-n-hover btn button-2 btn-raised px-4 py-25 w-75 text-600">Details <i
                     class="las la-angle-double-right"></i></a>
         </div>

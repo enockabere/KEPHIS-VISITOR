@@ -35,6 +35,7 @@
                                 <td>{{accomodation.End_Date}}</td>
                                 <td>{{accomodation.Room}}</td>
                                 <td>
+                                    {% if reservation.Booking_Status == 'Open' %}
                                     <form action="{% url 'AccomodationDetails' accomodation.RoomNo %}" method="post"
                                         style="display: inline-block;">
                                         {% csrf_token %}
@@ -49,6 +50,7 @@
                                             data-placement="top" title="Delete"><i class="las la-trash-alt"></i>
                                         </button>
                                     </form>
+                                    {% endif %}
                                 </td>
                             </tr>
                             <script>
