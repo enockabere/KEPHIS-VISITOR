@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     path('', include('reservation.urls')),
     path('', include('authentication.urls')),
+    path('', include('mpesa.urls')),
 ]

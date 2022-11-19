@@ -82,7 +82,8 @@ INSTALLED_APPS = [
     'authentication',
     'myRequest',
     'django_daraja',
-    
+    'mpesa',
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -192,7 +193,48 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
 MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT')
+
+# Credentials for the daraja app
+
 MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY')
 MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET')
+
+MPESA_SHORTCODE = '174379'
+
+
 MPESA_EXPRESS_SHORTCODE = config('MPESA_EXPRESS_SHORTCODE')
+
+
+MPESA_SHORTCODE_TYPE = 'paybill'
+
+# Lipa na MPESA Online passkey
+# Sandbox passkey is available on test credentials page
+# Production passkey is sent via email once you go live
+
 MPESA_PASSKEY = config('MPESA_PASSKEY')
+
+# Username for initiator (to be used in B2C, B2B, AccountBalance and TransactionStatusQuery Transactions)
+
+MPESA_INITIATOR_USERNAME = 'testapi'
+
+# Plaintext password for initiator (to be used in B2C, B2B, AccountBalance and TransactionStatusQuery Transactions)
+
+MPESA_INITIATOR_SECURITY_CREDENTIAL = 'Safaricom999!*!'
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ]
+}
+
+
+CORS_REPLACE_HTTPS_REFERER = True
+HOST_SCHEME = "https://"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_SECONDS = 1000000
+SECURE_FRAME_DENY = True
+

@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
+from django.urls import reverse
 from django.views import View
 from myRequest.views import UserObjectMixin
 from django.conf import settings as config
@@ -233,18 +234,14 @@ class Pay(UserObjectMixin,View):
     def post(self,request,pk):
         if request.method == 'POST':
             try:
-                token = self.cl.access_token()
-                print(token)
                 phone_number = request.POST.get('phone_number')
                 amount = 1
                 account_reference = request.POST.get('account_reference')
                 transaction_desc = 'Description'
 
-                callback_url = self.stk_push_callback_url
-                r = self.cl.stk_push(
-                    phone_number, amount, account_reference, transaction_desc, callback_url)
-                messages.success(request, r.response_description)
-                print(r.json())
+                callback_url = request.build_absolute_uri(reverse('mpesa_stk_push_callback'))
+                response = self.lipa_na_mpesa(amount,phone_number,callback_url,account_reference, transaction_desc)
+                print(response)
                 return redirect('Confirm',pk=pk)
             except Exception as e:
                 print(e)

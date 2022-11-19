@@ -1,16 +1,16 @@
 from django.shortcuts import render
 import requests
 from django.conf import settings as config
-from django_daraja.mpesa.core import MpesaClient
+from mpesa.api.utils import get_timestamp
+from mpesa.api.encode import generate_password
+from requests.auth import HTTPBasicAuth
+from mpesa.api.access_token import generate_access_token
 
 # Create your views here.
 class UserObjectMixin(object):
     model =None
     session = requests.Session()
     session.auth = config.AUTHS
-
-    cl = MpesaClient()
-    stk_push_callback_url = 'https://darajambili.herokuapp.com/express-payment'
 
     def get_object(self,endpoint):
         response = self.session.get(endpoint, timeout=10).json()
@@ -36,3 +36,32 @@ class UserObjectMixin(object):
         response = self.get_object(Access_Point)['value']
         count=len(response)
         return count,response
+
+    def lipa_na_mpesa(Amount,phone_number,CallBackURL,AccountReference,TransactionDesc):
+        formatted_time = get_timestamp()
+        decoded_password = generate_password(formatted_time)
+        access_token = generate_access_token()
+
+        api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+
+        headers = {"Authorization": "Bearer %s" % access_token}
+
+        request = {
+            "BusinessShortCode": config.MPESA_EXPRESS_SHORTCODE,
+            "Password": decoded_password,
+            "Timestamp": formatted_time,
+            "TransactionType": "CustomerPayBillOnline",
+            "Amount": Amount,
+            "PartyA": phone_number,
+            "PartyB": config.MPESA_EXPRESS_SHORTCODE,
+            "PhoneNumber": phone_number,
+            "CallBackURL": CallBackURL,
+            "AccountReference":AccountReference,
+            "TransactionDesc": TransactionDesc,
+        }
+
+        response = requests.post(api_url, json=request, headers=headers)
+        return response.json()
+
+
+
