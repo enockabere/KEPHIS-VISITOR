@@ -221,17 +221,19 @@
                         {% csrf_token %}
                         <div class="row">
                             {% if reservation.Service_Requred == 'Meeting Room' %}
-                            <input type="hidden" name="amount" value="{{reservation.Room_Booking_Total_Amount}}">
+                            <input type="hidden" name="amount" value="{{reservation.Room_Booking_Total_Amount}}"
+                                disabled>
                             {% elif reservation.Service_Requred == 'Accommodation' %}
-                            <input type="hidden" name="amount" value="{{reservation.Accomodation_Total_Amount}}">
+                            <input type="hidden" name="amount" value="{{reservation.Accomodation_Total_Amount}}"
+                                disabled>
                             {% else %}
-                            <input type="hidden" name="amount" value="{{reservation.Total_Amount_Payable}}">
+                            <input type="hidden" name="amount" value="{{reservation.Total_Amount_Payable}}" disabled>
                             {% endif %}
-                            <input type="hidden" name="account_reference" value="KEPHIS ROOM RESERVATION">
+                            <input type="hidden" name="account_reference" value="KEPHIS ROOM RESERVATION" disabled>
                             <div class="col-md-12">
                                 <input type="text" class="form-control" name="phone_number"
                                     placeholder="Enter Your Number">
-                                <button type="submit" class="button-87  w-100 my-3">Pay
+                                <button type="submit" class="button-87  w-100 my-3" disabled>Pay
                                     {% if reservation.Service_Requred == 'Meeting Room' %}
                                     <span class="Room_Booking_Total_Amount">KES ---.--</span>
                                     {% elif reservation.Service_Requred == 'Accommodation' %}
@@ -440,7 +442,6 @@
         </div>
     </div>
 </section>
-{% include 'footer.html' %}
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.semanticui.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>

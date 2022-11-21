@@ -282,6 +282,13 @@ li {
 .dorne-welcome-area {
     width: 100%;
     min-height: 100vh;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.5),
+        rgba(0, 0, 0, 0.5)
+      ),url(../img/bg-img/4.jpg);
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
 }
 .hero{
     padding-top: 5rem;
@@ -306,7 +313,7 @@ li {
 }
 .hero h6 {
     padding-top: 1rem;
-    color: var(--second-color);
+    color: white;
     font-size: 1rem;
     font-family: var(--font2);
     font-weight: 800;
@@ -944,6 +951,7 @@ li {
     background: whitesmoke;
     padding: 20px 0px;
     border-top: 1px solid #bec0cc;
+    height: 80px !important;
 }
 
 .footer-text p {

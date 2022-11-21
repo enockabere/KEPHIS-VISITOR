@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block base %}
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="../../static/js/currency.js"></script>
 <section class="bg-img">
     <div class="container-fluid">
@@ -249,11 +250,6 @@
         </div>
     </div>
 </section>
-{% include 'footer.html' %}
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/dataTables.semanticui.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.semanticui.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#example').DataTable();

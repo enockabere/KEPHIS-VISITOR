@@ -238,10 +238,11 @@ class Pay(UserObjectMixin,View):
                 amount = 1
                 account_reference = request.POST.get('account_reference')
                 transaction_desc = 'Description'
-                callback_url = request.build_absolute_uri(reverse('mpesa_stk_push_callback'))
-                response = self.lipa_na_mpesa(amount,phone_number,callback_url,account_reference, transaction_desc)
-                print(response)
-                return redirect('Confirm',pk=pk)
+
+                messages.error(request,"Payment integration to be active once an SSL is installed")
+                return redirect('BookingGateway',pk=pk)
+                # callback_url = request.build_absolute_uri(reverse('mpesa_stk_push_callback'))
+                # response = self.lipa_na_mpesa(amount,phone_number,callback_url,account_reference, transaction_desc)
             except Exception as e:
                 print(e)
                 messages.info(request, e)

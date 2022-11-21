@@ -5,7 +5,6 @@ from mpesa.api.utils import get_timestamp
 from mpesa.api.encode import generate_password
 from requests.auth import HTTPBasicAuth
 from mpesa.api.access_token import generate_access_token
-
 # Create your views here.
 class UserObjectMixin(object):
     model =None
@@ -42,7 +41,7 @@ class UserObjectMixin(object):
         decoded_password = generate_password(formatted_time)
         access_token = generate_access_token()
 
-        api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+        api_url = "http://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
 
         headers = {"Authorization": "Bearer %s" % access_token}
 
