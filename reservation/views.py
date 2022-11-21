@@ -238,7 +238,6 @@ class Pay(UserObjectMixin,View):
                 amount = 1
                 account_reference = request.POST.get('account_reference')
                 transaction_desc = 'Description'
-
                 callback_url = request.build_absolute_uri(reverse('mpesa_stk_push_callback'))
                 response = self.lipa_na_mpesa(amount,phone_number,callback_url,account_reference, transaction_desc)
                 print(response)

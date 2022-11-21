@@ -264,9 +264,12 @@ class  verifyRequest(UserObjectMixin,View):
                 for res in response['value']:
                     if res['VerificationToken'] == secret:
                         response = config.CLIENT.service.FnVerified(verified,email)
-                        print("response:",response)
                         messages.success(request,"Verification Successful")
                         return redirect('login')
+                    messages.success(request,"Wrong Secret Code")
+                    return redirect('verifyRequest')
+                messages.success(request,"Email not registered")
+                return redirect('register')
             except requests.exceptions.RequestException as e:
                 print(e)
                 messages.error(request,e)
