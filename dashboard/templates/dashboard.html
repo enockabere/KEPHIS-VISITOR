@@ -40,6 +40,10 @@
                             <h6>Room Reservation</h6>
                             <form action="{% url 'dashboard' %}" method="POST">
                                 {% csrf_token %}
+                                <input type="hidden" name="disabled" value="False">
+                                <input type="hidden" name="explainDisability" value="None">
+                                <input type="hidden" name="allergies" value="False">
+                                <input type="hidden" name="explainAllergies" value="None">
                                 <div class="row gx-2 my-3">
                                     <div class="col-md-6">
                                         <label for="" class="form-label">Client Type</label>

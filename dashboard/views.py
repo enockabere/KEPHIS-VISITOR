@@ -6,15 +6,7 @@ from django.conf import settings as config
 from django.http import JsonResponse
 import simplejson as jsons
 from datetime import datetime
-
-# Create your views here.
-class UserObjectMixin(object):
-    model =None
-    session = requests.Session()
-    session.auth = config.AUTHS
-    def get_object(self,endpoint):
-        response = self.session.get(endpoint, timeout=10).json()
-        return response
+from myRequest . views import UserObjectMixin
 
 class Dashboard(View):
     def get(self,request):
@@ -25,12 +17,20 @@ class Dashboard(View):
 
                 clientType = request.POST.get('clientType')
                 typeOfService = request.POST.get('typeOfService')
+                disabled = eval(request.POST.get('disabled'))
+                explainDisability = request.POST.get('explainDisability')
+                allergies = eval(request.POST.get('allergies'))
+                explainAllergies = request.POST.get('explainAllergies')
                
                 try:
                     request.session['clientType'] = clientType
                     request.session['typeOfService'] = typeOfService
+                    request.session['disabled'] = disabled
+                    request.session['explainDisability'] = explainDisability
+                    request.session['allergies'] = allergies
+                    request.session['explainAllergies'] = explainAllergies
 
-                    messages.success(request,"Success")
+                    messages.success(request,"Success. Add Booking Line")
                     print("Success")
                     return redirect('ListingDetail',pk=request.session['typeOfService'])
                 except  Exception as e:
@@ -76,6 +76,7 @@ class ListingDetail(UserObjectMixin,View):
                 NumberOfPeople = request.POST.get('NumberOfPeople')
                 startDate = request.POST.get('startDate')
                 typeOfClient = int(request.session['clientType'])
+                NumberOfDays = int(request.POST.get('NumberOfDays'))
                 startTime = request.POST.get('startTime')
                 endTime = request.POST.get('endTime')
 
@@ -86,6 +87,7 @@ class ListingDetail(UserObjectMixin,View):
                 request.session['startDate'] = startDate
                 request.session['startTime'] = startTime
                 request.session['endTime'] = endTime
+                request.session['NumberOfDays'] = NumberOfDays
 
                 noOfRooms = int(NumberOfPeople)
                 
@@ -200,9 +202,6 @@ class  MakeReservation(UserObjectMixin,View):
 class CancelReservation(View):
     def post(self,request,pk):
         try:
-            del request.session['clientType']
-            del request.session['typeOfService']
-
             if pk == '1':
                 del request.session['TypeOfRoom'] 
                 del request.session['ServiceRequired']
@@ -210,6 +209,8 @@ class CancelReservation(View):
                 del request.session['startTime']
                 del request.session['endTime'] 
                 del request.session['NumberOfPeople'] 
+                del request.session['clientType']
+                del request.session['typeOfService']
                 messages.error(request,"Reservation Cancelled successfully")
                 return redirect('dashboard') 
 
@@ -219,6 +220,8 @@ class CancelReservation(View):
                 del request.session['NumberOfRooms'] 
                 del request.session['accom_startDate']
                 del request.session['accom_endDate']
+                del request.session['clientType']
+                del request.session['typeOfService']
                 messages.error(request,"Reservation Cancelled successfully")
                 return redirect('dashboard')
             if pk == '3':
@@ -232,10 +235,12 @@ class CancelReservation(View):
                 del request.session['NumberOfRooms'] 
                 del request.session['accom_startDate']
                 del request.session['accom_endDate']
+                del request.session['clientType']
+                del request.session['typeOfService']
                 messages.error(request,"Reservation Cancelled successfully")
                 return redirect('dashboard')
         except Exception as e:
             print (e)
-            messages.error(request,e)
-            return redirect('ListingDetail',pk=pk)
+            messages.success(request,"Logged Out")
+            return redirect('dashboard')
 

@@ -173,6 +173,7 @@ ENCRYPT_KEY = b'bzKNyzSwwsN0pwQKglGqPnMKPS6WTPElkRPoCOTYN0I='
 
 AUTHS = Session()
 
+WEB_SERVICE_USER = 'ktl-admin'
 WEB_SERVICE_PWD = 'W3C0d3@llD@y'
 
 O_DATA = "http://20.231.15.166:7048/BC140/ODataV4/Company('CRONUS%20International%20Ltd.')/{}"

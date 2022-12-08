@@ -164,6 +164,7 @@ class MeetingDetails(UserObjectMixin,View):
                 ServiceRequired = request.POST.get('ServiceRequired')
                 TypeOfRoom = request.POST.get('TypeOfRoom')
                 NumberOfPeople = int(request.POST.get('NumberOfPeople'))
+                NumberOfDays = int(request.POST.get('NumberOfDays'))
                 startDate = datetime.strptime(request.POST.get('startDate'), '%Y-%m-%d').date()
                 startTime = datetime.strptime(request.POST.get('startTime'), '%H:%M').time()
                 endTime = datetime.strptime(request.POST.get('endTime'), '%H:%M').time()
@@ -172,7 +173,7 @@ class MeetingDetails(UserObjectMixin,View):
 
                 BookingLineResponse = config.CLIENT.service.FnRoomBookingLine(
                                                 bookingNo,TypeOfRoom,lineNo,myAction,userCode,ServiceRequired,
-                                                startDate,startTime,endTime,NumberOfPeople)
+                                                startDate,startTime,endTime,NumberOfPeople,NumberOfDays)
 
                 if BookingLineResponse == True:
                     messages.success(request,"Success")

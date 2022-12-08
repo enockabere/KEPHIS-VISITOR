@@ -62,6 +62,10 @@
                                                 <div class="col-md-12">
                                                     <form action="{% url 'dashboard' %}" method="post">
                                                         {% csrf_token %}
+                                                        <input type="hidden" name="disabled" value="False">
+                                                        <input type="hidden" name="explainDisability" value="None">
+                                                        <input type="hidden" name="allergies" value="False">
+                                                        <input type="hidden" name="explainAllergies" value="None">
                                                         <div class="row gx-2 my-3">
                                                             <div class="col-md-6">
                                                                 <label for="" class="form-label">Client Type</label>
@@ -210,7 +214,12 @@
                 <button type="button" class="button-5  w-100 my-3" data-bs-toggle="modal"
                     data-bs-target="#cancelModal">Back
                     Home <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></button>
-                <div class="alert alert-primary alert-dismissible fade show" id="listingAlert" role="alert">
+                <div id="listingAlert">
+                    <script>
+
+                    </script>
+                </div>
+                <!-- <div class=" alert alert-primary alert-dismissible fade show" role="alert">
                     <h4 class="alert-heading">Added Successfully</h4>
                     New entries will modify the existing entry.
                     <hr>
@@ -218,7 +227,7 @@
                         added/modified on login.
                     </p>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -333,6 +342,7 @@
                     TypeOfAccommodation: $("#TypeOfAccommodation").val(),
                     NumberOfPeople: $("#NumberOfPeople").val(),
                     startDate: $("#startDate").val(),
+                    NumberOfDays: $("#NumberOfDays").val(),
                     endDate: $("#startDate").val(),
                     startTime: $('#startTime').val(),
                     endTime: $('#startTime').val(),
@@ -347,12 +357,26 @@
                     $("#endDate").val("");
                     $("#startTime").val("");
                     $("#endTime").val("");
+                    $("#NumberOfDays").val("");
                     $(".meetingTotal").empty().append(currency(response, {
                         separator: ','
                     }).format());
                     $('#money-spinner1').hide();
                     $('#money-spinner').hide();
-                    $('#listingAlert').show(1000);
+                    iziToast.success({
+                        title: 'Success!',
+                        backgroundColor: '#dd7f0d',
+                        titleColor: 'White',
+                        theme: 'dark',
+                        timeout: 2500,
+                        drag: true,
+                        overlay: false,
+                        displayMode: 'once',
+                        id: 'inputs',
+                        zindex: 999,
+                        position: 'bottomRight',
+                        message: 'You will add/modify entries on login'
+                    });
                 }
             })
 
@@ -418,7 +442,20 @@
                     }).format());
                     $('#money-spinner_accom').hide();
                     $('#money-spinner').hide();
-                    $('#listingAlert').show(1000);
+                    iziToast.success({
+                        title: 'Success!',
+                        backgroundColor: '#dd7f0d',
+                        titleColor: 'White',
+                        theme: 'dark',
+                        timeout: 2500,
+                        drag: true,
+                        overlay: false,
+                        displayMode: 'once',
+                        id: 'inputs',
+                        zindex: 999,
+                        position: 'bottomRight',
+                        message: 'You will add/modify entries on login'
+                    });
                 }
             })
 

@@ -5,6 +5,10 @@ from mpesa.api.utils import get_timestamp
 from mpesa.api.encode import generate_password
 from requests.auth import HTTPBasicAuth
 from mpesa.api.access_token import generate_access_token
+from requests import Session
+from zeep import Client
+from zeep.transports import Transport
+from requests.auth import HTTPBasicAuth
 # Create your views here.
 class UserObjectMixin(object):
     model =None
@@ -32,6 +36,17 @@ class UserObjectMixin(object):
     def triple_filtered_data(self,endpoint,property_x,filter_x,filed_name_x,operater_1,property_y,filter_y,field_name_y,operater_2,property_z,filter_z,field_name_z):
 
         Access_Point = config.O_DATA.format(f"{endpoint}?$filter={property_x}%20{filter_x}%20%27{filed_name_x}%27%20{operater_1}%20{property_y}%20{filter_y}%20%27{field_name_y}%27%20{operater_2}%20{property_z}%20{filter_z}%20%27{field_name_z}%27")
+        response = self.get_object(Access_Point)['value']
+        count=len(response)
+        return count,response
+    def zeep_client(self):
+        AUTHS = Session()
+        AUTHS.auth = HTTPBasicAuth(config.WEB_SERVICE_USER, config.WEB_SERVICE_PWD)
+        CLIENT = Client(config.BASE_URL, transport=Transport(session=AUTHS))
+        return CLIENT
+
+    def comparison_double_filter(self,endpoint,property_x,filter_x,field_name,operater_1,property_y,filter_y,property_z):
+        Access_Point = config.O_DATA.format(f"{endpoint}?$filter={property_x}%20{filter_x}%20%27{field_name}%27%20{operater_1}%20{property_y}%20{filter_y}%20{property_z}")
         response = self.get_object(Access_Point)['value']
         count=len(response)
         return count,response
