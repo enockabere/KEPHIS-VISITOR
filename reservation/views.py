@@ -251,7 +251,11 @@ class Pay(UserObjectMixin,View):
                 account_reference = request.POST.get('account_reference')
                 transaction_desc = 'Description'
 
-                messages.error(request,"Payment integration to be active once an SSL is installed")
+                response = self.zeep_client().service.FnConfirmBooking(pk,request.session['UserID'])
+                if response == True:
+                    messages.success(request,"Payment successful")
+                    return redirect('BookingGateway',pk=pk)
+                messages.error(request,response)
                 return redirect('BookingGateway',pk=pk)
                 # callback_url = request.build_absolute_uri(reverse('mpesa_stk_push_callback'))
                 # response = self.lipa_na_mpesa(amount,phone_number,callback_url,account_reference, transaction_desc)

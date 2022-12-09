@@ -287,7 +287,7 @@
                             <div class="col-md-12">
                                 <input type="text" class="form-control" name="phone_number"
                                     placeholder="Enter Your Number">
-                                <button type="submit" class="button-87  w-100 my-3" disabled>Pay
+                                <button type="submit" class="button-87  w-100 my-3">Pay
                                     {% if reservation.Service_Requred == 'Meeting Room' %}
                                     <span class="Room_Booking_Total_Amount">KES ---.--</span>
                                     {% elif reservation.Service_Requred == 'Accommodation' %}
@@ -329,12 +329,14 @@
                 data-bs-target="#newAccomoLine">Add Accommodation Details<i class="las la-plus mx-2"
                     style="font-size:1.5rem"></i></a>
             {% endif %}
+            {% if reservation.Booking_Status == 'Open' %}
             <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
                 data-bs-target="#disabilityDetails">Add Disability Details<i class="las la-plus mx-2"
                     style="font-size:1.5rem"></i></a>
             <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
                 data-bs-target="#allergyDetails">Add Allergy Details<i class="las la-plus mx-2"
                     style="font-size:1.5rem"></i></a>
+            {% endif %}
             <a href="{% url 'reserve' %}" type="button" class="btn btn-warning button-5  w-100 my-3">Go Back
                 <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></a>
         </div>
