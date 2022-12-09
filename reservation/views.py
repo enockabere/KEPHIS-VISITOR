@@ -54,9 +54,14 @@ class Reservations(UserObjectMixin,View):
                 typeOfService = int(request.POST.get('typeOfService'))
                 typeOfClient = int(request.POST.get('clientType'))
                 userCode = request.session['UserID']
+                disabled = eval(request.POST.get('disabled'))
+                explainDisability = request.POST.get('explainDisability')
+                allergies = eval(request.POST.get('allergies'))
+                explainAllergies = request.POST.get('explainAllergies')
 
-                BookingHeaderResponse = config.CLIENT.service.FnVisitorsCard(
-                                        bookingNo,myAction,typeOfService,typeOfClient,userCode)
+                BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
+                            bookingNo,myAction,typeOfService,typeOfClient,userCode,
+                            disabled,explainDisability,allergies,explainAllergies)
                 if BookingHeaderResponse:
                     messages.success(request,"Success, add booking details")
                     return redirect("BookingGateway",pk=BookingHeaderResponse)
@@ -133,8 +138,14 @@ class BookingGateway(UserObjectMixin,View):
                 typeOfBooking = int(request.POST.get('typeOfService'))
                 typeOfClient = int(request.POST.get('clientType'))
                 userCode = request.session['UserID']
-                BookingHeaderResponse = config.CLIENT.service.FnVisitorsCard(
-                                        bookingNo,myAction,typeOfBooking,typeOfClient,userCode)
+                disabled = eval(request.POST.get('disabled'))
+                explainDisability = request.POST.get('explainDisability')
+                allergies = eval(request.POST.get('allergies'))
+                explainAllergies = request.POST.get('explainAllergies')
+
+                BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
+                                        bookingNo,myAction,typeOfBooking,typeOfClient,userCode,
+                                        disabled,explainDisability,allergies,explainAllergies)
 
                 if BookingHeaderResponse:
                     messages.success(request,"Success")
@@ -171,7 +182,7 @@ class MeetingDetails(UserObjectMixin,View):
                 myAction = request.POST.get('myAction')
                 userCode = request.session['UserID']
 
-                BookingLineResponse = config.CLIENT.service.FnRoomBookingLine(
+                BookingLineResponse = self.zeep_client().service.FnRoomBookingLine(
                                                 bookingNo,TypeOfRoom,lineNo,myAction,userCode,ServiceRequired,
                                                 startDate,startTime,endTime,NumberOfPeople,NumberOfDays)
 
@@ -207,7 +218,7 @@ class AccomodationDetails(UserObjectMixin,View):
                 myAction = request.POST.get('myAction')
                 userCode = request.session['UserID']
 
-                AccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
+                AccomodationLineResponse = self.zeep_client().service.FnAccomodationBookingLine(
                                                 pk,myAction,userCode,ServiceRequired,NumberOfRooms,
                                                 lineNo,startDate,endDate)
 
@@ -257,3 +268,60 @@ class Confirm(UserObjectMixin,View):
 class BookingDetails(View):
     def get(self,request,pk):
         return render(request,"bookingDetails.html")
+
+class DisabilityDetails(UserObjectMixin,View):
+    def post(self,request,pk):
+        if request.method == "POST":
+            try:
+                myAction = request.POST.get('myAction')
+                typeOfBooking = int(request.POST.get('typeOfService'))
+                typeOfClient = int(request.POST.get('clientType'))
+                userCode = request.session['UserID']
+                disabled = eval(request.POST.get('disabled'))
+                explainDisability = request.POST.get('explainDisability')
+                allergies = eval(request.POST.get('allergies'))
+                explainAllergies = request.POST.get('explainAllergies')
+
+
+                BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
+                                            pk,myAction,typeOfBooking,typeOfClient,userCode,
+                                            disabled,explainDisability,allergies,explainAllergies)
+
+                if BookingHeaderResponse:
+                    messages.success(request,"Success")
+                    return redirect('BookingGateway', pk=pk)
+                messages.error(request,f"False.{BookingHeaderResponse}")
+                return redirect('BookingGateway', pk=pk)
+            except Exception as e:
+                print(e)
+                messages.error(request, e)
+                return redirect('BookingGateway',pk=pk)
+        return redirect('BookingGateway',pk=pk)
+class AllergyDetails(UserObjectMixin,View):
+    def post(self,request,pk):
+        if request.method == "POST":
+            try:
+                myAction = request.POST.get('myAction')
+                typeOfBooking = int(request.POST.get('typeOfService'))
+                typeOfClient = int(request.POST.get('clientType'))
+                userCode = request.session['UserID']
+                disabled = eval(request.POST.get('disabled'))
+                explainDisability = request.POST.get('explainDisability')
+                allergies = eval(request.POST.get('allergies'))
+                explainAllergies = request.POST.get('explainAllergies')
+
+
+                BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
+                                            pk,myAction,typeOfBooking,typeOfClient,userCode,
+                                            disabled,explainDisability,allergies,explainAllergies)
+
+                if BookingHeaderResponse:
+                    messages.success(request,"Success")
+                    return redirect('BookingGateway', pk=pk)
+                messages.error(request,f"False.{BookingHeaderResponse}")
+                return redirect('BookingGateway', pk=pk)
+            except Exception as e:
+                print(e)
+                messages.error(request, e)
+                return redirect('BookingGateway',pk=pk)
+        return redirect('BookingGateway',pk=pk)

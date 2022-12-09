@@ -12,15 +12,8 @@ from django.core.mail import EmailMessage
 import threading
 import requests
 from datetime import  datetime
+from myRequest.views import UserObjectMixin
 
-# Create your views here.
-class UserObjectMixin(object):
-    model =None
-    session = requests.Session()
-    session.auth = config.AUTHS
-    def get_object(self,endpoint):
-        response = self.session.get(endpoint, timeout=10).json()
-        return response
 
 class EmailThread(threading.Thread):
     def __init__(self, email):
@@ -89,9 +82,14 @@ class Login(UserObjectMixin,View):
                                     typeOfBooking = int(typeOfService)
                                     typeOfClient = int(clientType)
                                     userCode = request.session['UserID']
+                                    disabled = request.session['disabled']
+                                    explainDisability = request.session['explainDisability']
+                                    allergies = request.session['allergies']
+                                    explainAllergies = request.session['explainAllergies']
 
-                                    BookingHeaderResponse = config.CLIENT.service.FnVisitorsCard(
-                                        bookingNo,myAction,typeOfBooking,typeOfClient,userCode)
+                                    BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
+                                        bookingNo,myAction,typeOfBooking,typeOfClient,userCode,disabled,
+                                        explainDisability,allergies,explainAllergies)
 
                                     if BookingHeaderResponse:
                                         bookingNo = BookingHeaderResponse
@@ -103,10 +101,11 @@ class Login(UserObjectMixin,View):
                                             endTime = datetime.strptime(request.session['endTime'], '%H:%M').time()
                                             TypeOfRoom = request.session['TypeOfRoom']
                                             NumberOfPeople = request.session['NumberOfPeople'] 
+                                            NumberOfDays = request.session['NumberOfDays']
 
-                                            BookingLineResponse = config.CLIENT.service.FnRoomBookingLine(
+                                            BookingLineResponse = self.zeep_client().service.FnRoomBookingLine(
                                                 bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
-                                                startDate,startTime,endTime,NumberOfPeople)
+                                                startDate,startTime,endTime,NumberOfPeople,NumberOfDays)
 
                                             if BookingLineResponse == True:
                                                 del request.session['clientType']
@@ -124,7 +123,7 @@ class Login(UserObjectMixin,View):
                                             NumberOfRooms = request.session['NumberOfRooms'] 
                                             accom_startDate = datetime.strptime(request.session['accom_startDate'], '%Y-%m-%d').date()
                                             accom_endDate = datetime.strptime(request.session['accom_endDate'], '%Y-%m-%d').date()
-                                            AccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
+                                            AccomodationLineResponse = self.zeep_client().service.FnAccomodationBookingLine(
                                                 bookingNo,myAction,userCode,accom_service,NumberOfRooms,
                                                 "0",accom_startDate,accom_endDate)
 
@@ -144,18 +143,19 @@ class Login(UserObjectMixin,View):
                                             startTime = datetime.strptime(request.session['startTime'], '%H:%M').time()
                                             endTime = datetime.strptime(request.session['endTime'], '%H:%M').time()
                                             TypeOfRoom = request.session['TypeOfRoom']
-                                            NumberOfPeople = request.session['NumberOfPeople'] 
+                                            NumberOfPeople = request.session['NumberOfPeople']
+                                            NumberOfDays = request.session['NumberOfDays']
 
-                                            BookingLineResponse = config.CLIENT.service.FnRoomBookingLine(
+                                            BookingLineResponse = self.zeep_client().service.FnRoomBookingLine(
                                                 bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
-                                                startDate,startTime,endTime,NumberOfPeople)
+                                                startDate,startTime,endTime,NumberOfPeople,NumberOfDays)
 
                                             if BookingLineResponse == True:
                                                 accom_service = request.session['accom_ServiceRequired']
                                                 NumberOfRooms = request.session['NumberOfRooms'] 
                                                 accom_startDate = datetime.strptime(request.session['accom_startDate'], '%Y-%m-%d').date()
                                                 accom_endDate = datetime.strptime(request.session['accom_endDate'], '%Y-%m-%d').date()
-                                                AccomodationLineResponse = config.CLIENT.service.FnAccomodationBookingLine(
+                                                AccomodationLineResponse = self.zeep_client().service.FnAccomodationBookingLine(
                                                     bookingNo,myAction,userCode,accom_service,NumberOfRooms,
                                                     "0",accom_startDate,accom_endDate)
                                                 if AccomodationLineResponse == True:

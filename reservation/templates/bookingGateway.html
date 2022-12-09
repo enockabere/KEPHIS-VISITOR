@@ -149,6 +149,14 @@
                                                             <input type="hidden" name="myAction" value="modify">
                                                             <input type="hidden" name="bookingNo"
                                                                 value="{{reservation.No_}}">
+                                                            <input type="hidden" name="disabled"
+                                                                value="{{reservation.Disability}}">
+                                                            <input type="hidden" name="explainDisability"
+                                                                value="{{reservation.Explain_Disability}}">
+                                                            <input type="hidden" name="allergies"
+                                                                value="{{reservation.Indicate_Allergies}}">
+                                                            <input type="hidden" name="explainAllergies"
+                                                                value="{{reservation.Explain_Allergies}}">
                                                             <div class="row gx-2 my-3">
                                                                 <div class="col-md-6">
                                                                     <label for="" class="form-label">Client Type</label>
@@ -190,6 +198,52 @@
                                     {% elif reservation.Service_Requred == 'Meeting Room And Accommodation' %}
                                     {% include 'meetingDetails.html' %}
                                     {% include 'accomDetails.html' %}
+                                    {% endif %}
+                                    {% if reservation.Disability == True %}
+                                    <div class="card mb-3">
+                                        <div class="card-header" id="disabilityHeading">
+                                            <h5 class="mb-0">
+                                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                                    data-bs-target="#disabilityOne" aria-expanded="false"
+                                                    aria-controls="disabilityOne">
+                                                    Disability Details
+                                                </button>
+                                            </h5>
+                                        </div>
+                                        <div id="disabilityOne" class="collapse" aria-labelledby="disabilityHeading"
+                                            data-bs-parent="#accordion">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <p>{{reservation.Explain_Disability}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% if reservation.Indicate_Allergies == True %}
+                                    <div class="card mb-3">
+                                        <div class="card-header" id="disabilityHeading">
+                                            <h5 class="mb-0">
+                                                <button class="btn btn-link collapsed" data-bs-toggle="collapse"
+                                                    data-bs-target="#disabilityOne" aria-expanded="false"
+                                                    aria-controls="disabilityOne">
+                                                    Allergy Details
+                                                </button>
+                                            </h5>
+                                        </div>
+                                        <div id="disabilityOne" class="collapse" aria-labelledby="disabilityHeading"
+                                            data-bs-parent="#accordion">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <p>{{reservation.Explain_Allergies}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {% endif %}
                                 </div>
                             </div>
@@ -275,6 +329,12 @@
                 data-bs-target="#newAccomoLine">Add Accommodation Details<i class="las la-plus mx-2"
                     style="font-size:1.5rem"></i></a>
             {% endif %}
+            <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
+                data-bs-target="#disabilityDetails">Add Disability Details<i class="las la-plus mx-2"
+                    style="font-size:1.5rem"></i></a>
+            <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
+                data-bs-target="#allergyDetails">Add Allergy Details<i class="las la-plus mx-2"
+                    style="font-size:1.5rem"></i></a>
             <a href="{% url 'reserve' %}" type="button" class="btn btn-warning button-5  w-100 my-3">Go Back
                 <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></a>
         </div>
@@ -441,6 +501,94 @@
                             </div>
                         </div>
                         <button type="submit" class="button-87  w-100 my-3"> Make Reservation
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="disabilityDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Disability Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'DisabilityDetails' reservation.No_ %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="myAction" value="modify">
+                        <input type="hidden" name="disabled" value="True">
+                        <input type="hidden" name="allergies" value="{{reservation.Indicate_Allergies}}">
+                        <input type="hidden" name="explainAllergies" value="{{reservation.Explain_Allergies}}">
+                        {% if reservation.Service_Requred == 'Meeting Room' %}
+                        <input type="hidden" name="typeOfService" value="1">
+                        {% elif reservation.Service_Requred == 'Accommodation' %}
+                        <input type="hidden" name="typeOfService" value="2">
+                        {% elif reservation.Service_Requred == 'Meeting Room And Accommodation' %}
+                        <input type="hidden" name="typeOfService" value="3">
+                        {% else %}
+                        <input type="hidden" name="typeOfService" value="0">
+                        {% endif %}
+                        {% if reservation.Type_Of_Client == 'Private' %}
+                        <input type="hidden" name="clientType" value="1">
+                        {% elif reservation.Type_Of_Client == 'Public' %}
+                        <input type="hidden" name="clientType" value="2">
+                        {% else %}
+                        <input type="hidden" name="clientType" value="3">
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">Disability Description</label>
+                                <textarea class="form-control" name="explainDisability" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="button-87  w-100 my-3"> Submit Details
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="allergyDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Allergy Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'AllergyDetails' reservation.No_ %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="myAction" value="modify">
+                        <input type="hidden" name="disabled" value="{{reservation.Disability}}">
+                        <input type="hidden" name="allergies" value="True">
+                        <input type="hidden" name="explainDisability" value="{{reservation.Explain_Disability}}">
+                        {% if reservation.Service_Requred == 'Meeting Room' %}
+                        <input type="hidden" name="typeOfService" value="1">
+                        {% elif reservation.Service_Requred == 'Accommodation' %}
+                        <input type="hidden" name="typeOfService" value="2">
+                        {% elif reservation.Service_Requred == 'Meeting Room And Accommodation' %}
+                        <input type="hidden" name="typeOfService" value="3">
+                        {% else %}
+                        <input type="hidden" name="typeOfService" value="0">
+                        {% endif %}
+                        {% if reservation.Type_Of_Client == 'Private' %}
+                        <input type="hidden" name="clientType" value="1">
+                        {% elif reservation.Type_Of_Client == 'Public' %}
+                        <input type="hidden" name="clientType" value="2">
+                        {% else %}
+                        <input type="hidden" name="clientType" value="3">
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">Disability Description</label>
+                                <textarea class="form-control" name="explainAllergies" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="button-87  w-100 my-3"> Submit Details
                         </button>
                     </form>
                 </div>
