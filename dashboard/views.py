@@ -1,12 +1,11 @@
 from django.shortcuts import render,redirect
 from django.views import View
 from django.contrib import messages
-import requests
 from django.conf import settings as config
 from django.http import JsonResponse
 import simplejson as jsons
-from datetime import datetime
-from myRequest . views import UserObjectMixin
+from myRequest . views import UserObjectMixin,HTTPResponseHXRedirect
+from django.urls import reverse_lazy
 
 class Dashboard(View):
     def get(self,request):
@@ -32,7 +31,7 @@ class Dashboard(View):
 
                     messages.success(request,"Success. Add Booking Line")
                     print("Success")
-                    return redirect('ListingDetail',pk=request.session['typeOfService'])
+                    return HTTPResponseHXRedirect(redirect_to=reverse_lazy("ListingDetail",kwargs={"pk":request.session['typeOfService']}))
                 except  Exception as e:
                     print (e)
                     messages.error(request,e)
@@ -90,9 +89,12 @@ class ListingDetail(UserObjectMixin,View):
                 request.session['NumberOfDays'] = NumberOfDays
 
                 noOfRooms = int(NumberOfPeople)
+
+                print(TypeOfRoom,typeOfClient,ServiceRequired,noOfRooms)
                 
                 response = config.CLIENT.service.FnMeetingFees(
                     TypeOfRoom,typeOfClient,ServiceRequired,noOfRooms)
+                
                 mp = jsons.dumps(response,use_decimal=True)
                 return JsonResponse(mp,safe=False)
             except Exception as e:

@@ -79,7 +79,7 @@
             </li>
         </ul>
         <div class="col-12 col-md-4 text-center">
-            <a href="{% url 'BookingGateway' reservation.No_ %}"
+            <a hx-get="{% url 'BookingGateway' reservation.No_ %}" hx-push="{% url 'BookingGateway' reservation.No_ %}"
                 class="f-n-hover btn button-2 btn-raised px-4 py-25 w-75 text-600">Book <i
                     class="las la-angle-double-right"></i>
             </a>

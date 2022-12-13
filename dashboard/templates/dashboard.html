@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block base %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"
-    integrity="sha512-zYXldzJsDrNKV+odAwFYiDXV2Cy37cwizT+NkuiPGsa9X1dOz04eHvUWVuxaJ299GvcJT31ug2zO4itXBjFx4w=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
     .my-handle {
         cursor: move;
@@ -38,7 +35,7 @@
                             aria-labelledby="nav-places-tab">
                             {% include 'alerts.html' %}
                             <h6>Room Reservation</h6>
-                            <form action="{% url 'dashboard' %}" method="POST">
+                            <form hx-post="{% url 'dashboard' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="disabled" value="False">
                                 <input type="hidden" name="explainDisability" value="None">
@@ -65,7 +62,8 @@
                                         </select>
                                     </div>
                                 </div>
-                                <button class="btn button-87" type="submit">Submit</button>
+                                <button hx-post="{% url 'dashboard' %}" hx-swap="none" class="btn button-87"
+                                    type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
@@ -74,50 +72,4 @@
         </div>
     </div>
 </section>
-
-<script>
-    $('#typeOfService').on('change', function (e) {
-        e.preventDefault();
-        var ItemCode = $("#typeOfService").val();
-        if (ItemCode != null) {
-            $("#regForm select[name='serviceRequired']").find('.after').nextAll().remove();
-            $.ajax({
-                type: 'get',
-                url: '{% url "serviceRequired" %}',
-                dataType: 'json',
-                data: {
-                    ItemCode: ItemCode
-                },
-                success: function (response) {
-                    let options = '';
-                    for (var i = 0; i < response.value.length; i++) {
-                        if (response.value[i].Service_Requred_Code == ItemCode) {
-                            options += '<option value=' + response.value[i]
-                                .Code + '>' + response.value[i].ServiceDescription +
-                                '</option>';
-
-                        }
-                    }
-                    $("#regForm select[name='serviceRequired']").find('.after')
-                        .after(
-                            options);
-
-                },
-                error: function (response) {
-                    console.log('Something went wrong');
-                }
-            });
-        } else {
-            $("#regForm select[name='serviceRequired']").find('.after').nextAll().remove();
-        }
-        if (ItemCode === '1') {
-            $('#roomTypeRow').show(1000)
-            $('#roomType').prop('disabled', false);
-        } else {
-            $('#roomType').prop('disabled', true);
-            $('#roomTypeRow').hide(1000)
-        }
-    });
-</script>
-
 {% endblock %}

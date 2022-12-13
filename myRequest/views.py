@@ -9,7 +9,19 @@ from requests import Session
 from zeep import Client
 from zeep.transports import Transport
 from requests.auth import HTTPBasicAuth
+from django.http import HttpResponseRedirect
 # Create your views here.
+session = requests.Session()
+session.auth = config.AUTHS
+
+def get_object_method(endpoint):
+    response = session.get(endpoint, timeout=10).json()
+    return response
+def one_filter_method(endpoint,property,filter,field_name):
+        Access_Point = config.O_DATA.format(f"{endpoint}?$filter={property}%20{filter}%20%27{field_name}%27")
+        response = get_object_method(Access_Point)['value']
+        count=len(response)
+        return count,response
 class UserObjectMixin(object):
     model =None
     session = requests.Session()
@@ -79,3 +91,8 @@ class UserObjectMixin(object):
 
 
 
+class HTTPResponseHXRedirect(HttpResponseRedirect):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self["HX-Redirect"] = self["Location"]
+    status_code = 200

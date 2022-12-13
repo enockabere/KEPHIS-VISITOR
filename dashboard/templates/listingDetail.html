@@ -308,7 +308,7 @@
                     },
                     success: function (response) {
                         for (var i = 0; i < response.value.length; i++) {
-                            if (response.value[i].Code == serviceCode) {
+                            if (response.value[i].No == serviceCode) {
                                 $(".serviceCharges").empty().append(currency(response.value[
                                     i].ChargeAmount, {
                                     separator: ','

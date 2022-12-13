@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.views import View
 from django.contrib import messages
@@ -12,7 +13,8 @@ from django.core.mail import EmailMessage
 import threading
 import requests
 from datetime import  datetime
-from myRequest.views import UserObjectMixin
+from myRequest.views import UserObjectMixin,one_filter_method
+
 
 
 class EmailThread(threading.Thread):
@@ -275,3 +277,16 @@ class  verifyRequest(UserObjectMixin,View):
                 messages.error(request,e)
                 return redirect('verifyRequest')
         return redirect('verifyRequest')
+
+def check_id(request):
+    idNumber = request.POST.get('idNumber')
+    get_user_id =one_filter_method("/QyVisitorsLogins",'IdNoKraPin','eq',idNumber)
+    if get_user_id[0]==0:
+        return HttpResponse("<span class='error-success'>ID number is available</span>")
+    return HttpResponse("<span class='error-error'>ID number already exits</span>")
+def check_email(request):
+    email = request.POST.get('email')
+    get_user_email =one_filter_method("/QyVisitorsLogins",'EmailAddress','eq',email)
+    if get_user_email[0]==0:
+        return HttpResponse("<span class='error-success'>Email is available</span>")
+    return HttpResponse("<span class='error-error'>Email already exits</span>")

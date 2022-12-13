@@ -39,7 +39,7 @@
                                         <option selected disabled value="0">--Select
                                             Service Required--</option>
                                         {% for meeting_services in meeting_services %}
-                                        <option value="{{meeting_services.Code}}">
+                                        <option value="{{meeting_services.No}}">
                                             {{meeting_services.ServiceDescription}}</option>
                                         {% empty %}
                                         <option selected disabled value="0">--No Service--</option>

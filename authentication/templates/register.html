@@ -24,7 +24,58 @@
     <link rel="stylesheet" href="../../static/plugins/iziToast-master/dist/css/iziToast.min.css">
     <script src="../../static/plugins/iziToast-master/dist/js/iziToast.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    <script src="../../static/plugins/htmx/htmx.min.js"></script>
 </head>
+<style>
+    .error-success {
+        font-size: 12px;
+        color: #15a752;
+        transition: all ease-in .5s;
+    }
+
+    .error-error {
+        font-size: 14px;
+        color: red;
+        transition: all ease-in 2s;
+        animation: blinker 1s linear infinite;
+        font-style: italic;
+        text-shadow: 2px 2px 10px #f79621;
+        transition: all 0.5s ease-in-out;
+        -webkit-animation: flicker 0.5s ease-in-out infinite alternate;
+        animation: flicker 0.5s ease-in-out infinite alternate;
+    }
+
+
+    @-webkit-keyframes flicker {
+        0% {
+            opacity: 0.5;
+            text-shadow: 2px 2px 10px #f79621;
+        }
+
+        100% {
+            opacity: 1;
+            text-shadow: 2px 2px 20px #f79621;
+        }
+    }
+
+    @keyframes flicker {
+        0% {
+            opacity: 0.5;
+            text-shadow: 2px 2px 10px #f79621;
+        }
+
+        100% {
+            opacity: 1;
+            text-shadow: 2px 2px 20px #f79621;
+        }
+    }
+
+    @keyframes blinker {
+        50% {
+            opacity: 0;
+        }
+    }
+</style>
 
 <body>
     <main>
@@ -58,13 +109,19 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="" class="form-label">ID Number</label>
-                                            <input type="text" name="idNumber" class="form-control"
+                                            <input type="text" name="idNumber" hx-post="{% url 'check_id' %}"
+                                                hx-trigger="keyup delay:1s" class="form-control"
+                                                hx-target='#id_number_error' hx-swap="innerHTML"
                                                 placeholder="National ID Number" required>
+                                            <div id="id_number_error" class="errors"></div>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="yourEmail" class="form-label">Your Email</label>
-                                            <input type="email" name="email" class="form-control" id="janedoe@gmial.com"
+                                            <input type="email" name="email" id="janedoe@gmial.com"
+                                                hx-post="{% url 'check_email' %}" hx-trigger="keyup delay:1s"
+                                                class="form-control" hx-target='#email_error' hx-swap="innerHTML"
                                                 required>
+                                            <div id="email_error" class="errors"></div>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="" class="form-label">Phone Number</label>
