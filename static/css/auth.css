@@ -268,6 +268,7 @@
   .breadcrumb a {
     color: #899bbd;
     transition: 0.3s;
+    cursor: pointer !important;
   }
   .breadcrumb a:hover {
     color: #51678f;

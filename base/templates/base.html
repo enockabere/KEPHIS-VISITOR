@@ -57,6 +57,11 @@
     <script src="../../static/js/bootstrap/bootstrap.min.js"></script>
     <script src="../../static/js/others/plugins.js"></script>
     <script src="../../static/js/active.js"></script>
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        })
+    </script>
 
 </body>
 

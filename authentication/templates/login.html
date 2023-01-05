@@ -47,7 +47,7 @@
                                         <p class="text-center small">Enter your username & password to login</p>
                                     </div>
                                     {% include 'alerts.html' %}
-                                    <form action="{% url 'login' %}" method="post" class="row g-3" novalidate>
+                                    <form hx-post="{% url 'login' %}" method="post" class="row g-3" novalidate>
                                         {% csrf_token %}
                                         <div class="col-md-12">
                                             <label for="yourUsername" class="form-label">Email</label>
@@ -65,7 +65,8 @@
                                         </div>
 
                                         <div class="col-md-12">
-                                            <button class="btn button-5 w-100" type="submit">Login</button>
+                                            <button hx-post="{% url 'login' %}" hx-swap="none"
+                                                class="btn button-5 w-100" type="submit">Login</button>
                                         </div>
                                         <div class="col-md-12">
                                             <p class="small mb-0">Don't have account? <a

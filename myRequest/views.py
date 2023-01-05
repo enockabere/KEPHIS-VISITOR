@@ -10,6 +10,9 @@ from zeep import Client
 from zeep.transports import Transport
 from requests.auth import HTTPBasicAuth
 from django.http import HttpResponseRedirect
+import base64
+from cryptography.fernet import Fernet
+
 # Create your views here.
 session = requests.Session()
 session.auth = config.AUTHS
@@ -26,6 +29,7 @@ class UserObjectMixin(object):
     model =None
     session = requests.Session()
     session.auth = config.AUTHS
+    cipher_suite = Fernet(config.ENCRYPT_KEY)
 
     def get_object(self,endpoint):
         response = self.session.get(endpoint, timeout=10).json()
@@ -62,6 +66,17 @@ class UserObjectMixin(object):
         response = self.get_object(Access_Point)['value']
         count=len(response)
         return count,response
+    def pass_encrypt(self,password):
+        encrypted_text = self.cipher_suite.encrypt(password.encode('ascii'))
+        encrypted_password = base64.urlsafe_b64encode(encrypted_text).decode("ascii")
+        return encrypted_password
+    def pass_decrypt(self,password):
+        try:
+            Portal_Password = base64.urlsafe_b64decode(password)
+            decoded_text = self.cipher_suite.decrypt(Portal_Password).decode("ascii")
+            return decoded_text
+        except Exception as e:
+            return e
 
     def lipa_na_mpesa(Amount,phone_number,CallBackURL,AccountReference,TransactionDesc):
         formatted_time = get_timestamp()

@@ -6,9 +6,11 @@ from django.http import JsonResponse
 import simplejson as jsons
 from myRequest . views import UserObjectMixin,HTTPResponseHXRedirect
 from django.urls import reverse_lazy
+import requests
 
 class Dashboard(View):
     def get(self,request):
+        request.session.flush()
         return render(request,"dashboard.html")
     def post(self,request):
         if request.method == "POST":
@@ -30,8 +32,9 @@ class Dashboard(View):
                     request.session['explainAllergies'] = explainAllergies
 
                     messages.success(request,"Success. Add Booking Line")
-                    print("Success")
-                    return HTTPResponseHXRedirect(redirect_to=reverse_lazy("ListingDetail",kwargs={"pk":request.session['typeOfService']}))
+                    if request.htmx:
+                        return HTTPResponseHXRedirect(redirect_to=reverse_lazy("ListingDetail",kwargs={"pk":request.session['typeOfService']}))
+                    return redirect('ListingDetail',pk=request.session['typeOfService'])
                 except  Exception as e:
                     print (e)
                     messages.error(request,e)
@@ -55,11 +58,18 @@ class ListingDetail(UserObjectMixin,View):
             
             meeting_services = [service for service in serviceResponse['value'] if service['Service_Requred_Code']=='1']
             accom_services = [service for service in serviceResponse['value'] if service['Service_Requred_Code']=='2']
-
-        except ValueError as e:
-            print (e)
-            messages.error(request,e)
-            return redirect('ListingDetail',pk=pk)
+        except requests.exceptions.HTTPError as err:
+            print(err)
+            messages.error(request, f"Request Error Code: {err}")
+            return redirect('dashboard')
+        except KeyError as e:
+            print(e)
+            messages.error(request,"Session ended.")
+            return redirect("dashboard")
+        except Exception as e:
+            print(e)
+            messages.info(request, e)
+            return redirect('dashboard')
 
         ctx = {
             "clientType":clientType,"typeOfService":typeOfService
@@ -204,43 +214,10 @@ class  MakeReservation(UserObjectMixin,View):
 class CancelReservation(View):
     def post(self,request,pk):
         try:
-            if pk == '1':
-                del request.session['TypeOfRoom'] 
-                del request.session['ServiceRequired']
-                del request.session['startDate'] 
-                del request.session['startTime']
-                del request.session['endTime'] 
-                del request.session['NumberOfPeople'] 
-                del request.session['clientType']
-                del request.session['typeOfService']
-                messages.error(request,"Reservation Cancelled successfully")
-                return redirect('dashboard') 
+            request.session.flush()
+            messages.success(request,"Welcome Home!")
+            return HTTPResponseHXRedirect(redirect_to=reverse_lazy("dashboard"))
 
-            if pk == '2':
-
-                del request.session['accom_ServiceRequired']
-                del request.session['NumberOfRooms'] 
-                del request.session['accom_startDate']
-                del request.session['accom_endDate']
-                del request.session['clientType']
-                del request.session['typeOfService']
-                messages.error(request,"Reservation Cancelled successfully")
-                return redirect('dashboard')
-            if pk == '3':
-                del request.session['TypeOfRoom'] 
-                del request.session['ServiceRequired']
-                del request.session['startDate'] 
-                del request.session['startTime']
-                del request.session['endTime'] 
-                del request.session['NumberOfPeople'] 
-                del request.session['accom_ServiceRequired']
-                del request.session['NumberOfRooms'] 
-                del request.session['accom_startDate']
-                del request.session['accom_endDate']
-                del request.session['clientType']
-                del request.session['typeOfService']
-                messages.error(request,"Reservation Cancelled successfully")
-                return redirect('dashboard')
         except Exception as e:
             print (e)
             messages.success(request,"Logged Out")

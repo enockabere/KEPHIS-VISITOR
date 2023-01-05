@@ -31,16 +31,26 @@
                             </span>
                             Reservation
                         </h4>
-                        <h6>
-                            <span class="text-success"> Client Type:</span>
-                            {% if clientType == "1" %}
-                            Private
-                            {% elif clientType == '2' %}
-                            Public
-                            {% elif clientType == '3' %}
-                            Foreign
-                            {% endif %}
-                        </h6>
+                        <ol class="breadcrumb d-flex justify-content-end">
+                            <li class="breadcrumb-item">
+                                <a hx-post="{% url 'CancelReservation' typeOfService %}" class="breadcrumbs text-danger"
+                                    hx-confirm='Are you sure you want to discard your data?'
+                                    hx-trigger="click throttle:1s" hx-swap="none" style="cursor:pointer">
+                                    <i class="fa fa-home"></i>Back
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item "><span class="breadcrumbs">
+                                    Client Type: <span class="brs">
+                                        {% if clientType == "1" %}
+                                        Private
+                                        {% elif clientType == '2' %}
+                                        Public
+                                        {% elif clientType == '3' %}
+                                        Foreign
+                                        {% endif %}
+                                    </span>
+                                </span></li>
+                        </ol>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -211,52 +221,9 @@
                     </form>
 
                 </div>
-                <button type="button" class="button-5  w-100 my-3" data-bs-toggle="modal"
-                    data-bs-target="#cancelModal">Back
-                    Home <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></button>
-                <div id="listingAlert">
-                    <script>
-
-                    </script>
-                </div>
-                <!-- <div class=" alert alert-primary alert-dismissible fade show" role="alert">
-                    <h4 class="alert-heading">Added Successfully</h4>
-                    New entries will modify the existing entry.
-                    <hr>
-                    <p class="mb-0 text-dark">More entries can be
-                        added/modified on login.
-                    </p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div> -->
             </div>
         </div>
     </div>
-    <!-- Modals -->
-    <div class="modal fade" id="cancelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-white">Cancel Process <i
-                            class="las la-exclamation-circle text-danger"></i></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Do you want to cancel process? All your data will be <span class="text-danger">Deleted</span>!
-
-                    <button type="button" class="btn  button-0 my-3" data-bs-dismiss="modal"
-                        style="display: inline-block">Discard <i class="las la-window-close mx-2"
-                            style="font-size:1.5rem"></i></button>
-                    <form action="{% url 'CancelReservation' typeOfService %}" method="post"
-                        style="display: inline-block">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger my-3 button-5">Confirm <i
-                                class="las la-trash-alt mx-2" style="font-size:1.5rem"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
 <script>

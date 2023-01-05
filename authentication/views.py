@@ -37,11 +37,6 @@ def send_mail(emailAddress,verificationToken,request):
     from_email=config.EMAIL_HOST_USER,to=[emailAddress])
 
     EmailThread(email).start()
-def passwordCipher(password):
-    Portal_Password = base64.urlsafe_b64decode(password)
-    cipher_suite = Fernet(config.ENCRYPT_KEY)
-    decoded_text = cipher_suite.decrypt(Portal_Password).decode("ascii")
-    return decoded_text
 
 class Login(UserObjectMixin,View):
     def get(self, request):
@@ -58,26 +53,13 @@ class Login(UserObjectMixin,View):
                 if not password:
                     messages.error(request,"Password Missing")
                     return redirect("login")
-
-                Customer = config.O_DATA.format(f"QyVisitorsLogins?$filter=EmailAddress%20eq%20%27{email}%27")
-                CustomerResponse = self.get_object(Customer)
-
-                for applicant in CustomerResponse['value']:
+                CustomerResponse = self.one_filter("QyVisitorsLogins","EmailAddress","eq",email)
+                for applicant in CustomerResponse[1]:
                     if applicant['Verified']==True:
-                        decoded_text = passwordCipher(applicant['MyPassword'])
-                        if decoded_text == password:
-                            request.session['CustomerName'] = applicant['ContactName']
-                            request.session['customerEmail'] = applicant['EmailAddress']
-                            request.session['customerIDNumber'] = applicant['IdNoKraPin']
-                            request.session['customerPhone'] = applicant['BookedByPhoneNo']
-                            request.session['UserID'] = applicant['No']
-
+                        if self.pass_decrypt(applicant['MyPassword']) == password:
                             try:
                                 clientType = request.session['clientType']
                                 typeOfService = request.session['typeOfService']
-
-                                print("type of service:",request.session['typeOfService'])
-
                                 if clientType and typeOfService:
                                     bookingNo = ''
                                     myAction = 'insert'
@@ -88,14 +70,11 @@ class Login(UserObjectMixin,View):
                                     explainDisability = request.session['explainDisability']
                                     allergies = request.session['allergies']
                                     explainAllergies = request.session['explainAllergies']
-
                                     BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
                                         bookingNo,myAction,typeOfBooking,typeOfClient,userCode,disabled,
                                         explainDisability,allergies,explainAllergies)
-
                                     if BookingHeaderResponse:
                                         bookingNo = BookingHeaderResponse
-                                        
                                         if request.session['typeOfService'] == '1':
                                             ServiceRequired = request.session['ServiceRequired']
                                             startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
@@ -104,20 +83,12 @@ class Login(UserObjectMixin,View):
                                             TypeOfRoom = request.session['TypeOfRoom']
                                             NumberOfPeople = request.session['NumberOfPeople'] 
                                             NumberOfDays = request.session['NumberOfDays']
-
+                                            
                                             BookingLineResponse = self.zeep_client().service.FnRoomBookingLine(
                                                 bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
                                                 startDate,startTime,endTime,NumberOfPeople,NumberOfDays)
-
                                             if BookingLineResponse == True:
-                                                del request.session['clientType']
-                                                del request.session['typeOfService']
-                                                del request.session['ServiceRequired']
-                                                del request.session['TypeOfRoom']
-                                                del request.session['startTime']
-                                                del request.session['NumberOfPeople'] 
-                                                del request.session['startDate'] 
-                                                del request.session['endTime'] 
+                                                request.session.flush()
                                                 messages.success(request,f"Welcome, {email}. See Reservations below.")
                                                 return redirect('reserve')
                                         if request.session['typeOfService'] == '2':
@@ -128,17 +99,10 @@ class Login(UserObjectMixin,View):
                                             AccomodationLineResponse = self.zeep_client().service.FnAccomodationBookingLine(
                                                 bookingNo,myAction,userCode,accom_service,NumberOfRooms,
                                                 "0",accom_startDate,accom_endDate)
-
                                             if AccomodationLineResponse == True:
-                                                del request.session['clientType']
-                                                del request.session['typeOfService']
-                                                del request.session['accom_service']
-                                                del request.session['NumberOfRooms'] 
-                                                del request.session['accom_startDate'] 
-                                                del request.session['accom_endDate'] 
+                                                request.session.flush()
                                                 messages.success(request,f"Welcome, {email}. See Reservations below.")
-                                                return redirect('reserve')
-
+                                                return redirect('reserve')   
                                         if request.session['typeOfService'] == '3':
                                             ServiceRequired = request.session['ServiceRequired']
                                             startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
@@ -147,11 +111,9 @@ class Login(UserObjectMixin,View):
                                             TypeOfRoom = request.session['TypeOfRoom']
                                             NumberOfPeople = request.session['NumberOfPeople']
                                             NumberOfDays = request.session['NumberOfDays']
-
                                             BookingLineResponse = self.zeep_client().service.FnRoomBookingLine(
                                                 bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
                                                 startDate,startTime,endTime,NumberOfPeople,NumberOfDays)
-
                                             if BookingLineResponse == True:
                                                 accom_service = request.session['accom_ServiceRequired']
                                                 NumberOfRooms = request.session['NumberOfRooms'] 
@@ -161,18 +123,7 @@ class Login(UserObjectMixin,View):
                                                     bookingNo,myAction,userCode,accom_service,NumberOfRooms,
                                                     "0",accom_startDate,accom_endDate)
                                                 if AccomodationLineResponse == True:
-                                                    del request.session['clientType']
-                                                    del request.session['typeOfService']
-                                                    del request.session['ServiceRequired']
-                                                    del request.session['TypeOfRoom']
-                                                    del request.session['startTime']
-                                                    del request.session['NumberOfPeople'] 
-                                                    del request.session['startDate'] 
-                                                    del request.session['endTime']
-                                                    del request.session['accom_service']
-                                                    del request.session['NumberOfRooms'] 
-                                                    del request.session['accom_startDate'] 
-                                                    del request.session['accom_endDate'] 
+                                                    request.session.flush()
                                                     messages.success(request,f"Welcome, {email}. See Reservations below.")
                                                     return redirect('reserve')
                                                 messages.error(request, "Accomodation Details not added, contact admin.")
@@ -181,15 +132,17 @@ class Login(UserObjectMixin,View):
                                             return redirect('login')
                             except KeyError as e:
                                 print(e)
+                                request.session['CustomerName'] = applicant['ContactName']
+                                request.session['customerEmail'] = applicant['EmailAddress']
+                                request.session['customerIDNumber'] = applicant['IdNoKraPin']
+                                request.session['customerPhone'] = applicant['BookedByPhoneNo']
+                                request.session['UserID'] = applicant['No'] 
                                 messages.success(request,f"Welcome, {email}. See Reservations below.")
-                                return redirect('reserve')                          
-                        messages.error(request, "Invalid Credentials. Please reset your password else create a new account")
-                        return redirect('login')
+                                return redirect('reserve') 
+                        messages.error(request, "Invalid Password.")
+                        return redirect('login')                             
                     messages.error(request, "Your email is not verified.")
                     return redirect('login')
-                messages.error(
-                request, "Invalid Credentials.")
-                return redirect('login') 
             except Exception as e:
                 print(e)
                 messages.error(request,e)
@@ -284,6 +237,7 @@ def check_id(request):
     if get_user_id[0]==0:
         return HttpResponse("<span class='error-success'>ID number is available</span>")
     return HttpResponse("<span class='error-error'>ID number already exits</span>")
+    
 def check_email(request):
     email = request.POST.get('email')
     get_user_email =one_filter_method("/QyVisitorsLogins",'EmailAddress','eq',email)

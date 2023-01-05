@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'django_daraja',
     'mpesa',
     "rest_framework",
+    "django_htmx",
 ]
 
 MIDDLEWARE = [
@@ -95,6 +96,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'VISITOR.urls'

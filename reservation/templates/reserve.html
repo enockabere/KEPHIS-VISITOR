@@ -36,6 +36,18 @@
                         <h4>Reservation/Booking History</h4>
                         <h6><span class="text-success">Hello, </span>{{customerName}}</h6>
                     </div>
+                    <ol class="breadcrumb d-flex justify-content-end">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'dashboard' %}" class="breadcrumbs text-danger" style="cursor:pointer">
+                                <i class="fa fa-home"></i> Home
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item "><span class="breadcrumbs">
+                                <span class="brs">
+                                    Dashboard
+                                </span>
+                            </span></li>
+                    </ol>
                     <div class="card data-cards">
                         <div class="card-body pt-3">
                             <!-- Bordered Tabs -->
