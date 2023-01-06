@@ -333,9 +333,9 @@
             <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
                 data-bs-target="#disabilityDetails">Add Disability Details<i class="las la-plus mx-2"
                     style="font-size:1.5rem"></i></a>
-            <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
+            <!-- <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
                 data-bs-target="#allergyDetails">Add Allergy Details<i class="las la-plus mx-2"
-                    style="font-size:1.5rem"></i></a>
+                    style="font-size:1.5rem"></i></a> -->
             {% endif %}
             <a href="{% url 'reserve' %}" type="button" class="btn btn-warning button-5  w-100 my-3">Go Back
                 <i class="las la-undo-alt mx-2" style="font-size:1.5rem"></i></a>
@@ -522,8 +522,6 @@
                         {% csrf_token %}
                         <input type="hidden" name="myAction" value="modify">
                         <input type="hidden" name="disabled" value="True">
-                        <input type="hidden" name="allergies" value="{{reservation.Indicate_Allergies}}">
-                        <input type="hidden" name="explainAllergies" value="{{reservation.Explain_Allergies}}">
                         {% if reservation.Service_Requred == 'Meeting Room' %}
                         <input type="hidden" name="typeOfService" value="1">
                         {% elif reservation.Service_Requred == 'Accommodation' %}

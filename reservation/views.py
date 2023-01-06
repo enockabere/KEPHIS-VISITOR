@@ -16,7 +16,7 @@ class Reservations(UserObjectMixin,View):
             idNumber = request.session['customerIDNumber'] 
             phoneNumber = request.session['customerPhone']
             userID =  request.session['UserID']
-
+            
             open_reservation_count = '0'
 
             reservations = self.one_filter(
@@ -62,6 +62,7 @@ class Reservations(UserObjectMixin,View):
                 BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
                             bookingNo,myAction,typeOfService,typeOfClient,userCode,
                             disabled,explainDisability,allergies,explainAllergies)
+                print(BookingHeaderResponse)
                 if BookingHeaderResponse:
                     messages.success(request,"Success, add booking details")
                     return redirect("BookingGateway",pk=BookingHeaderResponse)
@@ -283,13 +284,11 @@ class DisabilityDetails(UserObjectMixin,View):
                 userCode = request.session['UserID']
                 disabled = eval(request.POST.get('disabled'))
                 explainDisability = request.POST.get('explainDisability')
-                allergies = eval(request.POST.get('allergies'))
-                explainAllergies = request.POST.get('explainAllergies')
-
 
                 BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
                                             pk,myAction,typeOfBooking,typeOfClient,userCode,
-                                            disabled,explainDisability,allergies,explainAllergies)
+                                            disabled,explainDisability)
+                print(explainDisability)
 
                 if BookingHeaderResponse:
                     messages.success(request,"Success")
