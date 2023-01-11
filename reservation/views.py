@@ -56,12 +56,10 @@ class Reservations(UserObjectMixin,View):
                 userCode = request.session['UserID']
                 disabled = eval(request.POST.get('disabled'))
                 explainDisability = request.POST.get('explainDisability')
-                allergies = eval(request.POST.get('allergies'))
-                explainAllergies = request.POST.get('explainAllergies')
 
                 BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
                             bookingNo,myAction,typeOfService,typeOfClient,userCode,
-                            disabled,explainDisability,allergies,explainAllergies)
+                            disabled,explainDisability)
                 print(BookingHeaderResponse)
                 if BookingHeaderResponse:
                     messages.success(request,"Success, add booking details")
@@ -87,12 +85,14 @@ class BookingGateway(UserObjectMixin,View):
     def get(self,request,pk): 
         try:
             userID =  request.session['UserID']
+            total_payable = 0
             response = self.double_filtered_data(
                 'QYvisitors',"No_","eq",pk,"and",
                 'User_Code', "eq", userID
                 )
             for x in response[1]:
                 reservation = x
+                total_payable = x['Total_Amount_Payable'] 
             meeting_room_lines_response = self.double_filtered_data(
                 'QyRoomBookingLines',"RoomNo","eq",pk,"and",
                 'UserCode', "eq", userID
@@ -129,6 +129,7 @@ class BookingGateway(UserObjectMixin,View):
             "reservation":reservation,"meeting_room_lines":meeting_room_lines,
             "accomodation_lines":accomodation_lines,"availableRooms":roomOutput,
             "meeting_services":meeting_services,"accom_services":accom_services,
+            "total_payable":total_payable,
             }
         return render(request,"bookingGateway.html",ctx)
     def post(self,request,pk):

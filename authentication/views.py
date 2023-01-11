@@ -65,14 +65,12 @@ class Login(UserObjectMixin,View):
                                     myAction = 'insert'
                                     typeOfBooking = int(typeOfService)
                                     typeOfClient = int(clientType)
-                                    userCode = request.session['UserID']
+                                    userCode = applicant['No'] 
                                     disabled = request.session['disabled']
                                     explainDisability = request.session['explainDisability']
-                                    allergies = request.session['allergies']
-                                    explainAllergies = request.session['explainAllergies']
                                     BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
                                         bookingNo,myAction,typeOfBooking,typeOfClient,userCode,disabled,
-                                        explainDisability,allergies,explainAllergies)
+                                        explainDisability)
                                     if BookingHeaderResponse:
                                         bookingNo = BookingHeaderResponse
                                         if request.session['typeOfService'] == '1':
