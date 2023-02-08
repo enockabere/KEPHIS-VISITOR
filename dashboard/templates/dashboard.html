@@ -1,17 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block base %}
-<style>
-    .my-handle {
-        cursor: move;
-        cursor: -webkit-grabbing;
-    }
-
-    #listWithHandle {
-        padding-top: 5rem;
-    }
-</style>
-
 <section class="dorne-welcome-area">
     <div class="container h-100 mb-5" id="listWithHandle">
         <div class="row">
@@ -26,7 +15,7 @@
         <div class="row h-100">
             <div class="col-md-12">
                 <div class="hero-search-form">
-                    <div class="nav nav-tabs my-handle" id="heroTab" role="tablist">
+                    <div class="nav nav-tabs" id="heroTab" role="tablist">
                         <a class="nav-item nav-link active" id="nav-places-tab" data-toggle="tab" role="tab"
                             aria-controls="nav-places" aria-selected="true"> Start</a>
                     </div>
@@ -42,7 +31,7 @@
                                 <input type="hidden" name="allergies" value="False">
                                 <input type="hidden" name="explainAllergies" value="None">
                                 <div class="row gx-2 my-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="" class="form-label">Client Type</label>
                                         <select class="form-select" name="clientType">
                                             <option selected disabled value="0">--Select Client Type--</option>
@@ -51,11 +40,22 @@
                                             <option value="3">Foreign</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="" class="form-label">Type of Service</label>
                                         <select class="form-select" name="typeOfService" id="typeOfService"
                                             aria-label="Default select example">
                                             <option selected disabled value="0">--Select Type of Service--</option>
+                                            <option value="1">Meeting Room</option>
+                                            <option value="2">Accommodation</option>
+                                            <option value="3">Meeting Room and Accommodation</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="" class="form-label">Type of Service</label>
+                                        <select class="form-select" name="typeOfService" id="typeOfService"
+                                            aria-label="Default select example">
+                                            <option selected disabled value="0">--Select Preferred Payment Method--
+                                            </option>
                                             <option value="1">Meeting Room</option>
                                             <option value="2">Accommodation</option>
                                             <option value="3">Meeting Room and Accommodation</option>

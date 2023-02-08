@@ -1,0 +1,64 @@
+:root {
+    --first-color: #15a752;
+    --second-color: #f79621;
+    --third-color:#74746c;
+    --font1: 'Nunito Sans', sans-serif;
+    --font2: 'Red Hat Display', sans-serif;
+    --forth-color: #8696b8;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800');
+
+.header_area {
+    position: fixed;
+    width: 100%;
+    z-index: 9999;
+    height: 120px;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    -webkit-transition-duration: 700ms;
+    transition-duration: 700ms;
+    padding: 0 30px;
+}
+
+.sticky .header_area {
+    background-color: rgba(14, 2, 35, 0.9);
+    height: 80px;
+    z-index: 9999;
+    border-bottom: 1px solid transparent;
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+    padding-right: 15px;
+    padding-left: 15px;
+    color: #fff;
+    font-size: 15px;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-item.active .nav-link {
+    color: var(--second-color);
+}
+
+.navbar-brand img {
+    height: 70px !important;
+    width: 100%;
+}
+.footer-social-btns img {
+    height: 75px !important;
+    width: 100%;
+}
+.sign-inLink{
+    color: #fff;
+    font-weight: 600 !important;
+    font-size: .9rem !important;
+    -webkit-transition-duration: 500ms;
+            transition-duration: 500ms;
+}
+
+.sign-inLink:hover,
+.sign-inLink:focus {
+    color: var(--first-color) !important;
+    font-weight: 600 !important;
+}
