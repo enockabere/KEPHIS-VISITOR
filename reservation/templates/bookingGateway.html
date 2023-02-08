@@ -50,18 +50,8 @@
                                     <img src="../../static/img/icons/check-mark.png" height="20" width="20"
                                         class="img-fluid" alt="">
                                     <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Type of Client: <span
-                                            class="brs">{{reservation.Type_Of_Client}}</span></span>
-                                </label>
-                            </div>
-                            <div class="col-6">
-                                <label class="custom-control custom-checkbox mb-3">
-                                    <img src="../../static/img/icons/schedule.png" height="20" width="20"
-                                        class="img-fluid" alt="">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Payment Due Date: <span
-                                            class="brs">{{reservation.Payment_Due_Date}}</span></span>
-
+                                    <span class="custom-control-description">Organization: <span
+                                            class="brs">{{reservation.Organization}}</span></span>
                                 </label>
                             </div>
                             <div class="col-6">
@@ -73,6 +63,48 @@
                                             class="brs">{{reservation.Service_Requred}}</span></span>
                                 </label>
                             </div>
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <img src="../../static/img/icons/schedule.png" height="20" width="20"
+                                        class="img-fluid" alt="">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Document Date: <span
+                                            class="brs">{{reservation.Document_Date}}</span></span>
+
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <img src="../../static/img/icons/check-mark.png" height="20" width="20"
+                                        class="img-fluid" alt="">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Mode of Payment: <span
+                                            class="brs">{{reservation.Mode_Of_Payment}}</span></span>
+
+                                </label>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <img src="../../static/img/icons/schedule.png" height="20" width="20"
+                                        class="img-fluid" alt="">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Payment Due Date: <span
+                                            class="brs">{{reservation.Payment_Due_Date}}</span></span>
+
+                                </label>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="custom-control custom-checkbox mb-3">
+                                    <img src="../../static/img/icons/check-mark.png" height="20" width="20"
+                                        class="img-fluid" alt="">
+                                    <span class="custom-control-indicator"></span>
+                                    <span class="custom-control-description">Type of Client: <span
+                                            class="brs">{{reservation.Type_Of_Client}}</span></span>
+                                </label>
+                            </div>
+
                             <div class="col-6">
                                 <label class="custom-control custom-checkbox mb-3">
                                     {% if reservation.Booking_Status == 'Open' %}
@@ -90,16 +122,7 @@
                                     {% endif %}
                                 </label>
                             </div>
-                            <div class="col-6">
-                                <label class="custom-control custom-checkbox mb-3">
-                                    <img src="../../static/img/icons/schedule.png" height="20" width="20"
-                                        class="img-fluid" alt="">
-                                    <span class="custom-control-indicator"></span>
-                                    <span class="custom-control-description">Document Date: <span
-                                            class="brs">{{reservation.Document_Date}}</span></span>
 
-                                </label>
-                            </div>
                             <div class="col-6">
                                 <label class="custom-control custom-checkbox mb-3">
                                     {% if reservation.Service_Requred == 'Meeting Room' %}
@@ -128,7 +151,7 @@
                             <div class="col-md-12">
                                 <div id="accordion" class="accordion-style">
                                     {% if reservation.Booking_Status == 'Open' %}
-                                    <div class="card mb-3">
+                                    <!-- <div class="card mb-3">
                                         <div class="card-header" id="headingOne">
                                             <h5 class="mb-0">
                                                 <button class="btn btn-link collapsed" data-bs-toggle="collapse"
@@ -152,7 +175,7 @@
                                                             <input type="hidden" name="disabled"
                                                                 value="{{reservation.Disability}}">
                                                             <input type="hidden" name="explainDisability"
-                                                                value="{{reservation.Explain_Disability}}">
+                                                                value="{{reservation.Disability_Special_Needs_Description}}">
                                                             <input type="hidden" name="allergies"
                                                                 value="{{reservation.Indicate_Allergies}}">
                                                             <input type="hidden" name="explainAllergies"
@@ -189,7 +212,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     {% endif %}
                                     {% if reservation.Service_Requred == 'Meeting Room' %}
                                     {% include 'meetingDetails.html' %}
@@ -199,14 +222,14 @@
                                     {% include 'meetingDetails.html' %}
                                     {% include 'accomDetails.html' %}
                                     {% endif %}
-                                    {% if reservation.Disability == True %}
+                                    {% if reservation.Disability_Special_Needs == True %}
                                     <div class="card mb-3">
                                         <div class="card-header" id="disabilityHeading">
                                             <h5 class="mb-0">
                                                 <button class="btn btn-link collapsed" data-bs-toggle="collapse"
                                                     data-bs-target="#disabilityOne" aria-expanded="false"
                                                     aria-controls="disabilityOne">
-                                                    Disability Details
+                                                    Disability/Special Needs Details
                                                 </button>
                                             </h5>
                                         </div>
@@ -215,7 +238,7 @@
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-md-12">
-                                                        <p>{{reservation.Explain_Disability}}</p>
+                                                        <p>{{reservation.Disability_Special_Needs_Description}}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -331,7 +354,7 @@
             {% endif %}
             {% if reservation.Booking_Status == 'Open' %}
             <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
-                data-bs-target="#disabilityDetails">Add Disability Details<i class="las la-plus mx-2"
+                data-bs-target="#disabilityDetails">Add Disability/Special Needs<i class="las la-plus mx-2"
                     style="font-size:1.5rem"></i></a>
             <!-- <a href="#" type="button" class="btn button-5  w-100 my-3" data-bs-toggle="modal"
                 data-bs-target="#allergyDetails">Add Allergy Details<i class="las la-plus mx-2"
@@ -513,7 +536,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Disability Details</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Disability/Special Needs Details</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
@@ -538,9 +561,20 @@
                         {% else %}
                         <input type="hidden" name="clientType" value="3">
                         {% endif %}
+                        <input type="hidden" value="{{reservation.Organization}}" name="organization">
+                        {% if reservation.Mode_Of_Payment == 'LPO/LSO' %}
+                        <input type="hidden" name="payment_method" value="1">
+                        {% elif reservation.Mode_Of_Payment == 'Cheque' %}
+                        <input type="hidden" name="payment_method" value="2">
+                        {% elif reservation.Mode_Of_Payment == 'M-pesa' %}
+                        <input type="hidden" name="payment_method" value="3">
+                        {% else %}
+                        <input type="hidden" name="payment_method" value="0">
+                        {% endif %}
+
                         <div class="row">
                             <div class="col-md-12">
-                                <label class="form-label">Disability Description</label>
+                                <label class="form-label">Disability/Special Needs Description</label>
                                 <textarea class="form-control" name="explainDisability" rows="3"></textarea>
                             </div>
                         </div>
@@ -565,7 +599,8 @@
                         <input type="hidden" name="myAction" value="modify">
                         <input type="hidden" name="disabled" value="{{reservation.Disability}}">
                         <input type="hidden" name="allergies" value="True">
-                        <input type="hidden" name="explainDisability" value="{{reservation.Explain_Disability}}">
+                        <input type="hidden" name="explainDisability"
+                            value="{{reservation.Disability_Special_Needs_Description}}">
                         {% if reservation.Service_Requred == 'Meeting Room' %}
                         <input type="hidden" name="typeOfService" value="1">
                         {% elif reservation.Service_Requred == 'Accommodation' %}
@@ -584,7 +619,7 @@
                         {% endif %}
                         <div class="row">
                             <div class="col-md-12">
-                                <label class="form-label">Disability Description</label>
+                                <label class="form-label">Allergy Description</label>
                                 <textarea class="form-control" name="explainAllergies" rows="3"></textarea>
                             </div>
                         </div>

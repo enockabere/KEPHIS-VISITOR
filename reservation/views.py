@@ -56,11 +56,12 @@ class Reservations(UserObjectMixin,View):
                 userCode = request.session['UserID']
                 disabled = eval(request.POST.get('disabled'))
                 explainDisability = request.POST.get('explainDisability')
+                organization = request.POST.get('organization')
+                payment_method = int(request.POST.get('payment_method'))
 
                 BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
                             bookingNo,myAction,typeOfService,typeOfClient,userCode,
-                            disabled,explainDisability)
-                print(BookingHeaderResponse)
+                            disabled,explainDisability,organization,payment_method)
                 if BookingHeaderResponse:
                     messages.success(request,"Success, add booking details")
                     return redirect("BookingGateway",pk=BookingHeaderResponse)
@@ -144,10 +145,13 @@ class BookingGateway(UserObjectMixin,View):
                 explainDisability = request.POST.get('explainDisability')
                 allergies = eval(request.POST.get('allergies'))
                 explainAllergies = request.POST.get('explainAllergies')
+                organization = request.POST.get('organization')
+                payment_method = int(request.POST.get('payment_method'))
 
                 BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
                                         bookingNo,myAction,typeOfBooking,typeOfClient,userCode,
-                                        disabled,explainDisability,allergies,explainAllergies)
+                                        disabled,explainDisability,allergies,explainAllergies,
+                                        organization,payment_method)
 
                 if BookingHeaderResponse:
                     messages.success(request,"Success")
@@ -285,10 +289,13 @@ class DisabilityDetails(UserObjectMixin,View):
                 userCode = request.session['UserID']
                 disabled = eval(request.POST.get('disabled'))
                 explainDisability = request.POST.get('explainDisability')
+                organization = request.POST.get('organization')
+                payment_method = int(request.POST.get('payment_method'))
 
                 BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
                                             pk,myAction,typeOfBooking,typeOfClient,userCode,
-                                            disabled,explainDisability)
+                                            disabled,explainDisability,organization
+                                            ,payment_method)
                 print(explainDisability)
 
                 if BookingHeaderResponse:

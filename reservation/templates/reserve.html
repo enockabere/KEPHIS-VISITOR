@@ -169,8 +169,8 @@
                     <input type="hidden" name="myAction" value="insert">
                     <input type="hidden" name="disabled" value="False">
                     <input type="hidden" name="explainDisability" value="None">
-                    <div class="row my-3">
-                        <div class="col-md-12">
+                    <div class="row gx-1 my-3">
+                        <div class="col-md-6">
                             <label for="" class="form-label">Client Type</label>
                             <select class="form-select" name="clientType">
                                 <option selected disabled value="0">--Select Client Type--</option>
@@ -179,9 +179,7 @@
                                 <option value="3">Foreign</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="row my-3">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <label for="" class="form-label">Type of Service</label>
                             <select class="form-select" name="typeOfService" id="typeOfService"
                                 aria-label="Default select example">
@@ -189,6 +187,23 @@
                                 <option value="1">Meeting Room</option>
                                 <option value="2">Accommodation</option>
                                 <option value="3">Meeting Room and Accommodation</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row gx-1 my-3">
+                        <div class="col-md-6">
+                            <label for="" class="form-label">Organization Name</label>
+                            <input type="text" class="form-control" placeholder="--Your organization's name --"
+                                name="organization" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="" class="form-label">Preferred Payment Method</label>
+                            <select class="form-select" name="payment_method" aria-label="Default select example">
+                                <option selected disabled value="0">--Select Payment Method--
+                                </option>
+                                <option value="1">LPO/LSO</option>
+                                <option value="2">Cheque</option>
+                                <option value="3">M-pesa</option>
                             </select>
                         </div>
                     </div>

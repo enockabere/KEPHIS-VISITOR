@@ -75,8 +75,8 @@ class UserObjectMixin(object):
             Portal_Password = base64.urlsafe_b64decode(password)
             decoded_text = self.cipher_suite.decrypt(Portal_Password).decode("ascii")
             return decoded_text
-        except Exception as e:
-            return e
+        except:
+            return '0'
 
     def lipa_na_mpesa(Amount,phone_number,CallBackURL,AccountReference,TransactionDesc):
         formatted_time = get_timestamp()

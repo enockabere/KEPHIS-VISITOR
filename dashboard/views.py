@@ -22,6 +22,8 @@ class Dashboard(View):
                 explainDisability = request.POST.get('explainDisability')
                 allergies = eval(request.POST.get('allergies'))
                 explainAllergies = request.POST.get('explainAllergies')
+                organization = request.POST.get('organization')
+                payment_method = request.POST.get('payment_method')
                
                 try:
                     request.session['clientType'] = clientType
@@ -30,6 +32,8 @@ class Dashboard(View):
                     request.session['explainDisability'] = explainDisability
                     request.session['allergies'] = allergies
                     request.session['explainAllergies'] = explainAllergies
+                    request.session['organization'] =organization
+                    request.session['payment_method'] =payment_method
 
                     messages.success(request,"Success. Add Booking Line")
                     if request.htmx:
@@ -48,6 +52,9 @@ class ListingDetail(UserObjectMixin,View):
 
             clientType = request.session['clientType']
             typeOfService = request.session['typeOfService']
+            organization = request.session['organization']
+            payment_method = request.session['payment_method']
+
 
             Access_Point = config.O_DATA.format("QyRoomBookingSetUp?$filter=Booked%20eq%20false")
             roomResponse = self.get_object(Access_Point)
@@ -74,7 +81,8 @@ class ListingDetail(UserObjectMixin,View):
         ctx = {
             "clientType":clientType,"typeOfService":typeOfService
             ,"availableRooms":roomOutput,"meeting_services":meeting_services,
-            "accom_services":accom_services,
+            "accom_services":accom_services,"organization":organization,
+            'payment_method':payment_method
             }
         return render(request,"listingDetail.html",ctx)
     def post(self,request,pk):

@@ -22,7 +22,7 @@
                                         <option selected disabled value="0">--Select
                                             Service Required--</option>
                                         {% for service in accom_services %}
-                                        <option value="{{service.Code}}">
+                                        <option value="{{service.No}}">
                                             {{service.ServiceDescription}}</option>
                                         {% empty %}
                                         <option selected disabled value="0">--No Service--</option>

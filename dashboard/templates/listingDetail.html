@@ -115,6 +115,35 @@
                                                                 </select>
                                                             </div>
                                                         </div>
+                                                        <div class="row gx-2 my-3">
+                                                            <div class="col-md-6">
+                                                                <label for="" class="form-label">Organization
+                                                                    Name</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{organization}}" name="organization" />
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="" class="form-label">Preferred Payment
+                                                                    Method</label>
+                                                                <select class="form-select" name="payment_method"
+                                                                    aria-label="Default select example">
+                                                                    <option selected value="{{payment_method}}">
+                                                                        {% if payment_method == "1" %}
+                                                                        LPO/LSO
+                                                                        {% elif payment_method == '2' %}
+                                                                        Cheque
+                                                                        {% elif payment_method == '3' %}
+                                                                        Mpesa
+                                                                        {% else %}
+                                                                        --Select Payment Method--
+                                                                        {% endif %}
+                                                                    </option>
+                                                                    <option value="1">LPO/LSO</option>
+                                                                    <option value="2">Cheque</option>
+                                                                    <option value="3">Mpesa</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                         <button class="btn button-87" type="submit">Modify</button>
                                                     </form>
                                                 </div>
@@ -362,7 +391,7 @@
                     },
                     success: function (response) {
                         for (var i = 0; i < response.value.length; i++) {
-                            if (response.value[i].Code == serviceCode) {
+                            if (response.value[i].No == serviceCode) {
                                 $(".accom_serviceCharges").empty().append(currency(response
                                     .value[
                                         i].ChargeAmount, {

@@ -1,3 +1,4 @@
+import logging
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.views import View
@@ -57,90 +58,127 @@ class Login(UserObjectMixin,View):
                 for applicant in CustomerResponse[1]:
                     if applicant['Verified']==True:
                         if self.pass_decrypt(applicant['MyPassword']) == password:
+                            request.session['CustomerName'] = applicant['ContactName']
+                            request.session['customerEmail'] = applicant['EmailAddress']
+                            request.session['customerIDNumber'] = applicant['IdNoKraPin']
+                            request.session['customerPhone'] = applicant['BookedByPhoneNo']
+                            request.session['UserID'] = applicant['No'] 
+                            header_sessions = [
+                                'clientType',
+                                'typeOfService',
+                                'disabled',
+                                'explainDisability',
+                                'organization',
+                                'payment_method'
+                            ]
+                            for session in header_sessions:
+                                if session not in request.session:
+                                    request.session['CustomerName'] = applicant['ContactName']
+                                    request.session['customerEmail'] = applicant['EmailAddress']
+                                    request.session['customerIDNumber'] = applicant['IdNoKraPin']
+                                    request.session['customerPhone'] = applicant['BookedByPhoneNo']
+                                    request.session['UserID'] = applicant['No'] 
+                                    messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                    return redirect('reserve')
+                            bookingNo = ''
+                            myAction = 'insert'
+                            typeOfService = int(request.session['typeOfService'])
+                            clientType = int(request.session['clientType'])
+                            userCode = applicant['No'] 
+                            disabled = request.session['disabled']
+                            explainDisability = request.session['explainDisability']
+                            organization = request.session['organization']
+                            payment_method = int(request.session['payment_method'])
                             try:
-                                clientType = request.session['clientType']
-                                typeOfService = request.session['typeOfService']
-                                if clientType and typeOfService:
-                                    bookingNo = ''
-                                    myAction = 'insert'
-                                    typeOfBooking = int(typeOfService)
-                                    typeOfClient = int(clientType)
-                                    userCode = applicant['No'] 
-                                    disabled = request.session['disabled']
-                                    explainDisability = request.session['explainDisability']
-                                    BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
-                                        bookingNo,myAction,typeOfBooking,typeOfClient,userCode,disabled,
-                                        explainDisability)
-                                    if BookingHeaderResponse:
-                                        bookingNo = BookingHeaderResponse
-                                        if request.session['typeOfService'] == '1':
-                                            ServiceRequired = request.session['ServiceRequired']
-                                            startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
-                                            startTime = datetime.strptime(request.session['startTime'], '%H:%M').time()
-                                            endTime = datetime.strptime(request.session['endTime'], '%H:%M').time()
-                                            TypeOfRoom = request.session['TypeOfRoom']
-                                            NumberOfPeople = request.session['NumberOfPeople'] 
-                                            NumberOfDays = request.session['NumberOfDays']
-                                            
-                                            BookingLineResponse = self.zeep_client().service.FnRoomBookingLine(
-                                                bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
-                                                startDate,startTime,endTime,NumberOfPeople,NumberOfDays)
-                                            if BookingLineResponse == True:
-                                                request.session.flush()
-                                                messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                BookingHeaderResponse = self.zeep_client().service.FnVisitorsCard(
+                                        bookingNo,myAction,typeOfService,clientType,userCode,disabled,
+                                        explainDisability,organization,payment_method)
+                                if BookingHeaderResponse !='0':
+                                    del request.session['clientType']
+                                    del request.session['disabled']
+                                    del request.session['explainDisability']
+                                    del request.session['organization']
+                                    del request.session['payment_method']
+                                    meeting_room_sessions =[
+                                            'ServiceRequired',
+                                            'startDate',
+                                            'startTime',
+                                            'endTime',
+                                            'TypeOfRoom',
+                                            'NumberOfPeople',
+                                            'NumberOfDays'
+                                        ]
+                                    if typeOfService == 1:
+                                        for session in meeting_room_sessions:
+                                            if session not in request.session:
+                                                messages.info(request,f"Welcome, {email}. Meeting room lines not added")
                                                 return redirect('reserve')
-                                        if request.session['typeOfService'] == '2':
-                                            accom_service = request.session['accom_ServiceRequired']
-                                            NumberOfRooms = request.session['NumberOfRooms'] 
-                                            accom_startDate = datetime.strptime(request.session['accom_startDate'], '%Y-%m-%d').date()
-                                            accom_endDate = datetime.strptime(request.session['accom_endDate'], '%Y-%m-%d').date()
-                                            AccomodationLineResponse = self.zeep_client().service.FnAccomodationBookingLine(
+                                        ServiceRequired = request.session['ServiceRequired']
+                                        startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
+                                        startTime = datetime.strptime(request.session['startTime'], '%H:%M').time()
+                                        endTime = datetime.strptime(request.session['endTime'], '%H:%M').time()
+                                        TypeOfRoom = request.session['TypeOfRoom']
+                                        NumberOfPeople = request.session['NumberOfPeople'] 
+                                        NumberOfDays = request.session['NumberOfDays']
+                                        BookingLineResponse = self.zeep_client().service.FnRoomBookingLine(
+                                                    BookingHeaderResponse,TypeOfRoom,'0',myAction,userCode,
+                                                    ServiceRequired,startDate,startTime,endTime,
+                                                    NumberOfPeople,NumberOfDays)
+                                        del request.session['typeOfService']
+                                        del request.session['ServiceRequired']
+                                        del request.session['startDate']
+                                        del request.session['startTime']
+                                        del request.session['endTime']
+                                        del request.session['TypeOfRoom']
+                                        del request.session['NumberOfPeople']
+                                        del request.session['NumberOfDays']
+                                        if BookingLineResponse == True:
+                                            messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                            return redirect('reserve')
+                                        messages.info(request,f"Welcome, {email}. Meeting room lines not added")
+                                        return redirect('reserve')
+                                    elif typeOfService == 2:
+                                        accom_sessions = [
+                                            'accom_ServiceRequired',
+                                            'NumberOfRooms',
+                                            'accom_startDate',
+                                            'accom_endDate',                                            
+                                        ]
+                                        for session in accom_sessions:
+                                            if session not in request.session:
+                                                messages.info(request,f"Welcome, {email}. Accomodation lines not added")
+                                                return redirect('reserve')
+                                        accom_service = request.session['accom_ServiceRequired']
+                                        NumberOfRooms = request.session['NumberOfRooms'] 
+                                        accom_startDate = datetime.strptime(request.session['accom_startDate'], '%Y-%m-%d').date()
+                                        accom_endDate = datetime.strptime(request.session['accom_endDate'], '%Y-%m-%d').date()
+                                        AccomodationLineResponse = self.zeep_client().service.FnAccomodationBookingLine(
                                                 bookingNo,myAction,userCode,accom_service,NumberOfRooms,
                                                 "0",accom_startDate,accom_endDate)
-                                            if AccomodationLineResponse == True:
-                                                request.session.flush()
-                                                messages.success(request,f"Welcome, {email}. See Reservations below.")
-                                                return redirect('reserve')   
-                                        if request.session['typeOfService'] == '3':
-                                            ServiceRequired = request.session['ServiceRequired']
-                                            startDate = datetime.strptime(request.session['startDate'], '%Y-%m-%d').date()
-                                            startTime = datetime.strptime(request.session['startTime'], '%H:%M').time()
-                                            endTime = datetime.strptime(request.session['endTime'], '%H:%M').time()
-                                            TypeOfRoom = request.session['TypeOfRoom']
-                                            NumberOfPeople = request.session['NumberOfPeople']
-                                            NumberOfDays = request.session['NumberOfDays']
-                                            BookingLineResponse = self.zeep_client().service.FnRoomBookingLine(
-                                                bookingNo,TypeOfRoom,'0',myAction,userCode,ServiceRequired,
-                                                startDate,startTime,endTime,NumberOfPeople,NumberOfDays)
-                                            if BookingLineResponse == True:
-                                                accom_service = request.session['accom_ServiceRequired']
-                                                NumberOfRooms = request.session['NumberOfRooms'] 
-                                                accom_startDate = datetime.strptime(request.session['accom_startDate'], '%Y-%m-%d').date()
-                                                accom_endDate = datetime.strptime(request.session['accom_endDate'], '%Y-%m-%d').date()
-                                                AccomodationLineResponse = self.zeep_client().service.FnAccomodationBookingLine(
-                                                    bookingNo,myAction,userCode,accom_service,NumberOfRooms,
-                                                    "0",accom_startDate,accom_endDate)
-                                                if AccomodationLineResponse == True:
-                                                    request.session.flush()
-                                                    messages.success(request,f"Welcome, {email}. See Reservations below.")
-                                                    return redirect('reserve')
-                                                messages.error(request, "Accomodation Details not added, contact admin.")
-                                                return redirect('login')
-                                            messages.error(request, "Meeting Room Details not added, contact admin.")
-                                            return redirect('login')
-                            except KeyError as e:
-                                print(e)
-                                request.session['CustomerName'] = applicant['ContactName']
-                                request.session['customerEmail'] = applicant['EmailAddress']
-                                request.session['customerIDNumber'] = applicant['IdNoKraPin']
-                                request.session['customerPhone'] = applicant['BookedByPhoneNo']
-                                request.session['UserID'] = applicant['No'] 
-                                messages.success(request,f"Welcome, {email}. See Reservations below.")
-                                return redirect('reserve') 
+                                        del request.session['typeOfService']
+                                        del request.session['accom_ServiceRequired']
+                                        del request.session['NumberOfRooms']
+                                        del request.session['accom_startDate']
+                                        del request.session['accom_endDate']
+                                        if AccomodationLineResponse == True:
+                                            messages.success(request,f"Welcome, {email}. See Reservations below.")
+                                            return redirect('reserve')
+                                        messages.info(request,f"Welcome, {email}. Accomodation lines not added")
+                                        return redirect('reserve')    
+                                    else:
+                                        messages.success(request,f'Welcome, {email}. Add reservation lines to booking{BookingHeaderResponse}')
+                                        return redirect('reserve')
+                            except Exception as e:
+                                logging.exception(e)
+                                messages.info('Reservation not created, try to create from your dashboard')
+                                return redirect('dashboard')
+                            return redirect('login')
                         messages.error(request, "Invalid Password.")
                         return redirect('login')                             
                     messages.error(request, "Your email is not verified.")
                     return redirect('login')
+                messages.error(request,"Email not registered, please sign up/user another email to continue")
+                return redirect('login')
             except Exception as e:
                 print(e)
                 messages.error(request,e)
